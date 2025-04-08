@@ -3,7 +3,9 @@
 
 ## Autores
 Arthur Vinicius Machado
+
 Mateus Batichotti Silva
+
 Pedro Ichiro Nagao 
 
 ## Descrição
