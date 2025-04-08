@@ -29,8 +29,10 @@ Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Ichiro Nagao.
 
 ## Requisitos
 - Node.js
-- Banco de dados (ex.: MySQL, PostgreSQL)
-- Ferramentas de desenvolvimento (ex.: Visual Studio Code)
+- Nest.js
+- React.js
+- Phaser.js
+- PostgreSQL
 
 ## Instalação
 1. Clone o repositório: `git clone https://github.com/SeuUsuario/Sins-Of-Macunaima.git`
