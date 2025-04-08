@@ -2,11 +2,7 @@
 # Os Pecados de Macunaíma
 
 ## Autores
-Arthur Vinicius Machado
-
-Mateus Batichotti Silva
-
-Pedro Ichiro Nagao 
+Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Ichiro Nagao. 
 
 ## Descrição
 "Os Pecados de Macunaíma" é um jogo inovador que combina elementos de RPG, interação social e narrativa envolvente. Inspirado na obra literária de Macunaíma, o jogo oferece uma experiência única para os jogadores explorarem um mundo cheio de desafios e aventuras.
