@@ -2,7 +2,7 @@
 # Os Pecados de Macunaíma
 
 ## Autores
-Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Ichiro Nagao. 
+Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Itiro Nagao. 
 
 ## Descrição
 "Os Pecados de Macunaíma" é um jogo inovador que combina elementos de RPG, interação social e narrativa envolvente. Inspirado na obra literária de Macunaíma, o jogo oferece uma experiência única para os jogadores explorarem um mundo cheio de desafios e aventuras.
@@ -35,7 +35,7 @@ Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Ichiro Nagao.
 - PostgreSQL
 
 ## Instalação
-1. Clone o repositório: `git clone https://github.com/SeuUsuario/Sins-Of-Macunaima.git`
+1. Clone o repositório: `git clone https://github.com/batichotti/Sins-Of-Macunaima.git`
 2. Instale as dependências: `npm install`
 3. Configure o banco de dados no arquivo `.env`.
 4. Inicie o servidor: `npm start`
