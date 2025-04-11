@@ -215,7 +215,7 @@ out/
 
 # Phaser.js
 *.atlas
-*.json
+#*.json
 *.png
 *.mp3
 *.ogg
