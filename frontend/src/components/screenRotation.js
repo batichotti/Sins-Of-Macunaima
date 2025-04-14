@@ -29,7 +29,7 @@ function screenRotation() {
           <div style={styles.content}>
             <div style={styles.icon}>🔄</div>
             <h2>Gire seu dispositivo</h2>
-            <p>Por favor, vire seu celular para a posição horizontal para uma melhor experiência</p>
+            <p>Por favor, vire seu dispositivo para a posição horizontal para uma melhor experiência</p>
           </div>
       </div>
     );
