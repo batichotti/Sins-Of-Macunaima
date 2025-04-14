@@ -1,6 +1,6 @@
 import { GameObjects, Scene } from 'phaser';
-
 import { EventBus } from '../EventBus';
+import { WindowResolution, Text } from '../../components/configs/Properties'
 
 export class MainMenu extends Scene
 {
@@ -17,13 +17,11 @@ export class MainMenu extends Scene
     create ()
     {
 
-        this.logo = this.add.image(window.innerWidth * 0.45, 300, 'logo').setDepth(100);
+        this.logo = this.add.image(WindowResolution.width / 2, WindowResolution.height / 2, 'logo').setDepth(100);
 
-        this.title = this.add.text(window.innerWidth * 0.45, 460, 'Main Menu', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).setOrigin(0.5).setDepth(100);
+        this.title = this.add.text(WindowResolution.width / 2, WindowResolution.height * 0.65, 'Menu Principal', 
+            Text.Properties_1
+        ).setOrigin(0.5).setDepth(100);
 
         EventBus.emit('current-scene-ready', this);
     }

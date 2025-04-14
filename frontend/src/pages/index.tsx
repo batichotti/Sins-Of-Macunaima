@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 const inter = Inter({ subsets: ["latin"] });
 
 const ScreenRotation = dynamic(
-    () => import('@/components/screenRotation'),
+    () => import('@/components/ScreenRotation'),
     {ssr: false}
 );
 

@@ -1,5 +1,6 @@
 import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
+import { Text } from '../../components/configs/Properties'
 
 export class GameOver extends Scene
 {
@@ -17,11 +18,9 @@ export class GameOver extends Scene
         this.camera = this.cameras.main
         this.camera.setBackgroundColor(0xff0000);
 
-        this.gameOverText = this.add.text(window.innerWidth * 0.45, window.innerHeight * 0.447, 'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).setOrigin(0.5).setDepth(100);
+        this.gameOverText = this.add.text(Text.Resolution.width, Text.Resolution.height, 'O chupa-cú chegou', 
+            Text.Properties_2
+        ).setOrigin(0.5).setDepth(100);
         
         EventBus.emit('current-scene-ready', this);
     }

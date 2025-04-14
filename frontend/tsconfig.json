@@ -28,7 +28,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/components/configs/Properties.js"  ],
   "exclude": [
     "node_modules"
   ]

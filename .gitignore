@@ -220,6 +220,3 @@ out/
 *.mp3
 *.ogg
 *.wav
-
-# Arquivo de configuracao do TypeScript. Na duvida ignorar.
-tsconfig.json
