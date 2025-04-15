@@ -17,57 +17,35 @@ export class MainMenu extends Scene
     create ()
     {
 
-        this.logo = this.add.image(WindowResolution.width / 2, WindowResolution.height / 2, 'logo').setDepth(100);
+        //this.logo = this.add.image(WindowResolution.width / 2, WindowResolution.height / 2, 'logo').setDepth(100);
 
-        this.title = this.add.text(WindowResolution.width / 2, WindowResolution.height * 0.65, 'Menu Principal', 
+        const textoTitulo = this.add.text(
+            WindowResolution.width / 2, WindowResolution.height * 0.40, 
+            'Sins of Macunaíma',
+            Text.Properties_2
+        ).setOrigin(0.5).setDepth(100);
+
+        this.title = this.add.text(WindowResolution.width / 2, WindowResolution.height * 0.48, 'Menu Principal', 
             Text.Properties_1
         ).setOrigin(0.5).setDepth(100);
 
+        const btnJogar = this.add.text(
+            WindowResolution.width / 2, WindowResolution.height * 0.55, 'Jogar',
+            Text.Properties_1
+        ).setOrigin(0.5).setDepth(100).setInteractive();
+
+        btnJogar.on('pointerover', () => {
+            btnJogar.setStyle({ fill: '#788000' });
+        });
+
+        btnJogar.on('pointerout', () => {
+            btnJogar.setStyle({ fill: '#FFFFFF' });
+        });
+
         EventBus.emit('current-scene-ready', this);
-    }
-    
-    changeScene ()
-    {
-        if (this.logoTween)
-        {
-            this.logoTween.stop();
-            this.logoTween = null;
-        }
 
-        this.scene.start('Game');
-    }
-
-    moveLogo (reactCallback: ({ x, y }: { x: number, y: number }) => void)
-    {
-        if (this.logoTween)
-        {
-            if (this.logoTween.isPlaying())
-            {
-                this.logoTween.pause();
-            }
-            else
-            {
-                this.logoTween.play();
-            }
-        } 
-        else
-        {
-            this.logoTween = this.tweens.add({
-                targets: this.logo,
-                x: { value: 750, duration: 3000, ease: 'Back.easeInOut' },
-                y: { value: 80, duration: 1500, ease: 'Sine.easeOut' },
-                yoyo: true,
-                repeat: -1,
-                onUpdate: () => {
-                    if (reactCallback)
-                    {
-                        reactCallback({
-                            x: Math.floor(this.logo.x),
-                            y: Math.floor(this.logo.y)
-                        });
-                    }
-                }
-            });
-        }
+        btnJogar.on('pointerdown', () => {
+            this.scene.start('Game');
+        });
     }
 }
