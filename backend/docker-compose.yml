@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: nest-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=sinsofmacunaima
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: meubanco
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:
