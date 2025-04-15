@@ -17,8 +17,6 @@ export class MainMenu extends Scene
     create ()
     {
 
-        //this.logo = this.add.image(WindowResolution.width / 2, WindowResolution.height / 2, 'logo').setDepth(100);
-
         const textoTitulo = this.add.text(
             WindowResolution.width / 2, WindowResolution.height * 0.40, 
             'Sins of Macunaíma',
@@ -42,10 +40,10 @@ export class MainMenu extends Scene
             btnJogar.setStyle({ fill: '#FFFFFF' });
         });
 
-        EventBus.emit('current-scene-ready', this);
-
         btnJogar.on('pointerdown', () => {
             this.scene.start('Game');
         });
+
+        EventBus.emit('current-scene-ready', this);
     }
 }

@@ -38,17 +38,23 @@ export class Preloader extends Scene
 
     preload ()
     {
-        //  Load the assets for the game - Replace with your own assets
+        //  Especifica caminho base dos assets.
         this.load.setPath('assets');
 
+        // Galinha / Jogador
         this.load.spritesheet('galinha', '2.png', { frameWidth: 597, frameHeight: 597 });
+
+        // Mapa de tiles
         this.load.image('tiles', 'TileSet.png');
+
+        // Um dos cenários
         this.load.tilemapTiledJSON('mapa', 'SoMTeste.json');
 
         this.load.image('logo', 'logo.png');
         this.load.image('star', 'star.png');
+
+        // Plano de fundo (do menu principal)
         this.load.image('background', 'bg.png');
-        this.load.image('vaquinha', '2.png');
     }
 
     create ()
