@@ -42,7 +42,7 @@ export class Preloader extends Scene
         this.load.setPath('assets');
 
         // Galinha / Jogador
-        this.load.spritesheet('galinha', '2.png', { frameWidth: 597, frameHeight: 597 });
+        this.load.spritesheet('galinha', 'gpt-macunaima.png', { frameWidth: 600, frameHeight: 600 });
 
         // Mapa de tiles
         this.load.image('tiles', 'TileSet.png');

@@ -34,7 +34,7 @@ export class Game extends Scene
         this.tileset = tileset;
     
         const player = this.physics.add.sprite(100, 100, 'galinha', 0);
-        player.setScale(0.01, 0.01);
+        player.setScale(0.03, 0.03);
         if (!player) {
             throw new Error("Failed to load player sprite.");
         }
