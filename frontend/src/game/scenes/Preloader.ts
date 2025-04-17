@@ -1,10 +1,8 @@
 import { Scene } from 'phaser';
 import { WindowResolution } from '@/components/configs/Properties';
 
-export class Preloader extends Scene
-{
-    constructor ()
-    {
+export class Preloader extends Scene {
+    constructor() {
         super('Preloader');
     }
 
@@ -36,19 +34,18 @@ export class Preloader extends Scene
         });
     }
 
-    preload ()
-    {
+    preload() {
         //  Especifica caminho base dos assets.
         this.load.setPath('assets');
 
-        // Galinha / Jogador
-        this.load.spritesheet('galinha', 'gpt-macunaima.png', { frameWidth: 600, frameHeight: 600 });
+        //  Jogador
+        this.load.spritesheet('player', 'gpt-macunaima.png', { frameWidth: 600, frameHeight: 600 });
 
         // Mapa de tiles
-        this.load.image('tiles', 'TileSet.png');
+        this.load.image('tiles', 'tileset_16x16.png');
 
         // Um dos cenários
-        this.load.tilemapTiledJSON('mapa', 'SoMTeste.json');
+        this.load.tilemapTiledJSON('mapa', 'mapa.json');
 
         this.load.image('logo', 'logo.png');
         this.load.image('star', 'star.png');
@@ -57,12 +54,7 @@ export class Preloader extends Scene
         this.load.image('background', 'bg.png');
     }
 
-    create ()
-    {
-        //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-        //  For example, you can define global animations here, so we can use them in other scenes.
-
-        //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
+    create() {
         this.scene.start('MainMenu');
     }
 }
