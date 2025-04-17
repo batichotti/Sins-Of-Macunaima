@@ -1,3 +1,5 @@
+import { Scene } from 'phaser';
+
 class DialogSystem {
     constructor(scene) {
         this.scene = scene;
@@ -15,14 +17,26 @@ class DialogSystem {
     }
 
     createDialogBox() {
+        const boxPositions = {
+            x: this.scene.cameras.main.width * 0.1,
+            y: this.scene.cameras.main.height * 0.8
+        };
+        const boxDimensions = {
+            x: this.scene.cameras.main.width * 0.8, // 10% de cada lado
+            y: this.scene.cameras.main.height * 0.2 // 20% da altura da câmera
+        };
+        const textPositions = {
+            x: boxPositions.x * 1.1,
+            y: boxPositions.y * 1.02
+        };
         // Retângulo de fundo
         this.dialogBox = this.scene.add.graphics()
             .fillStyle(0x000000, 0.8)
-            .fillRect(100, 400, 1000, 150)
+            .fillRect(boxPositions.x, boxPositions.y, boxDimensions.x, boxDimensions.y)
             .setVisible(false);
 
         // Texto do diálogo
-        this.dialogText = this.scene.add.text(120, 410, '', {
+        this.dialogText = this.scene.add.text(textPositions.x, textPositions.y, '', {
             font: '20px Arial',
             color: '#FFFFFF',
             wordWrap: { width: 960 }

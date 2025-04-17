@@ -41,7 +41,7 @@ export class MainMenu extends Scene
         });
 
         btnJogar.on('pointerdown', () => {
-            this.scene.start('Game');
+            this.scene.start('GameOver');
         });
 
         EventBus.emit('current-scene-ready', this);
