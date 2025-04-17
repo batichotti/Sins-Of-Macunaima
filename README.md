@@ -5,20 +5,21 @@
 Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Itiro Nagao. 
 
 ## Descrição
-"Os Pecados de Macunaíma" é um jogo inovador que combina elementos de RPG, interação social e narrativa envolvente. Inspirado na obra literária de Macunaíma, o jogo oferece uma experiência única para os jogadores explorarem um mundo cheio de desafios e aventuras.
+"Os Pecados de Macunaíma" é um jogo que combina elementos de RPG, interação social e narrativa prórpia. Inspirado na obra literária de Macunaíma e no folclore brasileiro, o jogo oferece uma experiência única para os jogadores explorarem um mundo cheio de desafios e aventuras.
 
 ## Funcionalidades
-- **CRUD de Login**: Sistema completo para registro, autenticação e gerenciamento de contas de jogadores.
+- **Login**: Sistema completo para registro, autenticação e gerenciamento de contas de jogadores.
+- **Jogo**: Mecânicas de gameplay estilo RPG misturado com batalha naval e dinâmicas.
 - **Sistema de Amizade**: Permite que os jogadores adicionem amigos e interajam entre si.
-- **Jogo**: Mecânicas de gameplay imersivas e dinâmicas.
 - **Profissões**: Escolha entre diferentes profissões que afetam a jogabilidade e progressão.
 - **Funções**: Habilidades e papéis específicos para cada jogador.
 - **Mortes**: Sistema de consequências para falhas e desafios.
-- **Sistema de Progressão**: Evolução dos jogadores com base em conquistas e experiência.
 - **Chat de Texto e Áudio**: Comunicação em tempo real entre os jogadores.
-- **História**: Uma narrativa rica e envolvente que guia os jogadores.
+- **História**: Uma narrativa envolvente que guia os jogadores.
 - **Sistema de Conquistas**: Desafios e recompensas para incentivar a exploração e o progresso.
+- **Sistema de Bestiário**: Uma Pokedéx para o jogo.
 - **Sistema de Matchmaking**: Partidas organizadas de forma aleatória ou personalizada.
+- **Partidas Solo**: Partidas onde você escolhe um personagem e joga sozinho com ele.
 
 ## Como Contribuir
 1. Faça um fork do repositório.
