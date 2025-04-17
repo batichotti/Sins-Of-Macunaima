@@ -79,9 +79,9 @@ export class Game extends Scene {
     }
 
     setupTexts(): void {
-        this.gameText = this.add.text(WindowResolution.width * 0.06, WindowResolution.height * 0.03, 'Teste TileD',
+        this.gameText = this.add.text(WindowResolution.width * 0.01, WindowResolution.height * 0.01, 'Teste TileD',
             Text.Properties_1
-        ).setOrigin(0.5).setDepth(100);
+        ).setDepth(100);
     }
 
     setupInput(): void {
@@ -111,7 +111,7 @@ export class Game extends Scene {
         this.camera.setScroll(0, 0);
         this.camera.setZoom(this.cameraZoom);
 
-        this.cameras.add(0, 0, WindowResolution.width * 0.2, WindowResolution.height * 0.1, false, 'cameraTexto');
+        this.cameras.add(0, 0, WindowResolution.width * 0.5, WindowResolution.height * 0.1, false, 'cameraTexto');
         this.cameras.getCamera('cameraTexto')?.ignore([...layers, this.player]);
         this.cameras.getCamera('cameraTexto')?.setScroll(0, 0);
     }
