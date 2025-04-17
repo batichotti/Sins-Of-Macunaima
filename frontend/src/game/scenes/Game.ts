@@ -1,7 +1,6 @@
 import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
 import { Text, WindowResolution } from '../../components/configs/Properties'
-
 export class Game extends Scene {
     camera!: Phaser.Cameras.Scene2D.Camera;
     background!: Phaser.GameObjects.Image;
@@ -14,7 +13,7 @@ export class Game extends Scene {
      // Nomes das camadas
     private readonly layerNames = ['Grama', 'Arvores', 'Baus', 'Agua', 'Arbustos'];
      // Camadas com colisão
-    private readonly collisionLayers = ['Arvores', 'Agua'];
+    private readonly collisionLayers = ['Baus', 'Arvores', 'Agua'];
      // Posição inicial do jogador
     private playerStartPosition = { x: 0, y: 0 };
      // Zoom da câmera principal
@@ -25,6 +24,7 @@ export class Game extends Scene {
 
     constructor () {
         super('Game');
+        
     }
 
     create () {
@@ -35,6 +35,7 @@ export class Game extends Scene {
         this.setupCameras(layers);
         this.setupInput();
     
+
         EventBus.emit('current-scene-ready', this);
     }
 
@@ -98,7 +99,7 @@ export class Game extends Scene {
         layers.forEach((layer) => {
             if (this.collisionLayers.includes(layer.name)) {
                 console.log(`Colisão com a camada: ${layer.name}`);
-                layer.setCollisionByExclusion([-1])
+                layer.setCollisionByExclusion([-1]);
                 this.physics.add.collider(this.player, layer);
             }
         });
