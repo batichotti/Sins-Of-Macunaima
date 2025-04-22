@@ -1,6 +1,6 @@
-import { EventBus } from '../EventBus';
+import { EventBus } from '@/game/EventBus';
 import { Scene } from 'phaser';
-import DialogSystem from '../../components/DialogSystem';
+import DialogSystem from '@/components/DialogSystem';
 
 export class GameOver extends Scene {
     camera!: Phaser.Cameras.Scene2D.Camera;

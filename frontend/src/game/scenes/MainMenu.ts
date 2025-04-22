@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from 'phaser';
-import { EventBus } from '../EventBus';
+import { EventBus } from '@/game/EventBus';
 import { WindowResolution, Text } from '@/components/configs/Properties'
 
 export class MainMenu extends Scene {
