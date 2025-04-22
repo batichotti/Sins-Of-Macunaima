@@ -42,7 +42,7 @@ export class Preloader extends Scene {
         this.load.spritesheet('player', 'gpt-macunaima.png', { frameWidth: 600, frameHeight: 600 });
 
         // Mapa de tiles
-        this.load.image('tiles', 'tileset_16x16.png');
+        this.load.image('tiles', 'tileset_16x16-extruded.png');
 
         // Um dos cenários
         this.load.tilemapTiledJSON('mapa', 'mapa.json');

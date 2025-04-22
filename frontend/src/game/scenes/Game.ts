@@ -17,7 +17,7 @@ export class Game extends Scene {
      // Posição inicial do jogador
     private playerStartPosition = { x: 0, y: 0 };
      // Zoom da câmera principal
-    private readonly cameraZoom = 4;
+    private readonly cameraZoom = 5;
      // Velocidade do jogador
     private readonly playerSpeed = 100;
 
@@ -50,7 +50,7 @@ export class Game extends Scene {
     // Usados em create()
     setupLayers(): Phaser.Tilemaps.TilemapLayer[] {
         this.map = this.make.tilemap({ key: 'mapa' });
-        const tileset = this.map.addTilesetImage('tileset_16x16', 'tiles');
+        const tileset = this.map.addTilesetImage('tileset_16x16', 'tiles', 16, 16, 1, 2);
         if (!tileset) {
             throw new Error("Failed to load tileset 'TileSet'.");
         }
@@ -98,7 +98,6 @@ export class Game extends Scene {
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         layers.forEach((layer) => {
             if (this.collisionLayers.includes(layer.name)) {
-                console.log(`Colisão com a camada: ${layer.name}`);
                 layer.setCollisionByExclusion([-1]);
                 this.physics.add.collider(this.player, layer);
             }
@@ -107,10 +106,12 @@ export class Game extends Scene {
 
     setupCameras(layers: Phaser.Tilemaps.TilemapLayer[]): void {
         this.camera = this.cameras.main;
+        this.camera.setBackgroundColor('#FFFFFF');
         this.camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.camera.ignore([this.gameText]);
+        this.camera.ignore(this.gameText);
         this.camera.setScroll(0, 0);
         this.camera.setZoom(this.cameraZoom);
+        this.camera.roundPixels = true;
 
         this.cameras.add(0, 0, WindowResolution.width * 0.5, WindowResolution.height * 0.1, false, 'cameraTexto');
         this.cameras.getCamera('cameraTexto')?.ignore([...layers, this.player]);
