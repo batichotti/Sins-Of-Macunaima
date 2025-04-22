@@ -29,7 +29,7 @@ export class GameOver extends Scene {
         //});
 
         //this.gameOverText = this.add.text(Text.Resolution.width, Text.Resolution.height, 'O chupa-cú chegou', 
-        //    Text.Properties_2
+        //    Text.Title2
         //).setOrigin(0.5).setDepth(100);
         
         EventBus.emit('current-scene-ready', this);

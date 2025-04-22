@@ -81,7 +81,7 @@ export class Game extends Scene {
 
     setupTexts(): void {
         this.gameText = this.add.text(WindowResolution.width * 0.01, WindowResolution.height * 0.01, 'Teste TileD',
-            Text.Properties_1
+            Text.Title1
         ).setDepth(100);
     }
 

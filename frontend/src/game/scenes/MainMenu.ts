@@ -1,9 +1,8 @@
 import { GameObjects, Scene } from 'phaser';
 import { EventBus } from '../EventBus';
-import { WindowResolution, Text } from '../../components/configs/Properties'
+import { WindowResolution, Text } from '@/components/configs/Properties'
 
-export class MainMenu extends Scene
-{
+export class MainMenu extends Scene {
     background!: GameObjects.Image;
     logo!: GameObjects.Image;
     title!: GameObjects.Text;
@@ -20,16 +19,16 @@ export class MainMenu extends Scene
         const textoTitulo = this.add.text(
             WindowResolution.width / 2, WindowResolution.height * 0.40, 
             'Sins of Macunaíma',
-            Text.Properties_2
+            Text.Title2
         ).setOrigin(0.5).setDepth(100);
 
         this.title = this.add.text(WindowResolution.width / 2, WindowResolution.height * 0.48, 'Menu Principal', 
-            Text.Properties_1
+            Text.Title1
         ).setOrigin(0.5).setDepth(100);
 
         const btnJogar = this.add.text(
             WindowResolution.width / 2, WindowResolution.height * 0.55, 'Jogar',
-            Text.Properties_1
+            Text.Title1
         ).setOrigin(0.5).setDepth(100).setInteractive();
 
         btnJogar.on('pointerover', () => {
@@ -41,7 +40,7 @@ export class MainMenu extends Scene
         });
 
         btnJogar.on('pointerdown', () => {
-            this.scene.start('GameOver');
+            this.scene.start('Game');
         });
 
         EventBus.emit('current-scene-ready', this);

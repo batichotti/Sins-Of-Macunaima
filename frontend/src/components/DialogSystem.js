@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { Text } from '@/components/configs/Properties'
 
 class DialogSystem {
     constructor(scene) {
@@ -36,11 +37,7 @@ class DialogSystem {
             .setVisible(false);
 
         // Texto do diálogo
-        this.dialogText = this.scene.add.text(textPositions.x, textPositions.y, '', {
-            font: '20px Arial',
-            color: '#FFFFFF',
-            wordWrap: { width: 960 }
-        }).setVisible(false);
+        this.dialogText = this.scene.add.text(textPositions.x, textPositions.y, '', Text.Dialog1).setVisible(false);
     }
 
     // Iniciar novo diálogo

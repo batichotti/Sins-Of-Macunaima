@@ -5,7 +5,7 @@
 Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Itiro Nagao. 
 
 ## Descrição
-"Os Pecados de Macunaíma" é um jogo que combina elementos de RPG, interação social e narrativa prórpia. Inspirado na obra literária de Macunaíma e no folclore brasileiro, o jogo oferece uma experiência única para os jogadores explorarem um mundo cheio de desafios e aventuras.
+"Os Pecados de Macunaíma" é um jogo que combina elementos de RPG, interação social e narrativa própria. Inspirado na obra literária de Macunaíma e no folclore brasileiro, o jogo oferece uma experiência única para os jogadores explorarem um mundo cheio de desafios e aventuras.
 
 ## Funcionalidades
 - **Login**: Sistema completo para registro, autenticação e gerenciamento de contas de jogadores.
@@ -31,6 +31,7 @@ Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Itiro Nagao.
 ## Requisitos
 - Node.js
 - Nest.js
+- Next.js
 - React.js
 - Phaser.js
 - PostgreSQL
