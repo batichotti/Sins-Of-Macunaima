@@ -5,34 +5,32 @@ export class Game extends Scene {
     camera!: Phaser.Cameras.Scene2D.Camera;
     background!: Phaser.GameObjects.Image;
     gameText!: Phaser.GameObjects.Text;
-    tileset!: Phaser.Tilemaps.Tileset;
+    tilesets!: Phaser.Tilemaps.Tileset[];
+    layers!: Phaser.Tilemaps.TilemapLayer[]
     map!: Phaser.Tilemaps.Tilemap;
     player!: Phaser.Physics.Arcade.Sprite;
     cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
-     // Nomes das camadas
-    private readonly layerNames = ['Grama', 'Arvores', 'Baus', 'Agua', 'Arbustos'];
-     // Camadas com colisão
-    private readonly collisionLayers = ['Baus', 'Arvores', 'Agua'];
      // Posição inicial do jogador
     private playerStartPosition = { x: 0, y: 0 };
      // Zoom da câmera principal
-    private readonly cameraZoom = 5;
+    private readonly cameraZoom = 2;
      // Velocidade do jogador
-    private readonly playerSpeed = 100;
+    private readonly playerSpeed = 200;
 
 
     constructor () {
         super('Game');
-        
+        this.tilesets = [];
+        this.layers = [];
     }
 
     create () {
-        const layers = this.setupLayers();
+        this.setupLayers();
         this.setupPlayer();
         this.setupTexts();
-        this.setupCollisions(layers);
-        this.setupCameras(layers);
+        this.setupCollisions();
+        this.setupCameras();
         this.setupInput();
     
 
@@ -48,28 +46,31 @@ export class Game extends Scene {
     }
 
     // Usados em create()
-    setupLayers(): Phaser.Tilemaps.TilemapLayer[] {
-        this.map = this.make.tilemap({ key: 'mapa' });
-        const tileset = this.map.addTilesetImage('tileset_16x16', 'tiles', 16, 16, 1, 2);
-        if (!tileset) {
-            throw new Error("Failed to load tileset 'TileSet'.");
-        }
-        const layers: Phaser.Tilemaps.TilemapLayer[] = [];
-        this.layerNames.forEach((layerName) => {
-            const layer = this.map.createLayer(layerName, tileset, 0, 0);
-            layer!.name = layerName;
-            if (!layer) {
-                throw new Error(`Failed to load layer '${layerName}'.`);
+    setupLayers(): void {
+        this.map = this.make.tilemap({ key: 'praia' });
+    
+        // Adiciona tilesets dinamicamente com base nos tilesets do mapa
+        this.map.tilesets.forEach((tileset) => {
+            const addedTileset = this.map.addTilesetImage(tileset.name, tileset.name, 16, 16, 1, 2);
+            if (addedTileset) {
+                this.tilesets.push(addedTileset);
             }
-            layers.push(layer);
         });
-        return layers;
+    
+        // Cria camadas dinamicamente com base nas camadas do mapa
+        this.map.layers.forEach((layerData, index) => {
+            const gameLayer = this.map.createLayer(layerData.name, this.tilesets);
+            if (gameLayer) {
+                gameLayer.setDepth(index); // Define a profundidade da camada
+                this.layers.push(gameLayer); // Armazena a camada para uso posterior
+            }
+        });
     }
 
     setupPlayer(): void {
-        this.playerStartPosition = {x: this.map.widthInPixels * 0.99, y: this.map.heightInPixels * 0.965};
+        this.playerStartPosition = {x: this.map.widthInPixels * 0.5, y: this.map.heightInPixels * 0.5};
         const player = this.physics.add.sprite(this.playerStartPosition.x, this.playerStartPosition.y, 'player', 0);
-        player.setScale(0.03, 0.03);
+        player.setScale(1.5, 1.5);
         if (!player) {
             throw new Error("Failed to load player sprite.");
         }
@@ -94,17 +95,18 @@ export class Game extends Scene {
         this.cursors = cursors;
     }
 
-    setupCollisions(layers: Phaser.Tilemaps.TilemapLayer[]): void {
+    setupCollisions(): void {
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        layers.forEach((layer) => {
-            if (this.collisionLayers.includes(layer.name)) {
+        this.layers.forEach((layer) => {
+            const collides = layer.layer.properties?.find((prop: any) => prop.name === 'collides')?.value || false;
+            if (collides) {
                 layer.setCollisionByExclusion([-1]);
                 this.physics.add.collider(this.player, layer);
             }
         });
     }
 
-    setupCameras(layers: Phaser.Tilemaps.TilemapLayer[]): void {
+    setupCameras(): void {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor('#FFFFFF');
         this.camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -114,7 +116,7 @@ export class Game extends Scene {
         this.camera.roundPixels = true;
 
         this.cameras.add(0, 0, WindowResolution.width * 0.5, WindowResolution.height * 0.1, false, 'cameraTexto');
-        this.cameras.getCamera('cameraTexto')?.ignore([...layers, this.player]);
+        this.cameras.getCamera('cameraTexto')?.ignore([...this.layers, this.player]);
         this.cameras.getCamera('cameraTexto')?.setScroll(0, 0);
     }
 

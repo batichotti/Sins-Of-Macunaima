@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { WindowResolution } from '@/components/configs/Properties';
+import { TilePaths, TileSets } from '@/components/configs/PathTiles';
 
 export class Preloader extends Scene {
     constructor() {
@@ -39,19 +40,17 @@ export class Preloader extends Scene {
         this.load.setPath('assets');
 
         //  Jogador
-        this.load.spritesheet('player', 'gpt-macunaima.png', { frameWidth: 600, frameHeight: 600 });
+        this.load.spritesheet('player', 'Characters/Macunaima/Sprite/Macunaima_idle_front.png', { frameWidth: 32, frameHeight: 32 });
 
-        // Mapa de tiles
-        this.load.image('tiles', 'tileset_16x16-extruded.png');
+        // Tiles
+        TileSets.forEach((tile) => {
+            this.load.image(`${tile}`, `tiles/${TilePaths.extruded}/${tile}.png`);
+        });
+
 
         // Um dos cenários
-        this.load.tilemapTiledJSON('mapa', 'mapa.json');
+        this.load.tilemapTiledJSON('praia', 'tiles/TileD/cenariosJson/praia.json');
 
-        this.load.image('logo', 'logo.png');
-        this.load.image('star', 'star.png');
-
-        // Plano de fundo (do menu principal)
-        this.load.image('background', 'bg.png');
     }
 
     create() {
