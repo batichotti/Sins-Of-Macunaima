@@ -98,6 +98,7 @@ export class Game extends Scene {
     setupCollisions(): void {
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.layers.forEach((layer) => {
+            // 'value' não existe bua bua bua
             const collides = layer.layer.properties?.find((prop: any) => prop.name === 'collides')?.value || false;
             if (collides) {
                 layer.setCollisionByExclusion([-1]);

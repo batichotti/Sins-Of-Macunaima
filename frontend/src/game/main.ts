@@ -5,14 +5,12 @@ import { MainMenu } from './scenes/MainMenu';
 import { AUTO, Game } from 'phaser';
 import { Preloader } from './scenes/Preloader';
 
-//  Find out more information about the Game Config at:
-//  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
     width: window.innerWidth * 0.75,
     height: window.innerHeight * 0.75,
     parent: 'game-container',
-    antialias: false,
+    pixelArt: true,
     backgroundColor: '#028af8',
     physics: {
         default: 'arcade',

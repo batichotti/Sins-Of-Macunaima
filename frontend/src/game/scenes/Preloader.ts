@@ -49,7 +49,7 @@ export class Preloader extends Scene {
 
 
         // Um dos cenários
-        this.load.tilemapTiledJSON('praia', 'tiles/TileD/cenariosJson/praia.json');
+        this.load.tilemapTiledJSON('praia', 'tiles/TileD/cenariosJson/planicie.json');
 
     }
 
