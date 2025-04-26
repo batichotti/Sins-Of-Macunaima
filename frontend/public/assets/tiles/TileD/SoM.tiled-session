@@ -3,10 +3,10 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "cenarios/planicieInferior.tmx",
+    "activeFile": "cenarios/planicieSuperior.tmx",
     "expandedProjectPaths": [
-        "cenariosJson",
         ".",
+        "cenariosJson",
         "cenarios"
     ],
     "fileStates": {
@@ -256,11 +256,14 @@
             "scaleInDock": 1
         },
         "cenarios/planicieSuperior.tmx": {
+            "expandedGroupLayers": [
+                25
+            ],
             "scale": 1.5,
-            "selectedLayer": 13,
+            "selectedLayer": 14,
             "viewCenter": {
                 "x": 509.6666666666667,
-                "y": 632
+                "y": 812
             }
         },
         "cenarios/planicieSuperior.tmx#10_dirt": {
@@ -409,17 +412,17 @@
         "cenarios/aldeia.tmx",
         "cenarios/floresta.tmx",
         "cenarios/planicieSuperior.tmx",
-        "cenarios/praia.tmx",
-        "cenarios/planicieInferior.tmx"
+        "cenarios/planicieInferior.tmx",
+        "cenarios/praia.tmx"
     ],
     "project": "SoM.tiled-project",
     "property.type": "bool",
     "recentFiles": [
         "cenarios/aldeia.tmx",
         "cenarios/floresta.tmx",
-        "cenarios/planicieSuperior.tmx",
         "cenarios/praia.tmx",
         "cenarios/planicieInferior.tmx",
+        "cenarios/planicieSuperior.tmx",
         "cenarios/planicie.tmx",
         "cenariosJson/praia.json",
         "cenarios/inicio.tmx"

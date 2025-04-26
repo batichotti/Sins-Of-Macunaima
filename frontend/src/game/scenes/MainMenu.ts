@@ -39,7 +39,8 @@ export class MainMenu extends Scene {
         });
 
         btnJogar.on('pointerdown', () => {
-            this.scene.start('Game');
+            // TODO: Decidir a 'role' do jogador e o cenário inicial
+            this.scene.start('Loader', {targetScene: 'Praia'});
         });
 
         EventBus.emit('current-scene-ready', this);

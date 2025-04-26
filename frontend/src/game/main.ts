@@ -1,9 +1,10 @@
 import { Boot } from './scenes/Boot';
 import { GameOver } from './scenes/GameOver';
-import { Game as MainGame } from './scenes/Game';
+import { Game as MainGame} from './scenes/Game';
 import { MainMenu } from './scenes/MainMenu';
-import { AUTO, Game } from 'phaser';
-import { Preloader } from './scenes/Preloader';
+import { Game } from 'phaser';
+import { Loader } from './scenes/Loader';
+import { Praia } from './scenes/Praia';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -21,9 +22,10 @@ const config: Phaser.Types.Core.GameConfig = {
     },
     scene: [
         Boot,
-        Preloader,
+        Loader,
         MainMenu,
         MainGame,
+        Praia,
         GameOver
     ]
 };

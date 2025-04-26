@@ -1,13 +1,33 @@
 import { Scene } from 'phaser';
 import { WindowResolution } from '@/components/configs/Properties';
-import { TilePaths, TileSets } from '@/components/configs/PathTiles';
+import { PathScenarios, Scenarios } from '@/components/configs/SceneManager';
 
-export class Preloader extends Scene {
+interface LoadingData {
+    targetScene: string;
+}
+
+
+export class Loader extends Scene {
+    targetScene!: string;
     constructor() {
-        super('Preloader');
+        super('Loader');
     }
 
-    init() {
+    init(data: LoadingData) {
+        this.targetScene = data?.targetScene;
+        this.loadingBar();
+
+    }
+
+    preload() {
+        this.loadScenario();
+    }
+
+    create() {
+        this.scene.start(this.targetScene);
+    }
+
+    private loadingBar(): void {
         // Valores base
         const outlineWidth = WindowResolution.width * 0.65;
         const outlineHeight = WindowResolution.height * 0.04;
@@ -35,25 +55,14 @@ export class Preloader extends Scene {
         });
     }
 
-    preload() {
-        //  Especifica caminho base dos assets.
-        this.load.setPath('assets');
+    private loadScenario(): void {
+        if(this.targetScene) {
+            this.load.setPath('assets');
+            this.load.tilemapTiledJSON(this.targetScene, `${PathScenarios}${this.targetScene}.json`);
+        } 
+        // Caso seja null
+        else {
 
-        //  Jogador
-        this.load.spritesheet('player', 'Characters/Macunaima/Sprite/Macunaima_idle_front.png', { frameWidth: 32, frameHeight: 32 });
-
-        // Tiles
-        TileSets.forEach((tile) => {
-            this.load.image(`${tile}`, `tiles/${TilePaths.extruded}/${tile}.png`);
-        });
-
-
-        // Um dos cenários
-        this.load.tilemapTiledJSON('praia', 'tiles/TileD/cenariosJson/planicieSuperior.json');
-
-    }
-
-    create() {
-        this.scene.start('MainMenu');
+        }
     }
 }
