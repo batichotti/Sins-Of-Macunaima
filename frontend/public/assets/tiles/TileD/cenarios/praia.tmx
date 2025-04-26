@@ -42,8 +42,8 @@
  <tileset firstgid="5929" name="13_extra2" tilewidth="16" tileheight="16" tilecount="144" columns="12">
   <image source="../../tilesets/13_extra2.png" width="192" height="192"/>
  </tileset>
- <group id="11" name="terreno">
-  <layer id="1" name="areia" width="60" height="60">
+ <group id="11" name="terreno" locked="1">
+  <layer id="1" name="areia" width="60" height="60" locked="1">
    <properties>
     <property name="collides" type="bool" value="false"/>
    </properties>
@@ -110,7 +110,7 @@
 823,824,823,824,823,824,823,824,823,824,823,824,823,824,823,824,823,824,823,824,823,824,823,824,823,824,823,824,823,824,823,824,823,824,823,823,824,823,824,823,824,823,824,823,824,825,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
   </layer>
-  <layer id="10" name="grama" width="60" height="60">
+  <layer id="10" name="grama" width="60" height="60" locked="1">
    <properties>
     <property name="collides" type="bool" value="false"/>
    </properties>
@@ -178,8 +178,8 @@
 </data>
   </layer>
  </group>
- <group id="12" name="agua">
-  <layer id="2" name="mar" width="60" height="60">
+ <group id="12" name="agua" locked="1">
+  <layer id="2" name="mar" width="60" height="60" locked="1">
    <properties>
     <property name="collides" type="bool" value="true"/>
    </properties>
@@ -246,7 +246,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,102,104,103,104,103,104,103,104,103,104,104,103,104,103,104
 </data>
   </layer>
-  <layer id="5" name="lagos" width="60" height="60">
+  <layer id="5" name="lagos" width="60" height="60" locked="1">
    <properties>
     <property name="collides" type="bool" value="true"/>
    </properties>
@@ -314,8 +314,8 @@
 </data>
   </layer>
  </group>
- <group id="9" name="detalhes">
-  <layer id="6" name="pedrinhas" width="60" height="60">
+ <group id="9" name="detalhes" locked="1">
+  <layer id="6" name="pedrinhas" width="60" height="60" locked="1">
    <properties>
     <property name="collides" type="bool" value="false"/>
    </properties>
@@ -382,7 +382,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
   </layer>
-  <layer id="8" name="troncos" width="60" height="60">
+  <layer id="8" name="troncos" width="60" height="60" locked="1">
    <properties>
     <property name="collides" type="bool" value="true"/>
    </properties>
@@ -449,7 +449,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
   </layer>
-  <layer id="7" name="pedras" width="60" height="60">
+  <layer id="7" name="pedras" width="60" height="60" locked="1">
    <properties>
     <property name="collides" type="bool" value="true"/>
    </properties>
