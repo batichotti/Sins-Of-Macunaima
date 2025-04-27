@@ -12,8 +12,7 @@ export class MainMenu extends Scene {
         super('MainMenu');
     }
 
-    create ()
-    {
+    create () {
 
         const textoTitulo = this.add.text(
             WindowResolution.width / 2, WindowResolution.height * 0.40, 
@@ -40,7 +39,7 @@ export class MainMenu extends Scene {
 
         btnJogar.on('pointerdown', () => {
             // TODO: Decidir a 'role' do jogador e o cenário inicial
-            this.scene.start('Loader', {targetScene: 'Praia'});
+            this.scene.start('Loader', {targetScene: 'PlanicieInferior'});
         });
 
         EventBus.emit('current-scene-ready', this);

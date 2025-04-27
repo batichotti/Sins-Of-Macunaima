@@ -1,7 +1,8 @@
 import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
 import { Text, WindowResolution } from '../../components/configs/Properties'
-export class Game extends Scene {
+
+export class PlanicieInferior extends Scene {
     camera!: Phaser.Cameras.Scene2D.Camera;
     background!: Phaser.GameObjects.Image;
     gameText!: Phaser.GameObjects.Text;
@@ -20,7 +21,7 @@ export class Game extends Scene {
 
 
     constructor () {
-        super('Game');
+        super('PlanicieInferior');
         this.tilesets = [];
         this.layers = [];
     }
@@ -47,7 +48,7 @@ export class Game extends Scene {
 
     // Usados em create()
     setupLayers(): void {
-        this.map = this.make.tilemap({ key: 'praia' });
+        this.map = this.make.tilemap({ key: 'PlanicieInferior' });
     
         // Adiciona tilesets dinamicamente com base nos tilesets do mapa
         this.map.tilesets.forEach((tileset) => {
@@ -114,7 +115,7 @@ export class Game extends Scene {
         this.camera.ignore(this.gameText);
         this.camera.setScroll(0, 0);
         this.camera.setZoom(this.cameraZoom);
-        this.camera.roundPixels = true;
+        this.camera.roundPixels = false;
 
         this.cameras.add(0, 0, WindowResolution.width * 0.5, WindowResolution.height * 0.1, false, 'cameraTexto');
         this.cameras.getCamera('cameraTexto')?.ignore([...this.layers, this.player]);

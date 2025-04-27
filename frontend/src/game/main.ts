@@ -1,11 +1,11 @@
 import { Boot } from './scenes/Boot';
 import { GameOver } from './scenes/GameOver';
-import { Game as MainGame} from './scenes/Game';
 import { MainMenu } from './scenes/MainMenu';
 import { Game } from 'phaser';
 import { Loader } from './scenes/Loader';
 import { Praia } from './scenes/Praia';
 import { PlanicieSuperior } from './scenes/PlanicieSuperior';
+import { PlanicieInferior } from './scenes/PlanicieInferior';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -25,9 +25,9 @@ const config: Phaser.Types.Core.GameConfig = {
         Boot,
         Loader,
         MainMenu,
-        MainGame,
         Praia,
         PlanicieSuperior,
+        PlanicieInferior,
         GameOver
     ]
 };

@@ -115,7 +115,7 @@ export class PlanicieSuperior extends Scene {
         this.camera.ignore(this.gameText);
         this.camera.setScroll(0, 0);
         this.camera.setZoom(this.cameraZoom);
-        this.camera.roundPixels = true;
+        this.camera.roundPixels = false;
 
         this.cameras.add(0, 0, WindowResolution.width * 0.5, WindowResolution.height * 0.1, false, 'cameraTexto');
         this.cameras.getCamera('cameraTexto')?.ignore([...this.layers, this.player]);
