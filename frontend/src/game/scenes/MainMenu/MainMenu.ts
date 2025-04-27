@@ -1,5 +1,5 @@
 import { GameObjects, Scene } from 'phaser';
-import { EventBus } from '@/game/EventBus';
+import { EventBus } from '@/game/scenes/Services/EventBus';
 import { WindowResolution, Text } from '@/components/configs/Properties'
 
 export class MainMenu extends Scene {
@@ -39,7 +39,7 @@ export class MainMenu extends Scene {
 
         btnJogar.on('pointerdown', () => {
             // TODO: Decidir a 'role' do jogador e o cenário inicial
-            this.scene.start('Loader', {targetScene: 'PlanicieInferior'});
+            this.scene.start('Loader', {targetScene: 'GameOver', previousScene: 'MainMenu'});
         });
 
         EventBus.emit('current-scene-ready', this);

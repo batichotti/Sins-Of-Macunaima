@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "cenarios/PlanicieInferior.tmx",
+    "activeFile": "cenarios/Praia.tmx",
     "expandedProjectPaths": [
         "cenariosJson",
         "cenarios",
@@ -109,15 +109,20 @@
         },
         "cenarios/PlanicieInferior.tmx": {
             "expandedGroupLayers": [
-                23,
-                2,
-                8
+                8,
+                26,
+                33,
+                29,
+                2
             ],
-            "scale": 0.33,
-            "selectedLayer": 7,
+            "expandedObjectLayers": [
+                36
+            ],
+            "scale": 4,
+            "selectedLayer": 8,
             "viewCenter": {
-                "x": 1342.4242424242425,
-                "y": 793.9393939393938
+                "x": 1867.25,
+                "y": 951.75
             }
         },
         "cenarios/PlanicieInferior.tmx#10_dirt": {
@@ -211,13 +216,18 @@
         },
         "cenarios/Praia.tmx": {
             "expandedGroupLayers": [
+                9,
+                23,
                 18
             ],
-            "scale": 0.75,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                27
+            ],
+            "scale": 1,
+            "selectedLayer": 12,
             "viewCenter": {
-                "x": 480.66666666666663,
-                "y": 479.3333333333333
+                "x": 583,
+                "y": 347
             }
         },
         "cenarios/Praia.tmx#10_dirt": {
@@ -656,15 +666,15 @@
     "map.width": 60,
     "openFiles": [
         "cenarios/PlanicieSuperior.tmx",
-        "cenarios/Praia.tmx",
-        "cenarios/PlanicieInferior.tmx"
+        "cenarios/PlanicieInferior.tmx",
+        "cenarios/Praia.tmx"
     ],
     "project": "SoM.tiled-project",
     "property.type": "bool",
     "recentFiles": [
         "cenarios/PlanicieSuperior.tmx",
-        "cenarios/Praia.tmx",
         "cenarios/PlanicieInferior.tmx",
+        "cenarios/Praia.tmx",
         "cenarios/aldeia.tmx",
         "cenarios/floresta.tmx",
         "cenarios/praia.tmx",

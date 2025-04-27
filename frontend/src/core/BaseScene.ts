@@ -1,32 +1,42 @@
-import { EventBus } from '../EventBus';
+import { EventBus } from '@/game/scenes/Services/EventBus';
 import { Scene } from 'phaser';
-import { Text, WindowResolution } from '../../components/configs/Properties'
+import { Text, WindowResolution } from '@/components/configs/Properties';
 
-export class PlanicieInferior extends Scene {
-    camera!: Phaser.Cameras.Scene2D.Camera;
-    background!: Phaser.GameObjects.Image;
-    gameText!: Phaser.GameObjects.Text;
-    tilesets!: Phaser.Tilemaps.Tileset[];
-    layers!: Phaser.Tilemaps.TilemapLayer[]
-    map!: Phaser.Tilemaps.Tilemap;
-    player!: Phaser.Physics.Arcade.Sprite;
-    cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+export interface SceneTransferData {
+    targetScene: string;
+    previousScene: string;
+}
 
-     // Posição inicial do jogador
-    private playerStartPosition = { x: 0, y: 0 };
-     // Zoom da câmera principal
-    private readonly cameraZoom = 2;
-     // Velocidade do jogador
-    private readonly playerSpeed = 200;
+export abstract class BaseScene extends Scene {
+    protected camera!: Phaser.Cameras.Scene2D.Camera;
+    protected background!: Phaser.GameObjects.Image;
+    protected gameText!: Phaser.GameObjects.Text;
+    protected tilesets!: Phaser.Tilemaps.Tileset[];
+    protected layers!: Phaser.Tilemaps.TilemapLayer[]
+    protected map!: Phaser.Tilemaps.Tilemap;
+    protected player!: Phaser.Physics.Arcade.Sprite;
+    protected cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
+    protected prevSceneData = {} as SceneTransferData;
 
-    constructor () {
-        super('PlanicieInferior');
-        this.tilesets = [];
-        this.layers = [];
+    protected playerStartPosition = { x: 0, y: 0 };
+
+    // Zoom da câmera principal
+    protected readonly cameraZoom = 2;
+    // Velocidade do jogador
+    protected readonly playerSpeed = 200;
+
+    constructor(config: Phaser.Types.Scenes.SettingsConfig) {
+        super(config);
     }
 
-    create () {
+    protected init(data: SceneTransferData) {
+        this.tilesets = [];
+        this.layers = [];
+        this.prevSceneData = data;
+    }
+
+    protected create() {
         this.setupLayers();
         this.setupPlayer();
         this.setupTexts();
@@ -38,19 +48,14 @@ export class PlanicieInferior extends Scene {
         EventBus.emit('current-scene-ready', this);
     }
 
-    update(): void {
+    public update(): void {
         this.handleInput();
     }
 
-    changeScene(): void {
-        this.scene.start('GameOver');
-    }
-
     // Usados em create()
-    setupLayers(): void {
-        this.map = this.make.tilemap({ key: 'PlanicieInferior' });
+    protected setupLayers(): void {
+        this.map = this.make.tilemap({ key: this.constructor.name });
     
-        // Adiciona tilesets dinamicamente com base nos tilesets do mapa
         this.map.tilesets.forEach((tileset) => {
             const addedTileset = this.map.addTilesetImage(tileset.name, tileset.name, 16, 16, 1, 2);
             if (addedTileset) {
@@ -58,18 +63,23 @@ export class PlanicieInferior extends Scene {
             }
         });
     
-        // Cria camadas dinamicamente com base nas camadas do mapa
         this.map.layers.forEach((layerData, index) => {
             const gameLayer = this.map.createLayer(layerData.name, this.tilesets);
             if (gameLayer) {
-                gameLayer.setDepth(index); // Define a profundidade da camada
-                this.layers.push(gameLayer); // Armazena a camada para uso posterior
+                gameLayer.setDepth(index);
+                this.layers.push(gameLayer);
             }
         });
     }
 
-    setupPlayer(): void {
-        this.playerStartPosition = {x: this.map.widthInPixels * 0.5, y: this.map.heightInPixels * 0.5};
+    protected setupPlayer(): void {
+        const spawnPoint = this.map.findObject(
+            'spawnPoints', // nome da Object Layer
+            obj => obj.name === `spawn${this.prevSceneData.previousScene}`  // name dado ao objeto
+        ) as Phaser.Types.Tilemaps.TiledObject;
+        this.playerStartPosition.x = spawnPoint?.x ?? WindowResolution.width / 2 + (spawnPoint?.width ?? 0) * 0.5;
+        this.playerStartPosition.y = spawnPoint?.y ?? WindowResolution.height / 2 + (spawnPoint?.height ?? 0) * 0.5;
+
         const player = this.physics.add.sprite(this.playerStartPosition.x, this.playerStartPosition.y, 'player', 0);
         player.setScale(1.5, 1.5);
         if (!player) {
@@ -81,13 +91,13 @@ export class PlanicieInferior extends Scene {
         this.cameras.main.startFollow(player);
     }
 
-    setupTexts(): void {
+    protected setupTexts(): void {
         this.gameText = this.add.text(WindowResolution.width * 0.01, WindowResolution.height * 0.01, 'Teste TileD',
             Text.Title1
         ).setDepth(100);
     }
 
-    setupInput(): void {
+    protected setupInput(): void {
         const cursors = this.input?.keyboard?.createCursorKeys();
         if (!cursors) {
             console.warn('Keyboard input is not available.');
@@ -96,11 +106,10 @@ export class PlanicieInferior extends Scene {
         this.cursors = cursors;
     }
 
-    setupCollisions(): void {
+    protected setupCollisions(): void {
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.layers.forEach((layer) => {
-            // 'value' não existe bua bua bua
-            const collides = layer.layer.properties?.find((prop: any) => prop.name === 'collides')?.value || false;
+            const collides = layer.layer.properties?.find((prop: any) => prop.name === 'collides') ?? false;
             if (collides) {
                 layer.setCollisionByExclusion([-1]);
                 this.physics.add.collider(this.player, layer);
@@ -108,7 +117,7 @@ export class PlanicieInferior extends Scene {
         });
     }
 
-    setupCameras(): void {
+    protected setupCameras(): void {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor('#FFFFFF');
         this.camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -123,7 +132,7 @@ export class PlanicieInferior extends Scene {
     }
 
     // Usados em update()
-    handleInput() {
+    protected handleInput() {
         if (this.cursors.left.isDown) {
             this.player.setVelocityX(-this.playerSpeed); // Move para a esquerda
         } else if (this.cursors.right.isDown) {

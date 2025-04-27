@@ -1,8 +1,20 @@
 import { Scene } from 'phaser';
 import { Text } from '@/components/configs/Properties'
 
-class DialogSystem {
-    constructor(scene) {
+export class DialogSystem {
+    private scene!: Scene;
+    private dialogBox!: Phaser.GameObjects.Graphics;
+    private dialogText!: Phaser.GameObjects.Text;
+    private currentDialog: string[] = [];
+    private currentLine: number = 0;
+    private isDialogActive: boolean = false;
+    private isTyping: boolean = false;
+    private typingSpeed: number = 50;
+    private typingTimer!: Phaser.Time.TimerEvent;
+    private spaceKey!: Phaser.Input.Keyboard.Key | null;
+    private isProcessing: boolean = false;
+
+    constructor(scene: Phaser.Scene) {
         this.scene = scene;
         this.dialogBox; // Retângulo de fundo
         this.dialogText; // Texto do diálogo
@@ -12,7 +24,7 @@ class DialogSystem {
         this.isTyping = false; // Está digitando?
         this.typingSpeed = 50; // Velocidade da animação de digitação (ms)
         this.typingTimer; // Referência do timer
-        this.spaceKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.spaceKey = this.scene.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE) ?? null;
         // Criar elementos gráficos
         this.createDialogBox();
     }
@@ -41,7 +53,7 @@ class DialogSystem {
     }
 
     // Iniciar novo diálogo
-    startDialog(dialogArray) {
+    startDialog(dialogArray: string[]) {
         if (this.isDialogActive) return;
         
         this.currentDialog = dialogArray;
@@ -68,7 +80,7 @@ class DialogSystem {
     }
 
     // Animação de digitação
-    animateText(text) {
+    animateText(text: String) {
         this.isTyping = true;
         this.dialogText.setText('');
         let index = 0;
@@ -98,29 +110,31 @@ class DialogSystem {
 
     // Atualizar (deve ser chamado no update da cena)
     update() {
-        if (this.isDialogActive && Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
-            // Bloqueia múltiplas entradas durante transições
-            if (this.isTyping) {
-                // Completa texto imediatamente
-                this.typingTimer.remove();
-                this.dialogText.setText(this.currentDialog[this.currentLine - 1]);
-                this.isTyping = false;
-                
-                // Adiciona pequeno delay para evitar duplo avanço
-                this.scene.time.delayedCall(100, () => {
-                    this.isProcessing = false;
-                });
-            } else {
-                // Impede avanço múltiplo
-                if (this.isProcessing) return;
-                this.isProcessing = true;
-                
-                this.showNextLine();
-                
-                // Reset após 200ms
-                this.scene.time.delayedCall(200, () => {
-                    this.isProcessing = false;
-                });
+        if(this.spaceKey) {
+            if (this.isDialogActive && Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
+                // Bloqueia múltiplas entradas durante transições
+                if (this.isTyping) {
+                    // Completa texto imediatamente
+                    this.typingTimer.remove();
+                    this.dialogText.setText(this.currentDialog[this.currentLine - 1]);
+                    this.isTyping = false;
+                    
+                    // Adiciona pequeno delay para evitar duplo avanço
+                    this.scene.time.delayedCall(100, () => {
+                        this.isProcessing = false;
+                    });
+                } else {
+                    // Impede avanço múltiplo
+                    if (this.isProcessing) return;
+                    this.isProcessing = true;
+                    
+                    this.showNextLine();
+                    
+                    // Reset após 200ms
+                    this.scene.time.delayedCall(200, () => {
+                        this.isProcessing = false;
+                    });
+                }
             }
         }
     }
