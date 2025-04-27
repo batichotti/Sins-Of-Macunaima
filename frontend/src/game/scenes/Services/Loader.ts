@@ -1,12 +1,7 @@
 import { Scene } from 'phaser';
 import { WindowResolution } from '@/components/configs/Properties';
 import { PathScenarios } from '@/components/configs/SceneManager';
-
-interface SceneData {
-    targetScene: string;
-    previousScene: string;
-}
-
+import SceneData from '@/core/SceneData';
 
 export class Loader extends Scene {
     targetScene!: string;
