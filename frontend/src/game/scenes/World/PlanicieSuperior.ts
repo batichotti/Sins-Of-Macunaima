@@ -1,11 +1,12 @@
-import { BaseScene, SceneTransferData } from '@/core/BaseScene';
+import { BaseScene } from '@/core/BaseScene';
+import SceneData from '@/core/SceneData';
 
 export class PlanicieSuperior extends BaseScene {
     constructor() {
         super({key: 'PlanicieSuperior'});
     }
 
-    init(data: SceneTransferData) {
+    init(data: SceneData) {
         super.init(data);
     }
 

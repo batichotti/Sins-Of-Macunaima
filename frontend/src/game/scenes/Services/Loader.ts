@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 import { WindowResolution } from '@/components/configs/Properties';
 import { PathScenarios } from '@/components/configs/SceneManager';
 
-interface SceneTransferData {
+interface SceneData {
     targetScene: string;
     previousScene: string;
 }
@@ -15,7 +15,7 @@ export class Loader extends Scene {
         super('Loader');
     }
 
-    init(data: SceneTransferData) {
+    init(data: SceneData) {
         this.targetScene = data?.targetScene;
         this.previousScene = data?.previousScene;
         this.loadingBar();

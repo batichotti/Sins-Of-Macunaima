@@ -39,7 +39,7 @@ export class MainMenu extends Scene {
 
         btnJogar.on('pointerdown', () => {
             // TODO: Decidir a 'role' do jogador e o cenário inicial
-            this.scene.start('Loader', {targetScene: 'GameOver', previousScene: 'MainMenu'});
+            this.scene.start('Loader', {targetScene: 'PlanicieInferior', previousScene: 'MainMenu'});
         });
 
         EventBus.emit('current-scene-ready', this);

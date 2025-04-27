@@ -1,11 +1,7 @@
 import { EventBus } from '@/game/scenes/Services/EventBus';
 import { Scene } from 'phaser';
 import { Text, WindowResolution } from '@/components/configs/Properties';
-
-export interface SceneTransferData {
-    targetScene: string;
-    previousScene: string;
-}
+import SceneData from '@/core/SceneData';
 
 export abstract class BaseScene extends Scene {
     protected camera!: Phaser.Cameras.Scene2D.Camera;
@@ -17,7 +13,7 @@ export abstract class BaseScene extends Scene {
     protected player!: Phaser.Physics.Arcade.Sprite;
     protected cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
-    protected prevSceneData = {} as SceneTransferData;
+    protected prevSceneData = {} as SceneData;
 
     protected playerStartPosition = { x: 0, y: 0 };
 
@@ -30,7 +26,7 @@ export abstract class BaseScene extends Scene {
         super(config);
     }
 
-    protected init(data: SceneTransferData) {
+    protected init(data: SceneData) {
         this.tilesets = [];
         this.layers = [];
         this.prevSceneData = data;
