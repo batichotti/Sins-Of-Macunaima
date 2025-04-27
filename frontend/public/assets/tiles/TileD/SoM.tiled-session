@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "cenarios/planicieSuperior.tmx",
+    "activeFile": "",
     "expandedProjectPaths": [
         ".",
         "cenariosJson",
@@ -11,6 +11,241 @@
     ],
     "fileStates": {
         "": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx": {
+            "scale": 0.9143749999999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 479.5625427204374,
+                "y": 480.1093643198907
+            }
+        },
+        "cenarios/Aldeia.tmx#10_dirt": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#11_roofs": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#12_extra1": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#13_extra2": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#1_terrain": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#2_indoors": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#3_plants": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#4_buildings": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#5_waterfall": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#6_floors": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#7_grass_cliff": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#8_cave": {
+            "scaleInDock": 1
+        },
+        "cenarios/Aldeia.tmx#9_beach": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx": {
+            "scale": 0.9143749999999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 479.5625427204374,
+                "y": 480.1093643198907
+            }
+        },
+        "cenarios/Floresta.tmx#10_dirt": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#11_roofs": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#12_extra1": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#13_extra2": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#1_terrain": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#2_indoors": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#3_plants": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#4_buildings": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#5_waterfall": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#6_floors": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#7_grass_cliff": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#8_cave": {
+            "scaleInDock": 1
+        },
+        "cenarios/Floresta.tmx#9_beach": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 503.33333333333326,
+                "y": 465.33333333333326
+            }
+        },
+        "cenarios/PlanicieInferior.tmx#10_dirt": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#11_roofs": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#12_extra1": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#13_extra2": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#1_terrain": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#2_indoors": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#3_plants": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#4_buildings": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#5_waterfall": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#6_floors": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#7_grass_cliff": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#8_cave": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieInferior.tmx#9_beach": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 527.3333333333333,
+                "y": 438.66666666666674
+            }
+        },
+        "cenarios/PlanicieSuperior.tmx#10_dirt": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#11_roofs": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#12_extra1": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#13_extra2": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#1_terrain": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#2_indoors": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#3_plants": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#4_buildings": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#5_waterfall": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#6_floors": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#7_grass_cliff": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#8_cave": {
+            "scaleInDock": 1
+        },
+        "cenarios/PlanicieSuperior.tmx#9_beach": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 736.25,
+                "y": 942
+            }
+        },
+        "cenarios/Praia.tmx#10_dirt": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#11_roofs": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#12_extra1": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#13_extra2": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#1_terrain": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#2_indoors": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#3_plants": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#4_buildings": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#5_waterfall": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#6_floors": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#7_grass_cliff": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#8_cave": {
+            "scaleInDock": 1
+        },
+        "cenarios/Praia.tmx#9_beach": {
             "scaleInDock": 1
         },
         "cenarios/aldeia.tmx": {
@@ -409,15 +644,11 @@
     "map.tileWidth": 16,
     "map.width": 60,
     "openFiles": [
-        "cenarios/aldeia.tmx",
-        "cenarios/floresta.tmx",
-        "cenarios/planicieSuperior.tmx",
-        "cenarios/planicieInferior.tmx",
-        "cenarios/praia.tmx"
     ],
     "project": "SoM.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "cenarios/PlanicieSuperior.tmx",
         "cenarios/aldeia.tmx",
         "cenarios/floresta.tmx",
         "cenarios/praia.tmx",

@@ -5,6 +5,7 @@ import { MainMenu } from './scenes/MainMenu';
 import { Game } from 'phaser';
 import { Loader } from './scenes/Loader';
 import { Praia } from './scenes/Praia';
+import { PlanicieSuperior } from './scenes/PlanicieSuperior';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -26,6 +27,7 @@ const config: Phaser.Types.Core.GameConfig = {
         MainMenu,
         MainGame,
         Praia,
+        PlanicieSuperior,
         GameOver
     ]
 };
