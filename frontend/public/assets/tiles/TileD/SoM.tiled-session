@@ -118,11 +118,11 @@
             "expandedObjectLayers": [
                 36
             ],
-            "scale": 4,
+            "scale": 3,
             "selectedLayer": 8,
             "viewCenter": {
-                "x": 1867.25,
-                "y": 951.75
+                "x": 999.3333333333333,
+                "y": 1137
             }
         },
         "cenarios/PlanicieInferior.tmx#10_dirt": {
@@ -224,10 +224,10 @@
                 27
             ],
             "scale": 1,
-            "selectedLayer": 12,
+            "selectedLayer": 14,
             "viewCenter": {
-                "x": 583,
-                "y": 347
+                "x": 307,
+                "y": 617
             }
         },
         "cenarios/Praia.tmx#10_dirt": {

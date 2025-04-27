@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="60" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="33" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="60" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="34" nextobjectid="2">
  <editorsettings>
   <export target="../cenariosJson/PlanicieSuperior.json" format="json"/>
  </editorsettings>
@@ -821,4 +821,7 @@
 </data>
   </layer>
  </group>
+ <objectgroup id="33" name="spawnPoints">
+  <object id="1" name="spawnMainMenu" gid="5780" x="480.5" y="515" width="16" height="16"/>
+ </objectgroup>
 </map>

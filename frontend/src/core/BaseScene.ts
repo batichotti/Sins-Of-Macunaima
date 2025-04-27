@@ -12,10 +12,8 @@ export abstract class BaseScene extends Scene {
     protected map!: Phaser.Tilemaps.Tilemap;
     protected player!: Phaser.Physics.Arcade.Sprite;
     protected cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
-
-    protected prevSceneData = {} as SceneData;
-
-    protected playerStartPosition = { x: 0, y: 0 };
+    protected prevSceneData: SceneData;
+    protected playerStartPosition: { x: number, y: number } = { x: 0, y: 0 };
 
     // Zoom da câmera principal
     protected readonly cameraZoom = 2;
