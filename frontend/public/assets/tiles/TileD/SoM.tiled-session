@@ -119,11 +119,11 @@
                 38,
                 36
             ],
-            "scale": 5.5,
-            "selectedLayer": 8,
+            "scale": 2,
+            "selectedLayer": 9,
             "viewCenter": {
-                "x": 1917.090909090909,
-                "y": 969.1818181818182
+                "x": 1070.5,
+                "y": 44.75
             }
         },
         "cenarios/PlanicieInferior.tmx#10_dirt": {
@@ -166,11 +166,15 @@
             "scaleInDock": 1
         },
         "cenarios/PlanicieSuperior.tmx": {
-            "scale": 1,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                34,
+                33
+            ],
+            "scale": 3,
+            "selectedLayer": 17,
             "viewCenter": {
-                "x": 480.5,
-                "y": 479.5
+                "x": 460.66666666666663,
+                "y": 1016.8333333333333
             }
         },
         "cenarios/PlanicieSuperior.tmx#10_dirt": {
@@ -222,11 +226,11 @@
                 27,
                 33
             ],
-            "scale": 5.5,
-            "selectedLayer": 15,
+            "scale": 1.5,
+            "selectedLayer": 14,
             "viewCenter": {
-                "x": 480.0909090909091,
-                "y": 480.0909090909091
+                "x": 5.333333333333314,
+                "y": 553
             }
         },
         "cenarios/Praia.tmx#10_dirt": {

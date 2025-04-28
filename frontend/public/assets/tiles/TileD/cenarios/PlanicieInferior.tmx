@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="120" height="120" tilewidth="16" tileheight="16" infinite="0" nextlayerid="39" nextobjectid="11">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="120" height="120" tilewidth="16" tileheight="16" infinite="0" nextlayerid="39" nextobjectid="28">
  <editorsettings>
   <export target="../cenariosJson/PlanicieInferior.json" format="json"/>
  </editorsettings>
@@ -802,6 +802,7 @@
  <objectgroup id="36" name="spawnPoints">
   <object id="2" name="spawnPraia" gid="5780" x="1872" y="976" width="16" height="16"/>
   <object id="3" name="spawnMainMenu" gid="5780" x="960" y="1120" width="16" height="16"/>
+  <object id="11" name="spawnPlanicieSuperior" gid="5780" x="1024" y="48" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="38" name="transitionPoints">
   <object id="4" name="toPraia" gid="5780" x="1904" y="928" width="16" height="16">
@@ -837,6 +838,81 @@
   <object id="10" name="toPraia" gid="5780" x="1904" y="912" width="16" height="16">
    <properties>
     <property name="destination" value="Praia"/>
+   </properties>
+  </object>
+  <object id="13" name="toPlanicieSuperior" gid="5780" x="960" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="14" name="toPlanicieSuperior" gid="5780" x="976" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="15" name="toPlanicieSuperior" gid="5780" x="992" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="16" name="toPlanicieSuperior" gid="5780" x="1008" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="17" name="toPlanicieSuperior" gid="5780" x="1024" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="18" name="toPlanicieSuperior" gid="5780" x="944" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="26" name="toPlanicieSuperior" gid="5780" x="944" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="19" name="toPlanicieSuperior" gid="5780" x="1072" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="20" name="toPlanicieSuperior" gid="5780" x="1056" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="21" name="toPlanicieSuperior" gid="5780" x="1088" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="22" name="toPlanicieSuperior" gid="5780" x="1104" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="23" name="toPlanicieSuperior" gid="5780" x="1120" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="24" name="toPlanicieSuperior" gid="5780" x="1136" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="25" name="toPlanicieSuperior" gid="5780" x="1040" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
+   </properties>
+  </object>
+  <object id="27" name="toPlanicieSuperior" gid="5780" x="1152" y="16" width="16" height="16">
+   <properties>
+    <property name="destination" value="PlanicieSuperior"/>
    </properties>
   </object>
  </objectgroup>
