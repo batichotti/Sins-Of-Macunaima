@@ -1,4 +1,5 @@
 import { BaseScene, SceneData } from '@/core/BaseScene';
+import DialogUi from '@/core/DialogUi';
 
 export class Praia extends BaseScene {
     constructor() {
@@ -12,7 +13,6 @@ export class Praia extends BaseScene {
     create(): void {
         super.create();
     }
-
     update(): void {
         super.update();
     }

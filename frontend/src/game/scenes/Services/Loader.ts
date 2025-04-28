@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { WindowResolution } from '@/components/configs/Properties';
 import { PathScenarios } from '@/components/configs/SceneManager';
-
+import { SceneData } from '@/core/BaseScene';
 
 export class Loader extends Scene {
     targetScene!: string;
@@ -22,6 +22,7 @@ export class Loader extends Scene {
     }
 
     create() {
+        this.scene.stop(this.constructor.name);
         this.scene.start(this.targetScene, {targetScene: this.targetScene, previousScene: this.previousScene});
     }
 
@@ -57,10 +58,6 @@ export class Loader extends Scene {
         if(this.targetScene) {
             this.load.setPath('assets');
             this.load.tilemapTiledJSON(this.targetScene, `${PathScenarios}${this.targetScene}.json`);
-        } 
-        // Caso seja null
-        else {
-
         }
     }
 }

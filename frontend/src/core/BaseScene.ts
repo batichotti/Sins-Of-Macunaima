@@ -16,7 +16,8 @@ export abstract class BaseScene extends Scene {
     protected layers!: Phaser.Tilemaps.TilemapLayer[]
     protected map!: Phaser.Tilemaps.Tilemap;
     protected player!: Player;
-    protected cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+    protected arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
+    protected awsd!: Phaser.Types.Input.Keyboard.CursorKeys;
     protected prevSceneData!: SceneData;
     protected transitionPoints: Phaser.Types.Tilemaps.TiledObject[] | undefined;
 
@@ -44,7 +45,6 @@ export abstract class BaseScene extends Scene {
         this.setupLayers();
         this.setupPlayer();
         this.setupTransitionPoints();
-        this.setupTexts();
         this.setupCollisions();
         this.setupCameras();
         this.setupInput();
@@ -97,19 +97,23 @@ export abstract class BaseScene extends Scene {
         this.transitionPoints = this.map.getObjectLayer('transitionPoints')?.objects;
     }
 
-    private setupTexts(): void {
-        this.gameText = this.add.text(WindowResolution.width * 0.01, WindowResolution.height * 0.01, 'Teste TileD',
-            Text.Title1
-        ).setDepth(100);
-    }
-
     private setupInput(): void {
-        const cursors = this.input?.keyboard?.createCursorKeys();
-        if (!cursors) {
+        const arrows = this.input?.keyboard?.createCursorKeys();
+        const awsd = this.input?.keyboard?.addKeys(
+            {
+                'up': Phaser.Input.Keyboard.KeyCodes.W,
+                'down': Phaser.Input.Keyboard.KeyCodes.S,
+                'left': Phaser.Input.Keyboard.KeyCodes.A,
+                'right': Phaser.Input.Keyboard.KeyCodes.D,
+
+            }
+        ) as Phaser.Types.Input.Keyboard.CursorKeys;
+        if (!arrows && !awsd) {
             console.warn('Keyboard input is not available.');
             return;
         }
-        this.cursors = cursors;
+        this.arrows = arrows ?? awsd;
+        this.awsd = awsd;
     }
 
     private setupCollisions(): void {
@@ -127,29 +131,24 @@ export abstract class BaseScene extends Scene {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor('#FFFFFF');
         this.camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.camera.ignore(this.gameText);
         this.camera.setScroll(0, 0);
         this.camera.setZoom(this.cameraZoom);
         this.camera.roundPixels = false;
-
-        this.cameras.add(0, 0, WindowResolution.width * 0.5, WindowResolution.height * 0.1, false, 'cameraTexto');
-        this.cameras.getCamera('cameraTexto')?.ignore([...this.layers, this.player.sprite]);
-        this.cameras.getCamera('cameraTexto')?.setScroll(0, 0);
     }
 
     // Usados em update()
     private handleInput() {
-        if (this.cursors.left.isDown) {
+        if (this.arrows.left.isDown || this.awsd.left.isDown) {
             this.player.sprite.setVelocityX(-this.playerConfig.Speed); // Move para a esquerda
-        } else if (this.cursors.right.isDown) {
+        } else if (this.arrows.right.isDown || this.awsd.right.isDown) {
             this.player.sprite.setVelocityX(this.playerConfig.Speed); // Move para a direita
         } else {
             this.player.sprite.setVelocityX(0); // Para o movimento horizontal
         }
 
-        if (this.cursors.up.isDown) {
+        if (this.arrows.up.isDown || this.awsd.up.isDown) {
             this.player.sprite.setVelocityY(-this.playerConfig.Speed); // Move para cima
-        } else if (this.cursors.down.isDown) {
+        } else if (this.arrows.down.isDown || this.awsd.down.isDown) {
             this.player.sprite.setVelocityY(this.playerConfig.Speed); // Move para baixo
         } else {
             this.player.sprite.setVelocityY(0); // Para o movimento vertical
@@ -170,10 +169,6 @@ export abstract class BaseScene extends Scene {
                 if (Phaser.Geom.Rectangle.Overlaps(playerBounds, transitionRect)) {
                     this.shutdown();
                     this.scene.stop(this.constructor.name);
-                    const cameraTexto = this.cameras?.getCamera('cameraTexto');
-                    if(cameraTexto) {
-                        this.cameras.remove(cameraTexto);
-                    }
                     console.log(`Carregando tilemap: ${this.constructor.name}`);
                     this.scene.start('Loader', { 
                         targetScene: point.properties?.find((prop: Phaser.Types.Tilemaps.TiledObject) => prop.name === 'destination')?.value ?? 'MainMenu',
@@ -186,6 +181,8 @@ export abstract class BaseScene extends Scene {
     private shutdown() {
         this.player.sprite?.destroy();
         this.layers?.forEach(layer => layer.destroy());
+        const cameraTexto = this.cameras?.getCamera('cameraTexto');
+        if(cameraTexto) { this.cameras.remove(cameraTexto); }
         EventBus.off('current-scene-ready'); // Remove todos os listeners relacionados
     }
 }

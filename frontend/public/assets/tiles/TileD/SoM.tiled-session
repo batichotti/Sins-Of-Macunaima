@@ -3,9 +3,8 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "cenarios/PlanicieInferior.tmx",
+    "activeFile": "cenarios/Praia.tmx",
     "expandedProjectPaths": [
-        "cenariosJson",
         "cenarios",
         "."
     ],
@@ -109,21 +108,22 @@
         },
         "cenarios/PlanicieInferior.tmx": {
             "expandedGroupLayers": [
-                29,
                 8,
                 2,
                 26,
+                29,
+                23,
                 33
             ],
             "expandedObjectLayers": [
                 38,
                 36
             ],
-            "scale": 2,
-            "selectedLayer": 9,
+            "scale": 0.9301,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1070.5,
-                "y": 44.75
+                "x": 512.8480808515212,
+                "y": 678.4216750887001
             }
         },
         "cenarios/PlanicieInferior.tmx#10_dirt": {
@@ -166,15 +166,18 @@
             "scaleInDock": 1
         },
         "cenarios/PlanicieSuperior.tmx": {
+            "expandedGroupLayers": [
+                26
+            ],
             "expandedObjectLayers": [
                 34,
                 33
             ],
-            "scale": 3,
-            "selectedLayer": 17,
+            "scale": 0.6039,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 460.66666666666663,
-                "y": 1016.8333333333333
+                "x": 538.1685709554563,
+                "y": 420.59943699287953
             }
         },
         "cenarios/PlanicieSuperior.tmx#10_dirt": {
@@ -218,19 +221,19 @@
         },
         "cenarios/Praia.tmx": {
             "expandedGroupLayers": [
-                31,
                 23,
-                18
+                18,
+                31
             ],
             "expandedObjectLayers": [
                 27,
                 33
             ],
-            "scale": 1.5,
-            "selectedLayer": 14,
+            "scale": 0.9753,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 5.333333333333314,
-                "y": 553
+                "x": 707.4746231928638,
+                "y": 721.8291807648927
             }
         },
         "cenarios/Praia.tmx#10_dirt": {
@@ -673,11 +676,11 @@
         "cenarios/Praia.tmx"
     ],
     "project": "SoM.tiled-project",
-    "property.type": "string",
+    "property.type": "bool",
     "recentFiles": [
         "cenarios/PlanicieSuperior.tmx",
-        "cenarios/Praia.tmx",
         "cenarios/PlanicieInferior.tmx",
+        "cenarios/Praia.tmx",
         "cenarios/aldeia.tmx",
         "cenarios/floresta.tmx",
         "cenarios/praia.tmx",
