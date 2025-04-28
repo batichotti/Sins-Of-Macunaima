@@ -795,6 +795,65 @@
                  "width":16,
                  "x":464,
                  "y":480
+                }, 
+                {
+                 "gid":5780,
+                 "height":16,
+                 "id":25,
+                 "name":"spawnPlanicieInferior",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":32,
+                 "y":480
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":33,
+         "name":"transitionPoints",
+         "objects":[
+                {
+                 "gid":5780,
+                 "height":16,
+                 "id":23,
+                 "name":"toPlanicieInferior",
+                 "properties":[
+                        {
+                         "name":"destination",
+                         "type":"string",
+                         "value":"PlanicieInferior"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":0,
+                 "y":480
+                }, 
+                {
+                 "gid":5780,
+                 "height":16,
+                 "id":24,
+                 "name":"toPlanicieInferior",
+                 "properties":[
+                        {
+                         "name":"destination",
+                         "type":"string",
+                         "value":"PlanicieInferior"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":0,
+                 "y":464
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -802,8 +861,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":30,
- "nextobjectid":15,
+ "nextlayerid":34,
+ "nextobjectid":26,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "cenarios/Praia.tmx",
+    "activeFile": "cenarios/PlanicieInferior.tmx",
     "expandedProjectPaths": [
         "cenariosJson",
         "cenarios",
@@ -109,20 +109,21 @@
         },
         "cenarios/PlanicieInferior.tmx": {
             "expandedGroupLayers": [
-                8,
-                26,
-                33,
                 29,
-                2
+                8,
+                2,
+                26,
+                33
             ],
             "expandedObjectLayers": [
+                38,
                 36
             ],
-            "scale": 3,
+            "scale": 5.5,
             "selectedLayer": 8,
             "viewCenter": {
-                "x": 999.3333333333333,
-                "y": 1137
+                "x": 1917.090909090909,
+                "y": 969.1818181818182
             }
         },
         "cenarios/PlanicieInferior.tmx#10_dirt": {
@@ -165,9 +166,6 @@
             "scaleInDock": 1
         },
         "cenarios/PlanicieSuperior.tmx": {
-            "expandedGroupLayers": [
-                25
-            ],
             "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
@@ -216,18 +214,19 @@
         },
         "cenarios/Praia.tmx": {
             "expandedGroupLayers": [
-                9,
+                31,
                 23,
                 18
             ],
             "expandedObjectLayers": [
-                27
+                27,
+                33
             ],
-            "scale": 1,
-            "selectedLayer": 14,
+            "scale": 5.5,
+            "selectedLayer": 15,
             "viewCenter": {
-                "x": 307,
-                "y": 617
+                "x": 480.0909090909091,
+                "y": 480.0909090909091
             }
         },
         "cenarios/Praia.tmx#10_dirt": {
@@ -670,11 +669,11 @@
         "cenarios/Praia.tmx"
     ],
     "project": "SoM.tiled-project",
-    "property.type": "bool",
+    "property.type": "string",
     "recentFiles": [
         "cenarios/PlanicieSuperior.tmx",
-        "cenarios/PlanicieInferior.tmx",
         "cenarios/Praia.tmx",
+        "cenarios/PlanicieInferior.tmx",
         "cenarios/aldeia.tmx",
         "cenarios/floresta.tmx",
         "cenarios/praia.tmx",

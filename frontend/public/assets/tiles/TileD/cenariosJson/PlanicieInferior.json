@@ -846,7 +846,7 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":1888,
+                 "x":1872,
                  "y":976
                 }, 
                 {
@@ -866,9 +866,146 @@
          "visible":true,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":38,
+         "name":"transitionPoints",
+         "objects":[
+                {
+                 "gid":5780,
+                 "height":16,
+                 "id":4,
+                 "name":"toPraia",
+                 "properties":[
+                        {
+                         "name":"destination",
+                         "type":"string",
+                         "value":"Praia"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1904,
+                 "y":928
+                }, 
+                {
+                 "gid":5780,
+                 "height":16,
+                 "id":5,
+                 "name":"toPraia",
+                 "properties":[
+                        {
+                         "name":"destination",
+                         "type":"string",
+                         "value":"Praia"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1904,
+                 "y":944
+                }, 
+                {
+                 "gid":5780,
+                 "height":16,
+                 "id":6,
+                 "name":"toPraia",
+                 "properties":[
+                        {
+                         "name":"destination",
+                         "type":"string",
+                         "value":"Praia"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1904,
+                 "y":960
+                }, 
+                {
+                 "gid":5780,
+                 "height":16,
+                 "id":7,
+                 "name":"toPraia",
+                 "properties":[
+                        {
+                         "name":"destination",
+                         "type":"string",
+                         "value":"Praia"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1904,
+                 "y":976
+                }, 
+                {
+                 "gid":5780,
+                 "height":16,
+                 "id":8,
+                 "name":"toPraia",
+                 "properties":[
+                        {
+                         "name":"destination",
+                         "type":"string",
+                         "value":"Praia"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1904,
+                 "y":992
+                }, 
+                {
+                 "gid":5780,
+                 "height":16,
+                 "id":9,
+                 "name":"toPraia",
+                 "properties":[
+                        {
+                         "name":"destination",
+                         "type":"string",
+                         "value":"Praia"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1904,
+                 "y":1008
+                }, 
+                {
+                 "gid":5780,
+                 "height":16,
+                 "id":10,
+                 "name":"toPraia",
+                 "properties":[
+                        {
+                         "name":"destination",
+                         "type":"string",
+                         "value":"Praia"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1904,
+                 "y":912
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":38,
- "nextobjectid":4,
+ "nextlayerid":39,
+ "nextobjectid":11,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

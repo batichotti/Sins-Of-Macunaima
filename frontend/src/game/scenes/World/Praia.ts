@@ -1,20 +1,19 @@
-import { BaseScene } from '@/core/BaseScene';
-import SceneData from '@/core/SceneData';
+import { BaseScene, SceneData } from '@/core/BaseScene';
 
 export class Praia extends BaseScene {
     constructor() {
-        super({key: 'Praia'});
+        super({ key: 'Praia' });
     }
 
-    init(data: SceneData) {
+    init(data: SceneData): void {
         super.init(data);
     }
 
-    create() {
+    create(): void {
         super.create();
     }
 
-    update() {
+    update(): void {
         super.update();
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="120" height="120" tilewidth="16" tileheight="16" infinite="0" nextlayerid="38" nextobjectid="4">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="120" height="120" tilewidth="16" tileheight="16" infinite="0" nextlayerid="39" nextobjectid="11">
  <editorsettings>
   <export target="../cenariosJson/PlanicieInferior.json" format="json"/>
  </editorsettings>
@@ -800,7 +800,44 @@
   </layer>
  </group>
  <objectgroup id="36" name="spawnPoints">
-  <object id="2" name="spawnPraia" gid="5780" x="1888" y="976" width="16" height="16"/>
+  <object id="2" name="spawnPraia" gid="5780" x="1872" y="976" width="16" height="16"/>
   <object id="3" name="spawnMainMenu" gid="5780" x="960" y="1120" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup id="38" name="transitionPoints">
+  <object id="4" name="toPraia" gid="5780" x="1904" y="928" width="16" height="16">
+   <properties>
+    <property name="destination" value="Praia"/>
+   </properties>
+  </object>
+  <object id="5" name="toPraia" gid="5780" x="1904" y="944" width="16" height="16">
+   <properties>
+    <property name="destination" value="Praia"/>
+   </properties>
+  </object>
+  <object id="6" name="toPraia" gid="5780" x="1904" y="960" width="16" height="16">
+   <properties>
+    <property name="destination" value="Praia"/>
+   </properties>
+  </object>
+  <object id="7" name="toPraia" gid="5780" x="1904" y="976" width="16" height="16">
+   <properties>
+    <property name="destination" value="Praia"/>
+   </properties>
+  </object>
+  <object id="8" name="toPraia" gid="5780" x="1904" y="992" width="16" height="16">
+   <properties>
+    <property name="destination" value="Praia"/>
+   </properties>
+  </object>
+  <object id="9" name="toPraia" gid="5780" x="1904" y="1008" width="16" height="16">
+   <properties>
+    <property name="destination" value="Praia"/>
+   </properties>
+  </object>
+  <object id="10" name="toPraia" gid="5780" x="1904" y="912" width="16" height="16">
+   <properties>
+    <property name="destination" value="Praia"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

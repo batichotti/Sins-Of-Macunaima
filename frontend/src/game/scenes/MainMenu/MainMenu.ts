@@ -13,7 +13,6 @@ export class MainMenu extends Scene {
     }
 
     create () {
-
         const textoTitulo = this.add.text(
             WindowResolution.width / 2, WindowResolution.height * 0.40, 
             'Sins of Macunaíma',
@@ -39,7 +38,7 @@ export class MainMenu extends Scene {
 
         btnJogar.on('pointerdown', () => {
             // TODO: Decidir a 'role' do jogador e o cenário inicial
-            this.scene.start('Loader', {targetScene: 'PlanicieSuperior', previousScene: 'MainMenu'});
+            this.scene.start('Loader', {targetScene: 'Praia', previousScene: 'MainMenu'});
         });
 
         EventBus.emit('current-scene-ready', this);
