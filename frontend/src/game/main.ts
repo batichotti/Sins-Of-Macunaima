@@ -3,9 +3,7 @@ import { GameOver } from '@/game/scenes/GameOver/GameOver';
 import { MainMenu } from '@/game/scenes/MainMenu/MainMenu';
 import { Game } from 'phaser';
 import { Loader } from '@/game/scenes/Services/Loader';
-import { Praia } from '@/game/scenes/World/Praia';
-import { PlanicieSuperior } from '@/game/scenes/World/PlanicieSuperior';
-import { PlanicieInferior } from '@/game/scenes/World/PlanicieInferior';
+import { Mapa } from '@/game/scenes/World/Mapa';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -27,9 +25,7 @@ const config: Phaser.Types.Core.GameConfig = {
         Boot,
         Loader,
         MainMenu,
-        Praia,
-        PlanicieSuperior,
-        PlanicieInferior,
+        Mapa,
         GameOver
     ]
 };

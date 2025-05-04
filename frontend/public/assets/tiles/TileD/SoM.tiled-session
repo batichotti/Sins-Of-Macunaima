@@ -3,10 +3,10 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "cenarios/Praia.tmx",
+    "activeFile": "cenarios/mapa.tmx",
     "expandedProjectPaths": [
-        "cenarios",
-        "."
+        ".",
+        "cenarios"
     ],
     "fileStates": {
         "": {
@@ -109,21 +109,21 @@
         "cenarios/PlanicieInferior.tmx": {
             "expandedGroupLayers": [
                 8,
-                2,
                 26,
+                33,
+                2,
                 29,
-                23,
-                33
+                23
             ],
             "expandedObjectLayers": [
-                38,
-                36
+                36,
+                38
             ],
             "scale": 0.9301,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 512.8480808515212,
-                "y": 678.4216750887001
+                "x": 959.5742393291042,
+                "y": 960.1118159337705
             }
         },
         "cenarios/PlanicieInferior.tmx#10_dirt": {
@@ -170,14 +170,14 @@
                 26
             ],
             "expandedObjectLayers": [
-                34,
-                33
+                33,
+                34
             ],
             "scale": 0.6039,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 538.1685709554563,
-                "y": 420.59943699287953
+                "x": 479.38400397416797,
+                "y": 478.5560523265442
             }
         },
         "cenarios/PlanicieSuperior.tmx#10_dirt": {
@@ -221,19 +221,19 @@
         },
         "cenarios/Praia.tmx": {
             "expandedGroupLayers": [
-                23,
+                31,
                 18,
-                31
+                23
             ],
             "expandedObjectLayers": [
-                27,
-                33
+                33,
+                27
             ],
-            "scale": 0.9753,
-            "selectedLayer": 0,
+            "scale": 4,
+            "selectedLayer": 14,
             "viewCenter": {
-                "x": 707.4746231928638,
-                "y": 721.8291807648927
+                "x": 480.125,
+                "y": 480
             }
         },
         "cenarios/Praia.tmx#10_dirt": {
@@ -414,6 +414,59 @@
             "scaleInDock": 1
         },
         "cenarios/inicio.tmx#9_beach": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx": {
+            "expandedGroupLayers": [
+                19
+            ],
+            "expandedObjectLayers": [
+                13
+            ],
+            "scale": 0.25,
+            "selectedLayer": 10,
+            "viewCenter": {
+                "x": 1434,
+                "y": 936
+            }
+        },
+        "cenarios/mapa.tmx#10_dirt": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#11_roofs": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#12_extra1": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#13_extra2": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#1_terrain": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#2_indoors": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#3_plants": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#4_buildings": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#5_waterfall": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#6_floors": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#7_grass_cliff": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#8_cave": {
+            "scaleInDock": 1
+        },
+        "cenarios/mapa.tmx#9_beach": {
             "scaleInDock": 1
         },
         "cenarios/planicie.tmx": {
@@ -673,7 +726,8 @@
     "openFiles": [
         "cenarios/PlanicieSuperior.tmx",
         "cenarios/PlanicieInferior.tmx",
-        "cenarios/Praia.tmx"
+        "cenarios/Praia.tmx",
+        "cenarios/mapa.tmx"
     ],
     "project": "SoM.tiled-project",
     "property.type": "bool",
@@ -681,6 +735,7 @@
         "cenarios/PlanicieSuperior.tmx",
         "cenarios/PlanicieInferior.tmx",
         "cenarios/Praia.tmx",
+        "cenarios/mapa.tmx",
         "cenarios/aldeia.tmx",
         "cenarios/floresta.tmx",
         "cenarios/praia.tmx",

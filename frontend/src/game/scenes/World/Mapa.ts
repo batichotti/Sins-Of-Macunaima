@@ -1,8 +1,9 @@
 import { BaseScene, SceneData } from '@/core/BaseScene';
+import DialogUi from '@/core/Dialog';
 
-export class PlanicieSuperior extends BaseScene {
+export class Mapa extends BaseScene {
     constructor() {
-        super({key: 'PlanicieSuperior'});
+        super({ key: 'Mapa' });
     }
 
     init(data: SceneData): void {
@@ -12,7 +13,6 @@ export class PlanicieSuperior extends BaseScene {
     create(): void {
         super.create();
     }
-
     update(): void {
         super.update();
     }
