@@ -1,6 +1,8 @@
 import { GameObjects, Scene } from 'phaser';
 import { EventBus } from '@/game/scenes/Services/EventBus';
 import { WindowResolution, Text } from '@/components/configs/Properties'
+import { SceneData } from '@/core/BaseScene';
+import Player from '@/game/entities/Player';
 
 export class MainMenu extends Scene {
     background!: GameObjects.Image;
@@ -37,7 +39,7 @@ export class MainMenu extends Scene {
         });
 
         btnJogar.on('pointerdown', () => {
-            // TODO: Decidir a 'role' do jogador e o cenário inicial
+            // Criar player aqui. Mudar depois:
             this.scene.start('Loader', {targetScene: 'Mapa', previousScene: 'MainMenu'});
         });
 

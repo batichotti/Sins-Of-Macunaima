@@ -426,8 +426,8 @@
             "scale": 0.25,
             "selectedLayer": 10,
             "viewCenter": {
-                "x": 1434,
-                "y": 936
+                "x": 1602,
+                "y": 940
             }
         },
         "cenarios/mapa.tmx#10_dirt": {
@@ -724,18 +724,15 @@
     "map.tileWidth": 16,
     "map.width": 60,
     "openFiles": [
-        "cenarios/PlanicieSuperior.tmx",
-        "cenarios/PlanicieInferior.tmx",
-        "cenarios/Praia.tmx",
         "cenarios/mapa.tmx"
     ],
     "project": "SoM.tiled-project",
-    "property.type": "bool",
+    "property.type": "float",
     "recentFiles": [
+        "cenarios/mapa.tmx",
         "cenarios/PlanicieSuperior.tmx",
         "cenarios/PlanicieInferior.tmx",
         "cenarios/Praia.tmx",
-        "cenarios/mapa.tmx",
         "cenarios/aldeia.tmx",
         "cenarios/floresta.tmx",
         "cenarios/praia.tmx",
