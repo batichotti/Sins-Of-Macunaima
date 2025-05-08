@@ -36,7 +36,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setDepth(1000);
-        this.setDisplaySize(4, 4);
+        this.setDisplaySize(8, 4);
         this.setTint(0x000000);
     }
 
@@ -47,6 +47,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
             this.setVisible(true);
      
             const velocity = this.scene.physics.velocityFromRotation(angle, BulletStats.speed);
+            this.setRotation(angle);
             this.setVelocity(velocity.x, velocity.y);
 
             this.scene.time.delayedCall(1000, () => {
