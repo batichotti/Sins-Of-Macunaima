@@ -1,11 +1,13 @@
+import { PlayerStats } from "../components/Constants";
+
 export default class Player {
     scene!: Phaser.Scene;
     sprite!:Phaser.Physics.Arcade.Sprite;
     position: Phaser.Math.Vector2;
-    life = 100;
-    speed = 200;
-    scale = 1.5;
-    key = 'player';
+    life = PlayerStats.life;
+    speed = PlayerStats.speed;
+    scale = PlayerStats.scale;
+    key = PlayerStats.key;
 
     constructor(scene: Phaser.Scene, position: Phaser.Math.Vector2) {
         this.scene = scene;

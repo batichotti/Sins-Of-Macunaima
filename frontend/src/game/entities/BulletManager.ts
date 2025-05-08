@@ -1,10 +1,15 @@
+import { BulletStats } from "../components/Constants";
+
 export default class BulletManager {
     private bullets: Phaser.Physics.Arcade.Group;
+    private scene: Phaser.Scene;
+    private canShoot = true; // Cooldown de balas
 
     constructor(scene: Phaser.Scene) {
+        this.scene = scene;
         this.bullets = scene.physics.add.group({
             classType: Bullet,
-            maxSize: 10,
+            maxSize: BulletStats.groupSize,
             setXY: {
                 x: 0,
                 y: 0
@@ -13,9 +18,14 @@ export default class BulletManager {
     }
 
     fire(x: number, y: number, angle: number): void {
-        const bullet = this.bullets.get(x, y);
-        if (bullet) {
-            bullet.fire(x, y, angle);
+        if(this.canShoot) {
+            const bullet = this.bullets.get(x, y);
+            if (bullet) {
+                bullet.fire(x, y, angle);
+            }
+            // Carrega cooldown
+            this.canShoot = false;
+            this.scene.time.delayedCall(BulletStats.cooldown, () => { this.canShoot = true });
         }
     }
 }
@@ -36,7 +46,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
             this.setActive(true);
             this.setVisible(true);
      
-            const velocity = this.scene.physics.velocityFromRotation(angle, 300);
+            const velocity = this.scene.physics.velocityFromRotation(angle, BulletStats.speed);
             this.setVelocity(velocity.x, velocity.y);
 
             this.scene.time.delayedCall(1000, () => {

@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { Text } from '@/components/configs/Properties';
+import { Text } from '@/game/components/configs/Properties';
 
 export default class Dialog {
   private scene!: Scene;

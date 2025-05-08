@@ -1,21 +1,9 @@
 import { EventBus } from '@/game/scenes/Services/EventBus';
 import { Scene } from 'phaser';
-import { Text, WindowResolution } from '@/components/configs/Properties';
+import { Text, WindowResolution } from '@/game/components/configs/Properties';
 import Player from '@/game/entities/Player';
 import BulletManager from '@/game/entities/BulletManager';
-
-export interface IShootingKeys {
-    left: Phaser.Input.Keyboard.Key;
-    right: Phaser.Input.Keyboard.Key;
-    up: Phaser.Input.Keyboard.Key;
-    down: Phaser.Input.Keyboard.Key;
-}
-
-export interface SceneData {
-    targetScene: string;
-    previousScene: string;
-    player: Player;
-}
+import { AnimatedTileData, IShootingKeys, SceneData } from '@/game/components/Types';
 
 export abstract class BaseScene extends Scene {
     protected camera!: Phaser.Cameras.Scene2D.Camera;
@@ -23,6 +11,7 @@ export abstract class BaseScene extends Scene {
     protected gameText!: Phaser.GameObjects.Text;
     protected tilesets!: Phaser.Tilemaps.Tileset[];
     protected layers!: Phaser.Tilemaps.TilemapLayer[];
+    protected animatedTiles!: AnimatedTileData[];
     protected map!: Phaser.Tilemaps.Tilemap;
     protected player!: Player;
     protected bulletManager: BulletManager;
@@ -50,11 +39,14 @@ export abstract class BaseScene extends Scene {
     protected init(data: SceneData): void {
         this.tilesets = [];
         this.layers = [];
+        this.animatedTiles = [];
+        this.transitionRects = [];
         this.prevSceneData = data;
     }
 
     protected create(): void {
         this.setupLayers();
+        this.setupAnimatedTiles();
         this.setupPlayer();
         this.setupTransitionPoints();
         this.setupCollisions();
@@ -66,8 +58,9 @@ export abstract class BaseScene extends Scene {
         EventBus.emit('current-scene-ready', this);
     }
 
-    public update(): void {
+    public update(time: number, delta: number): void {
         this.handleInput();
+        this.handleAnimatedTiles(delta);
         this.changeScenario();
     }
 
@@ -92,10 +85,9 @@ export abstract class BaseScene extends Scene {
     }
 
     private setupPlayer(): void {
-        
         const spawnPoint = this.map.findObject(
             'spawnPoints', // nome da Object Layer
-            obj => obj.name === `spawn${this.prevSceneData.previousScene}`  // name dado ao objeto
+            obj => obj.name === `spawn${this.prevSceneData.targetScene}`  // name dado ao objeto
         ) as Phaser.Types.Tilemaps.TiledObject;
         const startingPosition = new Phaser.Math.Vector2(
             (spawnPoint?.x ?? WindowResolution.width / 2) + (spawnPoint?.width ?? 0) * 0.5,
@@ -181,6 +173,33 @@ export abstract class BaseScene extends Scene {
         this.bulletManager = new BulletManager(this);
     }
 
+    private setupAnimatedTiles(): void {
+        this.animatedTiles = [];
+        
+        this.tilesets.forEach((tileset) => {
+            const firstgid = tileset.firstgid;
+            const tileData = tileset.tileData as Record<number, { animation?: { tileid: number; duration: number }[] }>;
+    
+            this.layers.forEach(layer => {
+                layer.forEachTile((tile: Phaser.Tilemaps.Tile) => {
+                    if (tile.index >= firstgid && tile.index < firstgid + tileset.total) {
+                        const localId = tile.index - firstgid;
+                        const data = tileData[localId];
+                        if (data?.animation) {
+                            this.animatedTiles.push({
+                                tile,
+                                animationFrames: data.animation,
+                                firstgid,
+                                elapsedTime: 0
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    }
+      
+
     // Usados em update()
 
     private handleInput(): void {
@@ -202,9 +221,8 @@ export abstract class BaseScene extends Scene {
 
         if (Phaser.Input.Keyboard.JustDown(this.arrows.left)) coords.x = -1;
         else if (Phaser.Input.Keyboard.JustDown(this.arrows.right)) coords.x = 1;
-        if (Phaser.Input.Keyboard.JustDown(this.arrows.up)) coords.y = -1;
+        else if (Phaser.Input.Keyboard.JustDown(this.arrows.up)) coords.y = -1;
         else if (Phaser.Input.Keyboard.JustDown(this.arrows.down)) coords.y = 1;
-        coords.normalize();
         const angle = Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
         if(coords.x || coords.y) {
             this.bulletManager.fire(this.player.sprite.x, this.player.sprite.y, angle);
@@ -212,6 +230,24 @@ export abstract class BaseScene extends Scene {
 
 
     }
+
+    private handleAnimatedTiles(delta: number): void {
+        this.animatedTiles.forEach(data => {
+            const frames = data.animationFrames;
+            const totalDuration = frames.reduce((sum, f) => sum + f.duration, 0);
+            data.elapsedTime = (data.elapsedTime + delta) % totalDuration;
+    
+            let accumulated = 0;
+            for (const frame of frames) {
+                accumulated += frame.duration;
+                if (data.elapsedTime < accumulated) {
+                    data.tile.index = frame.tileid + data.firstgid;
+                    break;
+                }
+            }
+        });
+    }
+      
 
     private changeScenario(): void {
         if(this.transitionRects) {
@@ -222,12 +258,14 @@ export abstract class BaseScene extends Scene {
                     this.scene.stop(this.constructor.name);
                     this.scene.start('Loader', {
                         targetScene: this.transitionPoints?.[0].properties?.find((prop: Phaser.Types.Tilemaps.TiledObject) => prop.name === 'destination')?.value ?? 'MainMenu',
-                        previousScene: this.constructor.name
+                        previousScene: this.constructor.name,
+                        player: this.player
                     });
                 }
             });
         }
     }
+    
     private shutdown(): void {
         this.player.sprite?.destroy();
         this.layers?.forEach(layer => layer.destroy());

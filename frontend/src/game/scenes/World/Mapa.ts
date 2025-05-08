@@ -1,7 +1,8 @@
-import { BaseScene, SceneData } from '@/core/BaseScene';
-import DialogUi from '@/core/Dialog';
+import { BaseScene } from '@/game/core/BaseScene';
+import { SceneData } from '@/game/components/Types';
 
 export class Mapa extends BaseScene {
+
     constructor() {
         super({ key: 'Mapa' });
     }
@@ -13,7 +14,7 @@ export class Mapa extends BaseScene {
     create(): void {
         super.create();
     }
-    update(): void {
-        super.update();
+    update(time: number, delta: number): void {
+        super.update(time, delta);
     }
 }

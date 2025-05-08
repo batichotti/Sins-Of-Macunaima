@@ -1,6 +1,5 @@
 import { Boot } from '@/game/scenes/Boot/Boot';
 import { GameOver } from '@/game/scenes/GameOver/GameOver';
-import { MainMenu } from '@/game/scenes/MainMenu/MainMenu';
 import { Game } from 'phaser';
 import { Loader } from '@/game/scenes/Services/Loader';
 import { Mapa } from '@/game/scenes/World/Mapa';
@@ -24,7 +23,6 @@ const config: Phaser.Types.Core.GameConfig = {
     scene: [
         Boot,
         Loader,
-        MainMenu,
         Mapa,
         GameOver
     ]

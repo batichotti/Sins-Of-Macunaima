@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
-import { TilePaths, TileSets } from '@/components/configs/PathTiles';
-import { WindowResolution } from '@/components/configs/Properties';
+import { TilePaths, TileSets } from '@/game/components/configs/PathTiles';
+import { WindowResolution } from '@/game/components/configs/Properties';
+import { SceneData } from '@/game/components/Types';
 
 export class Boot extends Scene {
     constructor () {
@@ -50,6 +51,6 @@ export class Boot extends Scene {
     }
 
     create () {
-        this.scene.start('MainMenu');
+        this.scene.start('Loader', { targetScene: 'Mapa', previousScene: this.constructor.name } as SceneData);
     }
 }

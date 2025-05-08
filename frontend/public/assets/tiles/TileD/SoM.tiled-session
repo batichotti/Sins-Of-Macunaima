@@ -5,8 +5,8 @@
     },
     "activeFile": "cenarios/mapa.tmx",
     "expandedProjectPaths": [
-        ".",
-        "cenarios"
+        "cenarios",
+        "."
     ],
     "fileStates": {
         "": {
@@ -418,16 +418,18 @@
         },
         "cenarios/mapa.tmx": {
             "expandedGroupLayers": [
-                19
+                22,
+                18,
+                17
             ],
             "expandedObjectLayers": [
                 13
             ],
-            "scale": 0.25,
-            "selectedLayer": 10,
+            "scale": 2,
+            "selectedLayer": 12,
             "viewCenter": {
-                "x": 1602,
-                "y": 940
+                "x": 1214,
+                "y": 996
             }
         },
         "cenarios/mapa.tmx#10_dirt": {
@@ -443,7 +445,8 @@
             "scaleInDock": 1
         },
         "cenarios/mapa.tmx#1_terrain": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 2
         },
         "cenarios/mapa.tmx#2_indoors": {
             "scaleInDock": 1
@@ -455,7 +458,8 @@
             "scaleInDock": 1
         },
         "cenarios/mapa.tmx#5_waterfall": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "cenarios/mapa.tmx#6_floors": {
             "scaleInDock": 1
@@ -715,6 +719,7 @@
             "scaleInDock": 1
         }
     },
+    "frame.defaultDuration": 400,
     "last.exportedFilePath": "/home/itiro/Documentos/GitHub/Sins-Of-Macunaima/frontend/public/assets/tiles/TileD/cenariosJson",
     "last.imagePath": "/home/itiro/Documentos/GitHub/Sins-Of-Macunaima/frontend/public/assets/tiles/tilesets",
     "map.height": 60,
@@ -727,7 +732,7 @@
         "cenarios/mapa.tmx"
     ],
     "project": "SoM.tiled-project",
-    "property.type": "float",
+    "property.type": "bool",
     "recentFiles": [
         "cenarios/mapa.tmx",
         "cenarios/PlanicieSuperior.tmx",
