@@ -207,9 +207,9 @@ export abstract class BaseScene extends Scene {
         let movement = new Phaser.Math.Vector2(0, 0);
 
         if (this.awsd.left.isDown) movement.x = -1;
-        if (this.awsd.right.isDown) movement.x = 1;
-        if (this.awsd.up.isDown) movement.y = -1;
-        if (this.awsd.down.isDown) movement.y = 1;
+        else if (this.awsd.right.isDown) movement.x = 1;
+        else if (this.awsd.up.isDown) movement.y = -1;
+        else if (this.awsd.down.isDown) movement.y = 1;
 
         movement.x *= this.player.speed;
         movement.y *= this.player.speed;

@@ -24,7 +24,6 @@ export default class Player {
     }
 
     public updateMovement(velocity: Phaser.Math.Vector2): void {
-        const normalized = velocity.normalize().scale(this.speed);
-        this.sprite.setVelocity(normalized.x, normalized.y);
+        this.sprite.setVelocity(velocity.x, velocity.y);
     }
 }
