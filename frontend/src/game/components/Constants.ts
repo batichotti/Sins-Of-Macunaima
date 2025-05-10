@@ -1,12 +1,12 @@
-export const PlayerStats = {
+export const BaseCharacterStats = {
     life: 100,
     speed: 200,
     scale: 1.5,
-    key: 'player'
 }
 
-export const BulletStats = {
+export const BaseBulletStats = {
     groupSize: 20,
-    cooldown: 200,
-    speed: 300
+    cooldown: 150,
+    speed: 300,
+    damage: 200
 }

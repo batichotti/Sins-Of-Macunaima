@@ -1,57 +1,28 @@
 import { Scene } from 'phaser';
-import { WindowResolution } from '@/game/components/configs/Properties';
 import { PathScenarios } from '@/game/components/configs/SceneManager';
-import { SceneData } from '@/game/components/Types';
+import { SceneData, PlayerData } from '@/game/components/Types';
 
 export class Loader extends Scene {
     targetScene!: string;
     previousScene!: string;
+    playerData!: PlayerData;
     constructor() {
         super('Loader');
-    }
-
-    init(data: SceneData) {
-        this.targetScene = data?.targetScene;
-        this.previousScene = data?.previousScene;
-        this.loadingBar();
-
     }
 
     preload() {
         this.loadScenario();
     }
 
-    create() {
-        this.scene.stop(this.constructor.name);
-        this.scene.start(this.targetScene, {targetScene: this.targetScene, previousScene: this.previousScene});
+    init(data: SceneData) {
+        this.targetScene = data?.targetScene;
+        this.previousScene = data?.previousScene;
+        this.playerData = data?.playerData;
     }
 
-    private loadingBar(): void {
-        // Valores base
-        const outlineWidth = WindowResolution.width * 0.65;
-        const outlineHeight = WindowResolution.height * 0.04;
-        const maxBarWidth = outlineWidth - 2;
-    
-        // Moldura centralizada
-        this.add.rectangle(
-            WindowResolution.width / 2,
-            WindowResolution.height / 2,
-            outlineWidth,
-            outlineHeight
-        ).setStrokeStyle(1, 0xffffff);
-
-        const bar = this.add.rectangle(
-            (WindowResolution.width / 2) - (outlineWidth / 2) + 1,
-            WindowResolution.height / 2,
-            0,
-            outlineHeight - 2,
-            0xffffff
-        ).setOrigin(0, 0.5);
-    
-        // Atualização de progresso
-        this.load.on('progress', (progress: number) => {
-            bar.width = maxBarWidth * progress;
-        });
+    create() {
+        this.scene.stop(this.constructor.name);
+        this.scene.start(this.targetScene, { targetScene: this.targetScene, previousScene: this.previousScene, playerData: this.playerData } as SceneData );
     }
 
     private loadScenario(): void {

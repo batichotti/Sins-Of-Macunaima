@@ -1,21 +1,31 @@
-import { PlayerStats } from "../components/Constants";
+import { BaseCharacterStats } from "@/game/components/Constants";
+import { PlayerData } from "@/game/components/Types"
 
 export default class Player {
+    playerData!:PlayerData;
+    character!:Character;
+
+    constructor(playerData: PlayerData, scene: Phaser.Scene, position: Phaser.Math.Vector2) {
+        this.character = new Character(scene, position, playerData.characterKey);
+        this.playerData = playerData;
+    }
+}
+
+class Character {
     scene!: Phaser.Scene;
     sprite!:Phaser.Physics.Arcade.Sprite;
     position: Phaser.Math.Vector2;
-    life = PlayerStats.life;
-    speed = PlayerStats.speed;
-    scale = PlayerStats.scale;
-    key = PlayerStats.key;
+    life = BaseCharacterStats.life;
+    speed = BaseCharacterStats.speed;
+    scale = BaseCharacterStats.scale;
 
-    constructor(scene: Phaser.Scene, position: Phaser.Math.Vector2) {
+    constructor(scene: Phaser.Scene, position: Phaser.Math.Vector2, key: string) {
         this.scene = scene;
         this.position = position;
         this.sprite = this.scene.physics.add.sprite(
             this.position.x,
             this.position.y,
-            this.key
+            key
         ).setScale(
             this.scale
         ).setCollideWorldBounds(
@@ -24,6 +34,7 @@ export default class Player {
     }
 
     public updateMovement(velocity: Phaser.Math.Vector2): void {
-        this.sprite.setVelocity(velocity.x, velocity.y);
+        const normalized = velocity.normalize().scale(this.speed);
+        this.sprite.setVelocity(normalized.x, normalized.y);
     }
 }

@@ -93,11 +93,12 @@ export abstract class BaseScene extends Scene {
             (spawnPoint?.x ?? WindowResolution.width / 2) + (spawnPoint?.width ?? 0) * 0.5,
             (spawnPoint?.y ?? WindowResolution.height / 2) + (spawnPoint?.height ?? 0) * 0.5
         );
-        this.player = new Player(this, startingPosition);
+        this.player = new Player(this.prevSceneData.playerData, this, startingPosition);
+
         if (!this.player) {
-            throw new Error("Failed to load player sprite.");
+            throw new Error("Failed to load player.");
         }
-        this.cameras.main.startFollow(this.player.sprite);
+        this.cameras.main.startFollow(this.player.character.sprite);
     }
 
     private setupTransitionPoints() {
@@ -141,10 +142,10 @@ export abstract class BaseScene extends Scene {
 
         this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
             const angle = Phaser.Math.Angle.Between(
-              this.player.sprite.x, this.player.sprite.y,
+              this.player.character.sprite.x, this.player.character.sprite.y,
               pointer.worldX, pointer.worldY
             );
-            this.bulletManager.fire(this.player.sprite.x, this.player.sprite.y, angle);
+            this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
         });
     }
 
@@ -155,7 +156,7 @@ export abstract class BaseScene extends Scene {
             const collides = layer.layer.properties?.find((prop: any) => prop.name === 'collides') ?? false;
             if (collides) {
                 layer.setCollisionByExclusion([-1]);
-                this.physics.add.collider(this.player.sprite, layer);
+                this.physics.add.collider(this.player.character.sprite, layer);
             }
         });
     }
@@ -170,7 +171,7 @@ export abstract class BaseScene extends Scene {
     }
 
     protected setupBulletManager(): void {
-        this.bulletManager = new BulletManager(this);
+        this.bulletManager = new BulletManager(this, this.player.playerData.weapon);
     }
 
     private setupAnimatedTiles(): void {
@@ -207,14 +208,14 @@ export abstract class BaseScene extends Scene {
         let movement = new Phaser.Math.Vector2(0, 0);
 
         if (this.awsd.left.isDown) movement.x = -1;
-        else if (this.awsd.right.isDown) movement.x = 1;
-        else if (this.awsd.up.isDown) movement.y = -1;
-        else if (this.awsd.down.isDown) movement.y = 1;
+        if (this.awsd.right.isDown) movement.x = 1;
+        if (this.awsd.up.isDown) movement.y = -1;
+        if (this.awsd.down.isDown) movement.y = 1;
 
-        movement.x *= this.player.speed;
-        movement.y *= this.player.speed;
+        movement.x *= this.player.character.speed;
+        movement.y *= this.player.character.speed;
 
-        this.player.updateMovement(movement);
+        this.player.character.updateMovement(movement);
 
         // Atirar com o teclado
         let coords = new Phaser.Math.Vector2(0, 0);
@@ -225,7 +226,7 @@ export abstract class BaseScene extends Scene {
         else if (Phaser.Input.Keyboard.JustDown(this.arrows.down)) coords.y = 1;
         const angle = Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
         if(coords.x || coords.y) {
-            this.bulletManager.fire(this.player.sprite.x, this.player.sprite.y, angle);
+            this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
         }
 
 
@@ -251,7 +252,7 @@ export abstract class BaseScene extends Scene {
 
     private changeScenario(): void {
         if(this.transitionRects) {
-            const playerBounds = this.player.sprite.getBounds();
+            const playerBounds = this.player.character.sprite.getBounds();
             this.transitionRects.forEach((transitionRect) => { 
                 if (Phaser.Geom.Rectangle.Overlaps(playerBounds, transitionRect)) {
                     this.shutdown();
@@ -267,7 +268,7 @@ export abstract class BaseScene extends Scene {
     }
     
     private shutdown(): void {
-        this.player.sprite?.destroy();
+        this.player.character.sprite?.destroy();
         this.layers?.forEach(layer => layer.destroy());
         const cameraTexto = this.cameras?.getCamera('cameraTexto');
         if(cameraTexto) { this.cameras.remove(cameraTexto); }
