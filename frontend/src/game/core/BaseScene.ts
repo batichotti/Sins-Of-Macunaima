@@ -16,7 +16,7 @@ export abstract class BaseScene extends Scene {
     protected map!: Phaser.Tilemaps.Tilemap;
     protected player!: Player;
     protected bulletManager: BulletManager;
-    protected arrows!: IShootingKeys;
+    protected arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
     protected awsd!: Phaser.Types.Input.Keyboard.CursorKeys;
     protected prevSceneData!: SceneData;
     protected transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
@@ -118,12 +118,14 @@ export abstract class BaseScene extends Scene {
     private setupInput(): void {
         const keyboard = this.input.keyboard;
         if(keyboard) {
-            this.arrows = {
-                left: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
-                right: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
-                up: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
-                down: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
-            };
+            this.arrows = keyboard.addKeys(
+                {
+                    'up': Phaser.Input.Keyboard.KeyCodes.UP,
+                    'down': Phaser.Input.Keyboard.KeyCodes.DOWN,
+                    'left': Phaser.Input.Keyboard.KeyCodes.LEFT,
+                    'right': Phaser.Input.Keyboard.KeyCodes.RIGHT
+                }
+            ) as Phaser.Types.Input.Keyboard.CursorKeys;
         }
         const awsd = this.input?.keyboard?.addKeys(
             {
@@ -217,10 +219,10 @@ export abstract class BaseScene extends Scene {
         // Atirar com o teclado
         let coords = new Phaser.Math.Vector2(0, 0);
 
-        if (Phaser.Input.Keyboard.JustDown(this.arrows.left)) coords.x = -1;
-        else if (Phaser.Input.Keyboard.JustDown(this.arrows.right)) coords.x = 1;
-        else if (Phaser.Input.Keyboard.JustDown(this.arrows.up)) coords.y = -1;
-        else if (Phaser.Input.Keyboard.JustDown(this.arrows.down)) coords.y = 1;
+        if (this.arrows.left.isDown) coords.x = -1;
+        if (this.arrows.right.isDown) coords.x = 1;
+        if (this.arrows.up.isDown) coords.y = -1;
+        if (this.arrows.down.isDown) coords.y = 1;
         const angle = Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
         if(coords.x || coords.y) {
             this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
