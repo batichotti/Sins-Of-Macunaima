@@ -25,16 +25,20 @@ class Character {
         this.sprite = this.scene.physics.add.sprite(
             this.position.x,
             this.position.y,
-            key
+            key,
         ).setScale(
             this.scale
         ).setCollideWorldBounds(
             true
         ).setDepth(100);
+        this.sprite.setFrame(0);
     }
 
     public updateMovement(velocity: Phaser.Math.Vector2): void {
         const normalized = velocity.normalize().scale(this.speed);
+        if(velocity.x > 0) this.sprite.setFrame(1);
+        else if(velocity.x < 0) this.sprite.setFrame(2);
+        else this.sprite.setFrame(0);
         this.sprite.setVelocity(normalized.x, normalized.y);
     }
 }
