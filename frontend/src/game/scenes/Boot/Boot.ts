@@ -13,7 +13,7 @@ export class Boot extends Scene {
         this.load.setPath('assets');
 
         //  Jogador
-        this.load.spritesheet('Macunaima', 'Characters/Macunaima/Sprite/Macunaima Idle Sheet.png', { frameWidth: 96, frameHeight: 48 });
+        this.load.spritesheet('Macunaima', 'Characters/Macunaima/Sprite/Macunaima Idle Front Alt.png', { frameWidth: 17, frameHeight: 30 });
 
         // Tiles
         TileSets.forEach((tile) => {
