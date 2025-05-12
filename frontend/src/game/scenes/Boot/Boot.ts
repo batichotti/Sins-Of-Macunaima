@@ -58,7 +58,7 @@ export class Boot extends Scene {
             name: 'Irineu',
             characterKey: 'Macunaima',
             level: { level: 1, cooldownDecrease: 0, speedIncrease: 0, healthIncrease: 0, damageIncrease: 0, defenseIncrease: 0 } as Level,
-            weapon: { key: 'arrow_sprite', baseDamage: 200, baseCoolDown: 100, baseSpeed: 250 } as Weapon
+            weapon: { key: 'arrow_sprite', baseDamage: 200, baseCoolDown: 150, baseSpeed: 250 } as Weapon
         } as PlayerData;
         this.scene.start('Loader', { targetScene: 'Mapa', previousScene: this.constructor.name, playerData: playerData } as SceneData);
     }
