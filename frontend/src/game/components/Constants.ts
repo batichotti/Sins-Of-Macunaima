@@ -5,7 +5,7 @@ export const BaseCharacterStats = {
 }
 
 export const BaseBulletStats = {
-    groupSize: 20,
+    groupSize: 40,
     cooldown: 150,
     speed: 300,
     damage: 200
