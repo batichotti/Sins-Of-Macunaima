@@ -20,6 +20,7 @@ export class Boot extends Scene {
             this.load.image(`${tile}`, `tiles/${TilePaths.extruded}/${tile}.png`);
         });
 
+        this.load.image('arrow_sprite', 'Attacks/Projectiles/Arrows/arrow_sprite.png');
     }
 
 
@@ -53,10 +54,10 @@ export class Boot extends Scene {
 
     create () {
         const playerData = {
-            name: "Irineu",
-            characterKey: "Macunaima",
+            name: 'Irineu',
+            characterKey: 'Macunaima',
             level: { level: 1, cooldownDecrease: 0, speedIncrease: 0, healthIncrease: 0, damageIncrease: 0, defenseIncrease: 0 } as Level,
-            weapon: { key: "Macunaima", baseDamage: 200, baseCoolDown: 100, baseSpeed: 400 } as Weapon
+            weapon: { key: 'arrow_sprite', baseDamage: 200, baseCoolDown: 100, baseSpeed: 250 } as Weapon
         } as PlayerData;
         this.scene.start('Loader', { targetScene: 'Mapa', previousScene: this.constructor.name, playerData: playerData } as SceneData);
     }
