@@ -1,12 +1,3 @@
-import Character from '@/game/entities/Player';
-
-export interface IShootingKeys {
-    left: Phaser.Input.Keyboard.Key;
-    right: Phaser.Input.Keyboard.Key;
-    up: Phaser.Input.Keyboard.Key;
-    down: Phaser.Input.Keyboard.Key;
-}
-
 export interface SceneData {
     targetScene: string;
     previousScene: string;

@@ -3,7 +3,7 @@ import { Scene } from 'phaser';
 import { Text, WindowResolution } from '@/game/components/configs/Properties';
 import Player from '@/game/entities/Player';
 import BulletManager from '@/game/entities/BulletManager';
-import { AnimatedTileData, IShootingKeys, SceneData } from '@/game/components/Types';
+import { AnimatedTileData, SceneData } from '@/game/components/Types';
 import GameCameras from '../components/GameCameras';
 
 export abstract class BaseScene extends Scene {
@@ -16,7 +16,7 @@ export abstract class BaseScene extends Scene {
     protected map!: Phaser.Tilemaps.Tilemap;
     protected player!: Player;
     protected bulletManager: BulletManager;
-    protected arrows!: IShootingKeys;
+    protected arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
     protected awsd!: Phaser.Types.Input.Keyboard.CursorKeys;
     protected prevSceneData!: SceneData;
     protected transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
@@ -118,12 +118,15 @@ export abstract class BaseScene extends Scene {
     private setupInput(): void {
         const keyboard = this.input.keyboard;
         if(keyboard) {
-            this.arrows = {
-                left: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
-                right: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
-                up: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
-                down: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
-            };
+            const awsd = this.input?.keyboard?.addKeys(
+            {
+                'up': Phaser.Input.Keyboard.KeyCodes.W,
+                'down': Phaser.Input.Keyboard.KeyCodes.S,
+                'left': Phaser.Input.Keyboard.KeyCodes.A,
+                'right': Phaser.Input.Keyboard.KeyCodes.D,
+
+            }
+        ) as Phaser.Types.Input.Keyboard.CursorKeys;
         }
         const awsd = this.input?.keyboard?.addKeys(
             {
@@ -218,9 +221,10 @@ export abstract class BaseScene extends Scene {
         let coords = new Phaser.Math.Vector2(0, 0);
 
         if (Phaser.Input.Keyboard.JustDown(this.arrows.left)) coords.x = -1;
-        else if (Phaser.Input.Keyboard.JustDown(this.arrows.right)) coords.x = 1;
-        else if (Phaser.Input.Keyboard.JustDown(this.arrows.up)) coords.y = -1;
-        else if (Phaser.Input.Keyboard.JustDown(this.arrows.down)) coords.y = 1;
+        if (Phaser.Input.Keyboard.JustDown(this.arrows.right)) coords.x = 1;
+        if (Phaser.Input.Keyboard.JustDown(this.arrows.up)) coords.y = -1;
+        if (Phaser.Input.Keyboard.JustDown(this.arrows.down)) coords.y = 1;
+
         const angle = Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
         if(coords.x || coords.y) {
             this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
