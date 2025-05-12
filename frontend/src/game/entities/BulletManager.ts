@@ -1,13 +1,14 @@
 import { BaseBulletStats } from "../components/Constants";
 import { Weapon } from "../components/Types";
+import { BaseScene } from "../core/BaseScene";
 
 export default class BulletManager {
-    private bullets: Phaser.Physics.Arcade.Group;
-    private scene: Phaser.Scene;
+    bullets: Phaser.Physics.Arcade.Group;
+    private scene: BaseScene;
     private canShoot = true; // Cooldown de balas
     private weapon!:Weapon;
 
-    constructor(scene: Phaser.Scene, weapon: Weapon) {
+    constructor(scene: BaseScene, weapon: Weapon) {
         this.scene = scene;
         this.weapon = weapon;
         this.bullets = scene.physics.add.group({
@@ -25,6 +26,7 @@ export default class BulletManager {
             const bullet = this.bullets.get(x, y, this.weapon.key ?? 'bullet', this.weapon.baseSpeed) as Bullet;
             if (bullet) {
                 bullet.fire(x, y, angle);
+                this.scene.gameCameras.ui.ignore(bullet);
             }
             // Carrega cooldown
             this.canShoot = false;

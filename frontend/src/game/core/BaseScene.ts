@@ -4,9 +4,10 @@ import { Text, WindowResolution } from '@/game/components/configs/Properties';
 import Player from '@/game/entities/Player';
 import BulletManager from '@/game/entities/BulletManager';
 import { AnimatedTileData, IShootingKeys, SceneData } from '@/game/components/Types';
+import GameCameras from '../components/GameCameras';
 
 export abstract class BaseScene extends Scene {
-    protected camera!: Phaser.Cameras.Scene2D.Camera;
+    public gameCameras: GameCameras;
     protected background!: Phaser.GameObjects.Image;
     protected gameText!: Phaser.GameObjects.Text;
     protected tilesets!: Phaser.Tilemaps.Tileset[];
@@ -21,8 +22,6 @@ export abstract class BaseScene extends Scene {
     protected transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
     protected transitionRects: Phaser.Geom.Rectangle[];
     protected movePenalty = 1;
-    // Zoom da câmera principal
-    protected readonly cameraZoom = 2;
 
     constructor(config: Phaser.Types.Scenes.SettingsConfig) {
         super(config);
@@ -42,6 +41,7 @@ export abstract class BaseScene extends Scene {
         this.animatedTiles = [];
         this.transitionRects = [];
         this.prevSceneData = data;
+        this.gameCameras = new GameCameras(this);
     }
 
     protected create(): void {
@@ -162,12 +162,9 @@ export abstract class BaseScene extends Scene {
     }
 
     private setupCameras(): void {
-        this.camera = this.cameras.main;
-        this.camera.setBackgroundColor('#FFFFFF');
-        this.camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.camera.setScroll(0, 0);
-        this.camera.setZoom(this.cameraZoom);
-        this.camera.roundPixels = false;
+        this.gameCameras.initCameras(this.map.widthInPixels, this.map.heightInPixels);
+        this.gameCameras.ui.ignore(this.layers);
+        this.gameCameras.ui.ignore(this.player.character.sprite);
     }
 
     protected setupBulletManager(): void {
