@@ -14,7 +14,7 @@ export class Mapa extends BaseScene {
 
     create(): void {
         super.create();
-        this.textBox = new TextBox(this, { width: 200, height: 100 }, { x: 0, y: 0 } as Phaser.Math.Vector2);
+        this.textBox = new TextBox(this, { width: 200, height: 50 }, { x: 10, y: 10 } as Phaser.Math.Vector2);
         this.textBox.setText(`${this.player.playerData.name}: ${this.player.playerData.characterKey}`);
         this.textBox.show();
         this.gameCameras.main.ignore(this.textBox);

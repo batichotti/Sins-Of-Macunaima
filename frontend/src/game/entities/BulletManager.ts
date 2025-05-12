@@ -44,7 +44,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         this.speed = speed;
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.setScale(2);
+        //this.setScale(2);
         this.setDepth(1000);
         if(key === 'bullet') {
             this.setDisplaySize(8, 4);
