@@ -142,6 +142,7 @@ export abstract class BaseScene extends Scene {
         }
         this.awsd = awsd;
 
+        /*
         this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
             const angle = Phaser.Math.Angle.Between(
               this.player.character.sprite.x, this.player.character.sprite.y,
@@ -149,6 +150,7 @@ export abstract class BaseScene extends Scene {
             );
             this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
         });
+        */
     }
 
     private setupCollisions(): void {
@@ -223,12 +225,20 @@ export abstract class BaseScene extends Scene {
         if (this.arrows.right.isDown) coords.x = 1;
         if (this.arrows.up.isDown) coords.y = -1;
         if (this.arrows.down.isDown) coords.y = 1;
-        const angle = Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
         if(coords.x || coords.y) {
+            const angle = Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
             this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
         }
 
-
+        // Atirar com o mouse
+        let pointer = this.input.activePointer;
+        if(pointer.isDown) {
+            const angle = Phaser.Math.Angle.Between(
+              this.player.character.sprite.x, this.player.character.sprite.y,
+              pointer.worldX, pointer.worldY
+            );
+            this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
+        }
     }
 
     private handleAnimatedTiles(delta: number): void {
