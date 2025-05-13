@@ -21,17 +21,17 @@ export default interface IBaseScene {
     player: Player;
 
     /**
-     * Um array de tilesets do Tiled;
+     * Um array de tilesets do Tiled.
      */
     tilesets: Phaser.Tilemaps.Tileset[];
 
     /**
-     * Um array de camadas do Tiled;
+     * Um array de camadas do Tiled.
      */
     layers: Phaser.Tilemaps.TilemapLayer[];
 
     /**
-     * Um array com os tiles animados;
+     * Um array com os tiles animados.
      */
     animatedTiles: AnimatedTileData[];
 

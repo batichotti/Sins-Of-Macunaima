@@ -103,7 +103,6 @@ export abstract class BaseScene extends Scene implements IBaseScene {
         if (!this.player) {
             throw new Error("Failed to load player.");
         }
-        this.cameras.main.startFollow(this.player.character);
     }
 
     setupTransitionPoints(): void {
@@ -164,6 +163,7 @@ export abstract class BaseScene extends Scene implements IBaseScene {
         this.gameCameras.initCameras(this.map.widthInPixels, this.map.heightInPixels);
         this.gameCameras.ui.ignore(this.layers);
         this.gameCameras.ui.ignore(this.player.character!);
+        this.gameCameras.main.startFollow(this.player.character);
     }
 
     setupBulletManager(): void {

@@ -53,7 +53,7 @@ export class Boot extends Scene {
         this.load.image('arrow_sprite', 'Attacks/Projectiles/Arrows/arrow_sprite.png');
 
 
-        // Aqui seria o lugar ideal para pegar tudo do backend. Mas enquanto isso contruímos o personagem do zero.
+        // Aqui seria o lugar ideal para pegar tudo do backend. Mas enquanto isso construímos o personagem do zero.
         this.level = { level: 1 } as ILevel;
         this.character = { spriteKey: 'Macunaima', baseLife: 200, baseSpeed: 200 } as ICharacter;
         this.weapon = { name: 'Flecha', spriteKey: 'arrow_sprite', baseDamage: 150, baseCoolDown: 150 } as IWeapon;
