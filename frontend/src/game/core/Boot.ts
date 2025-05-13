@@ -16,22 +16,22 @@ export class Boot extends Scene {
     /**
      * Dados do jogador. Que serão obtidos do backend.
      */
-    private player!: IPlayer;
+    private player: IPlayer;
 
     /**
      * Dados do personagem. Que serão obtidos do backend.
      */
-    private character!: ICharacter;
+    private character: ICharacter;
 
     /**
      * Dados do jogador. Que serão obtidos do backend.
      */
-    private level!: ILevel;
+    private level: ILevel;
 
     /**
      * Dados do personagem. Que serão obtidos do backend.
      */
-    private weapon!: IWeapon;
+    private weapon: IWeapon;
 
     constructor () {
         super('Boot');
@@ -57,7 +57,7 @@ export class Boot extends Scene {
         this.level = { level: 1 } as ILevel;
         this.character = { spriteKey: 'Macunaima', baseLife: 200, baseSpeed: 200 } as ICharacter;
         this.weapon = { name: 'Flecha', spriteKey: 'arrow_sprite', baseDamage: 150, baseCoolDown: 150 } as IWeapon;
-        this.player = { name: 'Irineu' } as IPlayer ;
+        this.player = { name: 'Irineu' } as IPlayer;
     }
 
 
