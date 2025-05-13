@@ -5,8 +5,8 @@
     },
     "activeFile": "cenarios/mapa.tmx",
     "expandedProjectPaths": [
-        "cenarios",
-        "."
+        ".",
+        "cenarios"
     ],
     "fileStates": {
         "": {
@@ -418,18 +418,16 @@
         },
         "cenarios/mapa.tmx": {
             "expandedGroupLayers": [
-                22,
-                18,
-                17
+                18
             ],
             "expandedObjectLayers": [
                 13
             ],
-            "scale": 2,
-            "selectedLayer": 12,
+            "scale": 1.5,
+            "selectedLayer": 22,
             "viewCenter": {
-                "x": 1214,
-                "y": 996
+                "x": 681.3333333333333,
+                "y": 147.99999999999997
             }
         },
         "cenarios/mapa.tmx#10_dirt": {

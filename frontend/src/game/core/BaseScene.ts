@@ -4,9 +4,10 @@ import { Text, WindowResolution } from '@/game/components/configs/Properties';
 import Player from '@/game/entities/Player';
 import BulletManager from '@/game/entities/BulletManager';
 import { AnimatedTileData, IShootingKeys, SceneData } from '@/game/components/Types';
+import GameCameras from '../components/GameCameras';
 
 export abstract class BaseScene extends Scene {
-    protected camera!: Phaser.Cameras.Scene2D.Camera;
+    public gameCameras: GameCameras;
     protected background!: Phaser.GameObjects.Image;
     protected gameText!: Phaser.GameObjects.Text;
     protected tilesets!: Phaser.Tilemaps.Tileset[];
@@ -15,14 +16,12 @@ export abstract class BaseScene extends Scene {
     protected map!: Phaser.Tilemaps.Tilemap;
     protected player!: Player;
     protected bulletManager: BulletManager;
-    protected arrows!: IShootingKeys;
+    protected arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
     protected awsd!: Phaser.Types.Input.Keyboard.CursorKeys;
     protected prevSceneData!: SceneData;
     protected transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
     protected transitionRects: Phaser.Geom.Rectangle[];
     protected movePenalty = 1;
-    // Zoom da câmera principal
-    protected readonly cameraZoom = 2;
 
     constructor(config: Phaser.Types.Scenes.SettingsConfig) {
         super(config);
@@ -42,6 +41,7 @@ export abstract class BaseScene extends Scene {
         this.animatedTiles = [];
         this.transitionRects = [];
         this.prevSceneData = data;
+        this.gameCameras = new GameCameras(this);
     }
 
     protected create(): void {
@@ -93,11 +93,12 @@ export abstract class BaseScene extends Scene {
             (spawnPoint?.x ?? WindowResolution.width / 2) + (spawnPoint?.width ?? 0) * 0.5,
             (spawnPoint?.y ?? WindowResolution.height / 2) + (spawnPoint?.height ?? 0) * 0.5
         );
-        this.player = new Player(this, startingPosition);
+        this.player = new Player(this.prevSceneData.playerData, this, startingPosition);
+
         if (!this.player) {
-            throw new Error("Failed to load player sprite.");
+            throw new Error("Failed to load player.");
         }
-        this.cameras.main.startFollow(this.player.sprite);
+        this.cameras.main.startFollow(this.player.character.sprite);
     }
 
     private setupTransitionPoints() {
@@ -117,12 +118,14 @@ export abstract class BaseScene extends Scene {
     private setupInput(): void {
         const keyboard = this.input.keyboard;
         if(keyboard) {
-            this.arrows = {
-                left: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
-                right: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
-                up: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
-                down: keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
-            };
+            this.arrows = keyboard.addKeys(
+                {
+                    'up': Phaser.Input.Keyboard.KeyCodes.UP,
+                    'down': Phaser.Input.Keyboard.KeyCodes.DOWN,
+                    'left': Phaser.Input.Keyboard.KeyCodes.LEFT,
+                    'right': Phaser.Input.Keyboard.KeyCodes.RIGHT
+                }
+            ) as Phaser.Types.Input.Keyboard.CursorKeys;
         }
         const awsd = this.input?.keyboard?.addKeys(
             {
@@ -139,13 +142,15 @@ export abstract class BaseScene extends Scene {
         }
         this.awsd = awsd;
 
+        /*
         this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
             const angle = Phaser.Math.Angle.Between(
-              this.player.sprite.x, this.player.sprite.y,
+              this.player.character.sprite.x, this.player.character.sprite.y,
               pointer.worldX, pointer.worldY
             );
-            this.bulletManager.fire(this.player.sprite.x, this.player.sprite.y, angle);
+            this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
         });
+        */
     }
 
     private setupCollisions(): void {
@@ -155,22 +160,19 @@ export abstract class BaseScene extends Scene {
             const collides = layer.layer.properties?.find((prop: any) => prop.name === 'collides') ?? false;
             if (collides) {
                 layer.setCollisionByExclusion([-1]);
-                this.physics.add.collider(this.player.sprite, layer);
+                this.physics.add.collider(this.player.character.sprite, layer);
             }
         });
     }
 
     private setupCameras(): void {
-        this.camera = this.cameras.main;
-        this.camera.setBackgroundColor('#FFFFFF');
-        this.camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.camera.setScroll(0, 0);
-        this.camera.setZoom(this.cameraZoom);
-        this.camera.roundPixels = false;
+        this.gameCameras.initCameras(this.map.widthInPixels, this.map.heightInPixels);
+        this.gameCameras.ui.ignore(this.layers);
+        this.gameCameras.ui.ignore(this.player.character.sprite);
     }
 
     protected setupBulletManager(): void {
-        this.bulletManager = new BulletManager(this);
+        this.bulletManager = new BulletManager(this, this.player.playerData.weapon);
     }
 
     private setupAnimatedTiles(): void {
@@ -211,24 +213,32 @@ export abstract class BaseScene extends Scene {
         if (this.awsd.up.isDown) movement.y = -1;
         if (this.awsd.down.isDown) movement.y = 1;
 
-        movement.x *= this.player.speed;
-        movement.y *= this.player.speed;
+        movement.x *= this.player.character.speed;
+        movement.y *= this.player.character.speed;
 
-        this.player.updateMovement(movement);
+        this.player.character.updateMovement(movement);
 
         // Atirar com o teclado
         let coords = new Phaser.Math.Vector2(0, 0);
 
-        if (Phaser.Input.Keyboard.JustDown(this.arrows.left)) coords.x = -1;
-        else if (Phaser.Input.Keyboard.JustDown(this.arrows.right)) coords.x = 1;
-        else if (Phaser.Input.Keyboard.JustDown(this.arrows.up)) coords.y = -1;
-        else if (Phaser.Input.Keyboard.JustDown(this.arrows.down)) coords.y = 1;
-        const angle = Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
+        if (this.arrows.left.isDown) coords.x = -1;
+        if (this.arrows.right.isDown) coords.x = 1;
+        if (this.arrows.up.isDown) coords.y = -1;
+        if (this.arrows.down.isDown) coords.y = 1;
         if(coords.x || coords.y) {
-            this.bulletManager.fire(this.player.sprite.x, this.player.sprite.y, angle);
+            const angle = Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
+            this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
         }
 
-
+        // Atirar com o mouse
+        let pointer = this.input.activePointer;
+        if(pointer.isDown) {
+            const angle = Phaser.Math.Angle.Between(
+              this.player.character.sprite.x, this.player.character.sprite.y,
+              pointer.worldX, pointer.worldY
+            );
+            this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
+        }
     }
 
     private handleAnimatedTiles(delta: number): void {
@@ -251,7 +261,7 @@ export abstract class BaseScene extends Scene {
 
     private changeScenario(): void {
         if(this.transitionRects) {
-            const playerBounds = this.player.sprite.getBounds();
+            const playerBounds = this.player.character.sprite.getBounds();
             this.transitionRects.forEach((transitionRect) => { 
                 if (Phaser.Geom.Rectangle.Overlaps(playerBounds, transitionRect)) {
                     this.shutdown();
@@ -267,7 +277,7 @@ export abstract class BaseScene extends Scene {
     }
     
     private shutdown(): void {
-        this.player.sprite?.destroy();
+        this.player.character.sprite?.destroy();
         this.layers?.forEach(layer => layer.destroy());
         const cameraTexto = this.cameras?.getCamera('cameraTexto');
         if(cameraTexto) { this.cameras.remove(cameraTexto); }

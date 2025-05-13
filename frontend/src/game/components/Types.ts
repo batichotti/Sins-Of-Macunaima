@@ -1,5 +1,3 @@
-import Player from '@/game/entities/Player';
-
 export interface IShootingKeys {
     left: Phaser.Input.Keyboard.Key;
     right: Phaser.Input.Keyboard.Key;
@@ -10,7 +8,7 @@ export interface IShootingKeys {
 export interface SceneData {
     targetScene: string;
     previousScene: string;
-    player: Player;
+    playerData: PlayerData;
 }
 
 export interface AnimatedTileData {
@@ -18,4 +16,27 @@ export interface AnimatedTileData {
     animationFrames: { tileid: number; duration: number }[],
     firstgid: number,
     elapsedTime: number
+}
+
+export interface Weapon {
+    key: string;
+    baseDamage: number;
+    baseCoolDown: number;
+    baseSpeed: number;
+}
+
+export interface Level {
+    level: number;
+    cooldownDecrease: number;
+    speedIncrease: number;
+    healthIncrease: number;
+    damageIncrease: number;
+    defenseIncrease: number;
+}
+
+export interface PlayerData {
+    name: string; // Nome do jogador
+    characterKey: string; // Nome do personagem usado (Ex: Peri)
+    level: Level;
+    weapon: Weapon;
 }

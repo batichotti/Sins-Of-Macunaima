@@ -1,43 +1,56 @@
-import { BulletStats } from "../components/Constants";
+import { BaseBulletStats } from "../components/Constants";
+import { Weapon } from "../components/Types";
+import { BaseScene } from "../core/BaseScene";
 
 export default class BulletManager {
-    private bullets: Phaser.Physics.Arcade.Group;
-    private scene: Phaser.Scene;
+    bullets: Phaser.Physics.Arcade.Group;
+    private scene: BaseScene;
     private canShoot = true; // Cooldown de balas
+    private weapon!:Weapon;
 
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: BaseScene, weapon: Weapon) {
         this.scene = scene;
+        this.weapon = weapon;
         this.bullets = scene.physics.add.group({
             classType: Bullet,
-            maxSize: BulletStats.groupSize,
+            maxSize: BaseBulletStats.groupSize,
             setXY: {
                 x: 0,
                 y: 0
-            }
+            },
         });
     }
 
     fire(x: number, y: number, angle: number): void {
         if(this.canShoot) {
-            const bullet = this.bullets.get(x, y);
+            const bullet = this.bullets.get(x, y, this.weapon.key ?? 'bullet', this.weapon.baseSpeed) as Bullet;
             if (bullet) {
                 bullet.fire(x, y, angle);
+                this.scene.gameCameras.ui.ignore(bullet);
             }
             // Carrega cooldown
             this.canShoot = false;
-            this.scene.time.delayedCall(BulletStats.cooldown, () => { this.canShoot = true });
+            this.scene.time.delayedCall(this.weapon.baseCoolDown, () => { this.canShoot = true });
         }
     }
 }
 
 class Bullet extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, 'bullet');
+    key!:string;
+    speed!: number;
+    constructor(scene: Phaser.Scene, x: number, y: number, key: string, speed: number) {
+        super(scene, x, y, key);
+        this.key = key;
+        this.speed = speed;
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        //this.setScale(2);
         this.setDepth(1000);
-        this.setDisplaySize(4, 4);
-        this.setTint(0x000000);
+        if(key === 'bullet') {
+            this.setDisplaySize(8, 4);
+            this.setTint(0x000000);
+        }
+
     }
 
 	fire(x: number, y: number, angle: number): void {
@@ -46,7 +59,8 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
             this.setActive(true);
             this.setVisible(true);
      
-            const velocity = this.scene.physics.velocityFromRotation(angle, BulletStats.speed);
+            const velocity = this.scene.physics.velocityFromRotation(angle, this.speed);
+            this.setRotation(angle);
             this.setVelocity(velocity.x, velocity.y);
 
             this.scene.time.delayedCall(1000, () => {
