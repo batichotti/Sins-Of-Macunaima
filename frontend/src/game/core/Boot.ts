@@ -1,15 +1,44 @@
 import { Scene } from 'phaser';
 import { TilePaths, TileSets } from '@/game/components/configs/PathTiles';
 import { WindowResolution } from '@/game/components/configs/Properties';
-import { SceneData, PlayerData, Level, Weapon } from '@/game/components/Types';
+import { ICharacter, ILevel, IPlayer, IWeapon, SceneData } from '../types';
 
+/**
+ * Cena genérica cuja função é carregar assets globais.
+ * Além de requisitar dados do jogador para as cenas.
+ */
 export class Boot extends Scene {
+    /**
+     * Para qual cena o jogo  deve ir após carregamento dos assets.
+     */
+    private targetScene = 'Mapa';
+
+    /**
+     * Dados do jogador. Que serão obtidos do backend.
+     */
+    private player!: IPlayer;
+
+    /**
+     * Dados do personagem. Que serão obtidos do backend.
+     */
+    private character!: ICharacter;
+
+    /**
+     * Dados do jogador. Que serão obtidos do backend.
+     */
+    private level!: ILevel;
+
+    /**
+     * Dados do personagem. Que serão obtidos do backend.
+     */
+    private weapon!: IWeapon;
+
     constructor () {
         super('Boot');
     }
 
     preload () {
-        //  Especifica caminho base dos assets.
+        // Especifica caminho dos assets
         this.load.setPath('assets');
 
         //  Jogador
@@ -20,7 +49,15 @@ export class Boot extends Scene {
             this.load.image(`${tile}`, `tiles/${TilePaths.extruded}/${tile}.png`);
         });
 
+        // Sprites de armas
         this.load.image('arrow_sprite', 'Attacks/Projectiles/Arrows/arrow_sprite.png');
+
+
+        // Aqui seria o lugar ideal para pegar tudo do backend. Mas enquanto isso contruímos o personagem do zero.
+        this.level = { level: 1 } as ILevel;
+        this.character = { spriteKey: 'Macunaima', baseLife: 200, baseSpeed: 200 } as ICharacter;
+        this.weapon = { name: 'Flecha', spriteKey: 'arrow_sprite', baseDamage: 150, baseCoolDown: 150 } as IWeapon;
+        this.player = { name: 'Irineu' } as IPlayer ;
     }
 
 
@@ -52,13 +89,8 @@ export class Boot extends Scene {
         });
     }
 
+
     create () {
-        const playerData = {
-            name: 'Irineu',
-            characterKey: 'Macunaima',
-            level: { level: 1, cooldownDecrease: 0, speedIncrease: 0, healthIncrease: 0, damageIncrease: 0, defenseIncrease: 0 } as Level,
-            weapon: { key: 'arrow_sprite', baseDamage: 200, baseCoolDown: 150, baseSpeed: 250 } as Weapon
-        } as PlayerData;
-        this.scene.start('Loader', { targetScene: 'Mapa', previousScene: this.constructor.name, playerData: playerData } as SceneData);
+        this.scene.start('Loader', { targetScene: this.targetScene, previousScene: this.constructor.name, player: this.player, character: this.character, level: this.level, weapon: this.weapon } as SceneData);
     }
 }

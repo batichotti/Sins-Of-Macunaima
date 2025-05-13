@@ -1,27 +1,29 @@
-import { EventBus } from '@/game/scenes/Services/EventBus';
+import { EventBus } from '@/game/core/EventBus';
 import { Scene } from 'phaser';
 import { Text, WindowResolution } from '@/game/components/configs/Properties';
-import Player from '@/game/entities/Player';
+import { Player, Character } from '@/game/entities/Player';
 import BulletManager from '@/game/entities/BulletManager';
-import { AnimatedTileData, IShootingKeys, SceneData } from '@/game/components/Types';
-import GameCameras from '../components/GameCameras';
+import { AnimatedTileData } from '../types/Tiles';
+import { SceneData } from '../types';
+import GameCameras from '../entities/GameCameras';
+import { Level } from '../entities/Level';
+import { Weapon } from '../entities/Weapon';
 
 export abstract class BaseScene extends Scene {
     public gameCameras: GameCameras;
     protected background!: Phaser.GameObjects.Image;
     protected gameText!: Phaser.GameObjects.Text;
+    protected player!: Player;
     protected tilesets!: Phaser.Tilemaps.Tileset[];
     protected layers!: Phaser.Tilemaps.TilemapLayer[];
     protected animatedTiles!: AnimatedTileData[];
     protected map!: Phaser.Tilemaps.Tilemap;
-    protected player!: Player;
     protected bulletManager: BulletManager;
     protected arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
     protected awsd!: Phaser.Types.Input.Keyboard.CursorKeys;
-    protected prevSceneData!: SceneData;
+    protected sceneData!: SceneData;
     protected transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
     protected transitionRects: Phaser.Geom.Rectangle[];
-    protected movePenalty = 1;
 
     constructor(config: Phaser.Types.Scenes.SettingsConfig) {
         super(config);
@@ -40,7 +42,7 @@ export abstract class BaseScene extends Scene {
         this.layers = [];
         this.animatedTiles = [];
         this.transitionRects = [];
-        this.prevSceneData = data;
+        this.sceneData = data;
         this.gameCameras = new GameCameras(this);
     }
 
@@ -87,18 +89,22 @@ export abstract class BaseScene extends Scene {
     private setupPlayer(): void {
         const spawnPoint = this.map.findObject(
             'spawnPoints', // nome da Object Layer
-            obj => obj.name === `spawn${this.prevSceneData.targetScene}`  // name dado ao objeto
+            obj => obj.name === `spawn${this.sceneData.targetScene}`  // name dado ao objeto
         ) as Phaser.Types.Tilemaps.TiledObject;
         const startingPosition = new Phaser.Math.Vector2(
             (spawnPoint?.x ?? WindowResolution.width / 2) + (spawnPoint?.width ?? 0) * 0.5,
             (spawnPoint?.y ?? WindowResolution.height / 2) + (spawnPoint?.height ?? 0) * 0.5
         );
-        this.player = new Player(this.prevSceneData.playerData, this, startingPosition);
+
+        const character = new Character(this, { x: startingPosition.x, y: startingPosition.y } as Phaser.Math.Vector2, this.sceneData.character.spriteKey, this.sceneData.character.baseSpeed, this.sceneData.character.baseLife);
+        const level = new Level(this.sceneData.level.level);
+        const weapon = new Weapon(this.sceneData.weapon.name, this.sceneData.weapon.spriteKey, this.sceneData.weapon.baseDamage, this.sceneData.weapon.baseDamage)
+        this.player = new Player(this.sceneData.player.name, character, level, weapon);
 
         if (!this.player) {
             throw new Error("Failed to load player.");
         }
-        this.cameras.main.startFollow(this.player.character.sprite);
+        this.cameras.main.startFollow(this.player.character);
     }
 
     private setupTransitionPoints() {
@@ -141,16 +147,6 @@ export abstract class BaseScene extends Scene {
             return;
         }
         this.awsd = awsd;
-
-        /*
-        this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-            const angle = Phaser.Math.Angle.Between(
-              this.player.character.sprite.x, this.player.character.sprite.y,
-              pointer.worldX, pointer.worldY
-            );
-            this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
-        });
-        */
     }
 
     private setupCollisions(): void {
@@ -160,7 +156,7 @@ export abstract class BaseScene extends Scene {
             const collides = layer.layer.properties?.find((prop: any) => prop.name === 'collides') ?? false;
             if (collides) {
                 layer.setCollisionByExclusion([-1]);
-                this.physics.add.collider(this.player.character.sprite, layer);
+                this.physics.add.collider(this.player.character!, layer);
             }
         });
     }
@@ -168,11 +164,11 @@ export abstract class BaseScene extends Scene {
     private setupCameras(): void {
         this.gameCameras.initCameras(this.map.widthInPixels, this.map.heightInPixels);
         this.gameCameras.ui.ignore(this.layers);
-        this.gameCameras.ui.ignore(this.player.character.sprite);
+        this.gameCameras.ui.ignore(this.player.character!);
     }
 
     protected setupBulletManager(): void {
-        this.bulletManager = new BulletManager(this, this.player.playerData.weapon);
+        this.bulletManager = new BulletManager(this, this.player.weapon);
     }
 
     private setupAnimatedTiles(): void {
@@ -213,10 +209,10 @@ export abstract class BaseScene extends Scene {
         if (this.awsd.up.isDown) movement.y = -1;
         if (this.awsd.down.isDown) movement.y = 1;
 
-        movement.x *= this.player.character.speed;
-        movement.y *= this.player.character.speed;
+        movement.x *= this.player.character!.baseSpeed;
+        movement.y *= this.player.character!.baseSpeed;
 
-        this.player.character.updateMovement(movement);
+        this.player.character.playerMove(movement);
 
         // Atirar com o teclado
         let coords = new Phaser.Math.Vector2(0, 0);
@@ -227,17 +223,17 @@ export abstract class BaseScene extends Scene {
         if (this.arrows.down.isDown) coords.y = 1;
         if(coords.x || coords.y) {
             const angle = Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
-            this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
+            this.bulletManager.fire(this.player.character!.x, this.player.character!.y, angle);
         }
 
         // Atirar com o mouse
         let pointer = this.input.activePointer;
         if(pointer.isDown) {
             const angle = Phaser.Math.Angle.Between(
-              this.player.character.sprite.x, this.player.character.sprite.y,
+              this.player.character!.x, this.player.character!.y,
               pointer.worldX, pointer.worldY
             );
-            this.bulletManager.fire(this.player.character.sprite.x, this.player.character.sprite.y, angle);
+            this.bulletManager.fire(this.player.character!.x, this.player.character!.y, angle);
         }
     }
 
@@ -261,7 +257,7 @@ export abstract class BaseScene extends Scene {
 
     private changeScenario(): void {
         if(this.transitionRects) {
-            const playerBounds = this.player.character.sprite.getBounds();
+            const playerBounds = this.player.character!.getBounds();
             this.transitionRects.forEach((transitionRect) => { 
                 if (Phaser.Geom.Rectangle.Overlaps(playerBounds, transitionRect)) {
                     this.shutdown();
@@ -277,7 +273,7 @@ export abstract class BaseScene extends Scene {
     }
     
     private shutdown(): void {
-        this.player.character.sprite?.destroy();
+        this.player.character?.destroy();
         this.layers?.forEach(layer => layer.destroy());
         const cameraTexto = this.cameras?.getCamera('cameraTexto');
         if(cameraTexto) { this.cameras.remove(cameraTexto); }

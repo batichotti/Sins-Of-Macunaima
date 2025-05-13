@@ -1,5 +1,5 @@
-import { BaseBulletStats } from "../components/Constants";
-import { Weapon } from "../components/Types";
+import { BaseProjectileStats } from "../types";
+import { Weapon } from "./Weapon";
 import { BaseScene } from "../core/BaseScene";
 
 export default class BulletManager {
@@ -13,7 +13,7 @@ export default class BulletManager {
         this.weapon = weapon;
         this.bullets = scene.physics.add.group({
             classType: Bullet,
-            maxSize: BaseBulletStats.groupSize,
+            maxSize: BaseProjectileStats.groupSize,
             setXY: {
                 x: 0,
                 y: 0
@@ -23,7 +23,7 @@ export default class BulletManager {
 
     fire(x: number, y: number, angle: number): void {
         if(this.canShoot) {
-            const bullet = this.bullets.get(x, y, this.weapon.key ?? 'bullet', this.weapon.baseSpeed) as Bullet;
+            const bullet = this.bullets.get(x, y, this.weapon.spriteKey ?? 'bullet', BaseProjectileStats.speed) as Bullet;
             if (bullet) {
                 bullet.fire(x, y, angle);
                 this.scene.gameCameras.ui.ignore(bullet);
