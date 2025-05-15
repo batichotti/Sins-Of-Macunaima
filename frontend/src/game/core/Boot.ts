@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { TilePaths, TileSets } from '@/game/components/configs/PathTiles';
 import { WindowResolution } from '@/game/components/configs/Properties';
-import { ICharacter, ILevel, IPlayer, IWeapon, SceneData } from '../types';
+import { ICharacter, ILevel, IPlayer, SceneData, WeaponSet, WeaponType } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets globais.
@@ -31,7 +31,7 @@ export class Boot extends Scene {
     /**
      * Dados do personagem. Que serão obtidos do backend.
      */
-    private weapon: IWeapon;
+    private weaponSet: WeaponSet;
 
     constructor () {
         super('Boot');
@@ -56,7 +56,11 @@ export class Boot extends Scene {
         // Aqui seria o lugar ideal para pegar tudo do backend. Mas enquanto isso construímos o personagem do zero.
         this.level = { level: 1 } as ILevel;
         this.character = { spriteKey: 'Macunaima', baseLife: 200, baseSpeed: 200 } as ICharacter;
-        this.weapon = { name: 'Flecha', spriteKey: 'arrow_sprite', baseDamage: 150, baseCoolDown: 150 } as IWeapon;
+        this.weaponSet = {
+            projectile: { name: 'Flecha', weaponType: WeaponType.PROJECTILE, spriteKey: 'arrow_sprite', baseDamage: 150, baseCooldown: 150, baseSpeed: 500 },
+            melee: { name: 'Bananeira', weaponType: WeaponType.MELEE, spriteKey: 'aaa', baseDamage: 150, baseCooldown: 150 }
+
+        }
         this.player = { name: 'Irineu' } as IPlayer;
     }
 
@@ -91,6 +95,6 @@ export class Boot extends Scene {
 
 
     create () {
-        this.scene.start('Loader', { targetScene: this.targetScene, previousScene: this.constructor.name, player: this.player, character: this.character, level: this.level, weapon: this.weapon } as SceneData);
+        this.scene.start('Loader', { targetScene: this.targetScene, previousScene: this.constructor.name, player: this.player, character: this.character, level: this.level, weaponSet: this.weaponSet } as SceneData);
     }
 }

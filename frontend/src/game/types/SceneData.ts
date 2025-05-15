@@ -1,5 +1,5 @@
 import { ICharacter, ILevel, IPlayer } from "./Player";
-import { IWeapon } from "./Weapon";
+import { WeaponSet } from "./Weapon";
 
 /**
  * Dados da cena anterior.
@@ -35,7 +35,7 @@ export type SceneData = {
     level: ILevel;
 
     /**
-     * A arma do jogador.
+     * Set de armas do jogador.
      */
-    weapon: IWeapon;
+    weaponSet: WeaponSet;
 }

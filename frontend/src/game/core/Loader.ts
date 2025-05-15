@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { PathScenarios } from '@/game/components/configs/SceneManager';
-import { ICharacter, ILevel, IPlayer, IWeapon, SceneData } from '../types';
+import { ICharacter, ILevel, IPlayer, IWeapon, SceneData, WeaponSet } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets específicos da cena de destino.
@@ -36,7 +36,7 @@ export class Loader extends Scene {
     /**
      * Dados do personagem. Que serão obtidos do boot.
      */
-    private weapon!: IWeapon;
+    private weaponSet!: WeaponSet;
 
 
     constructor() {
@@ -53,12 +53,12 @@ export class Loader extends Scene {
         this.player = data.player;
         this.character = data.character;
         this.level = data.level;
-        this.weapon = data.weapon;
+        this.weaponSet = data.weaponSet;
     }
 
     create() {
         this.scene.stop(this.constructor.name);
-        this.scene.start(this.targetScene, { targetScene: this.targetScene, previousScene: this.previousScene, player: this.player, character: this.character, level: this.level, weapon: this.weapon } as SceneData );
+        this.scene.start(this.targetScene, { targetScene: this.targetScene, previousScene: this.previousScene, player: this.player, character: this.character, level: this.level, weaponSet: this.weaponSet } as SceneData );
     }
 
     private loadScenario(): void {

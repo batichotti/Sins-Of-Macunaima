@@ -1,18 +1,18 @@
-import { ICharacter, IPlayer } from "../types";
+import { ICharacter, IPlayer, WeaponSet } from "../types";
 import { Level } from "./Level";
-import { Weapon } from "./Weapon";
+import { IWeapon } from "../types";
 
 export class Player implements IPlayer {
     name!: string;
     character!: Character;
     level!: Level;
-    weapon!: Weapon;
+    weaponSet!: WeaponSet;
 
-    constructor(name: string, character: Character, level: Level, weapon: Weapon) {
+    constructor(name: string, character: Character, level: Level, weaponSet: WeaponSet) {
         this.name = name;
         this.character = character;
         this.level = level;
-        this.weapon = weapon;
+        this.weaponSet = weaponSet;
     }
 }
 

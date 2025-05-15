@@ -2,7 +2,7 @@ import GameCameras from "../entities/GameCameras";
 import { SceneData } from "./SceneData";
 import { Player } from "../entities/Player";
 import { AnimatedTileData } from "./Tiles";
-import BulletManager from "../entities/BulletManager";
+import AttackManager from "../entities/Attack";
 
 /**
  * Cena básica do mundo.
@@ -41,11 +41,6 @@ export default interface IBaseScene {
     map: Phaser.Tilemaps.Tilemap;
 
     /**
-     * O gerenciador de ataques do jogo.
-     */
-    bulletManager: BulletManager;
-
-    /**
      * As setas do teclado.
      */
     arrows: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -66,9 +61,14 @@ export default interface IBaseScene {
     transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
 
     /**
-     * Tiles com pontos de transição de cena
+     * Tiles com pontos de transição de cena.
      */
     transitionRects: Phaser.Geom.Rectangle[];
+
+    /**
+     * O gerenciador de ataques.
+     */
+    attackManager: AttackManager;
 
     /**
      * Configura camadas.
@@ -108,7 +108,7 @@ export default interface IBaseScene {
     /**
      * Configura o gerenciador de ataques.
      */
-    setupBulletManager(): void;
+    setupAttackManager(): void;
 
     /**
      * Manuseia a entrada do jogador.

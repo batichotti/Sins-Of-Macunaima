@@ -1,5 +1,5 @@
 import { Level } from "../entities/Level";
-import { Weapon } from "../entities/Weapon";
+import { WeaponSet } from "./Weapon";
 import { Character } from "../entities/Player";
 
 /**
@@ -22,9 +22,9 @@ export interface IPlayer {
     level: Level;
 
     /**
-     * A arma que o jogador usará na partida.
+     * Set de armas que o jogador usará na partida.
      */
-    weapon: Weapon;
+    weaponSet: WeaponSet;
 }
 
 /**

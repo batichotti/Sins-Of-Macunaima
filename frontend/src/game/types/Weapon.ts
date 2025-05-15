@@ -1,4 +1,19 @@
 /**
+ * Define se a arma é de curto ou longo alcance.
+ */
+export enum WeaponType {
+    /**
+     * É um projétil.
+     */
+    PROJECTILE,
+
+    /**
+     * É uma arma de combate corpo-a-corpo.
+     */
+    MELEE
+}
+
+/**
  * Arma usada pelo jogador.
  */
 export interface IWeapon {
@@ -22,17 +37,42 @@ export interface IWeapon {
     /**
      * CoolDown base.
      */
-    baseCoolDown: number;
+    baseCooldown: number;
+
+    /**
+     * O tipo da arma.
+     */
+    weaponType: WeaponType
 }
 
 /**
- * Arma do tipo projétil
+ * Set de armas. Uma de curta distância e outra e um projétil.
+ */
+export interface WeaponSet {
+    projectile: IProjectile;
+    melee: IMelee;
+}
+
+/**
+ * Arma do tipo projétil.
  */
 export interface IProjectile extends IWeapon {
     /**
-     * Velocidade de disparo base da arma.
+     * Tipo de arma.
+     */
+    weaponType: WeaponType.PROJECTILE;
+
+    /**
+     * Velocidade de disparo base do projétil.
      */
     baseSpeed: number;
+}
+
+export interface IMelee extends IWeapon {
+    /**
+     * Tipo de arma.
+     */
+    weaponType: WeaponType.MELEE;
 }
 
 /**

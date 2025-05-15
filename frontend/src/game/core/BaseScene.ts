@@ -2,13 +2,13 @@ import { EventBus } from '@/game/core/EventBus';
 import { Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/configs/Properties';
 import { Player, Character } from '@/game/entities/Player';
-import BulletManager from '@/game/entities/BulletManager';
 import { AnimatedTileData } from '../types/Tiles';
 import { SceneData } from '../types';
 import GameCameras from '../entities/GameCameras';
 import { Level } from '../entities/Level';
-import { Weapon } from '../entities/Weapon';
+import { IWeapon } from '../types';
 import IBaseScene from '../types/BaseScene';
+import AttackManager from '../entities/Attack';
 
 export abstract class BaseScene extends Scene implements IBaseScene {
     gameCameras: GameCameras;
@@ -17,12 +17,12 @@ export abstract class BaseScene extends Scene implements IBaseScene {
     layers: Phaser.Tilemaps.TilemapLayer[];
     animatedTiles: AnimatedTileData[];
     map: Phaser.Tilemaps.Tilemap;
-    bulletManager: BulletManager;
     arrows: Phaser.Types.Input.Keyboard.CursorKeys;
     awsd: Phaser.Types.Input.Keyboard.CursorKeys;
     sceneData: SceneData;
     transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
     transitionRects: Phaser.Geom.Rectangle[];
+    attackManager: AttackManager;
 
     constructor(config: Phaser.Types.Scenes.SettingsConfig) {
         super(config);
@@ -53,7 +53,7 @@ export abstract class BaseScene extends Scene implements IBaseScene {
         this.setupCollisions();
         this.setupCameras();
         this.setupInput();
-        this.setupBulletManager();
+        this.setupAttackManager();
     
 
         EventBus.emit('current-scene-ready', this);
@@ -96,9 +96,8 @@ export abstract class BaseScene extends Scene implements IBaseScene {
         );
 
         const character = new Character(this, { x: startingPosition.x, y: startingPosition.y } as Phaser.Math.Vector2, this.sceneData.character.spriteKey, this.sceneData.character.baseSpeed, this.sceneData.character.baseLife);
-        const level = new Level(this.sceneData.level.level);
-        const weapon = new Weapon(this.sceneData.weapon.name, this.sceneData.weapon.spriteKey, this.sceneData.weapon.baseDamage, this.sceneData.weapon.baseDamage)
-        this.player = new Player(this.sceneData.player.name, character, level, weapon);
+        const level = new Level(1);
+        this.player = new Player(this.sceneData.player.name, character, level, this.sceneData.weaponSet);
 
         if (!this.player) {
             throw new Error("Failed to load player.");
@@ -166,8 +165,8 @@ export abstract class BaseScene extends Scene implements IBaseScene {
         this.gameCameras.main.startFollow(this.player.character);
     }
 
-    setupBulletManager(): void {
-        this.bulletManager = new BulletManager(this, this.player.weapon);
+    setupAttackManager(): void {
+        this.attackManager = new AttackManager(this, this.player.weaponSet);
     }
 
     setupAnimatedTiles(): void {
@@ -222,7 +221,7 @@ export abstract class BaseScene extends Scene implements IBaseScene {
         if (this.arrows.down.isDown) coords.y = 1;
         if(coords.x || coords.y) {
             const angle = Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
-            this.bulletManager.fire(this.player.character!.x, this.player.character!.y, angle);
+            this.attackManager.fire(this.player.character.x, this.player.character.y, angle);
         }
 
         // Atirar com o mouse
@@ -232,7 +231,7 @@ export abstract class BaseScene extends Scene implements IBaseScene {
               this.player.character!.x, this.player.character!.y,
               pointer.worldX, pointer.worldY
             );
-            this.bulletManager.fire(this.player.character!.x, this.player.character!.y, angle);
+            this.attackManager.fire(this.player.character.x, this.player.character.y, angle);
         }
     }
 
