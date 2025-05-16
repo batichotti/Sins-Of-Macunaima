@@ -6,19 +6,18 @@ import { AnimatedTileData } from '../types/Tiles';
 import { SceneData } from '../types';
 import GameCameras from '../entities/GameCameras';
 import { Level } from '../entities/Level';
-import { IWeapon } from '../types';
 import IBaseScene from '../types/BaseScene';
 import AttackManager from '../entities/Attack';
+import InputManager from '../entities/Input';
 
-export abstract class BaseScene extends Scene implements IBaseScene {
+export class BaseScene extends Scene implements IBaseScene {
     gameCameras: GameCameras;
     player: Player;
     tilesets: Phaser.Tilemaps.Tileset[];
     layers: Phaser.Tilemaps.TilemapLayer[];
     animatedTiles: AnimatedTileData[];
+    inputManager: InputManager;
     map: Phaser.Tilemaps.Tilemap;
-    arrows: Phaser.Types.Input.Keyboard.CursorKeys;
-    awsd: Phaser.Types.Input.Keyboard.CursorKeys;
     sceneData: SceneData;
     transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
     transitionRects: Phaser.Geom.Rectangle[];
@@ -43,6 +42,7 @@ export abstract class BaseScene extends Scene implements IBaseScene {
         this.transitionRects = [];
         this.sceneData = data;
         this.gameCameras = new GameCameras(this);
+        this.inputManager = new InputManager(this);
     }
 
     protected create(): void {
@@ -52,7 +52,6 @@ export abstract class BaseScene extends Scene implements IBaseScene {
         this.setupTransitionPoints();
         this.setupCollisions();
         this.setupCameras();
-        this.setupInput();
         this.setupAttackManager();
     
 
@@ -118,34 +117,6 @@ export abstract class BaseScene extends Scene implements IBaseScene {
         }
     }
 
-    setupInput(): void {
-        const keyboard = this.input.keyboard;
-        if(keyboard) {
-            this.arrows = keyboard.addKeys(
-                {
-                    'up': Phaser.Input.Keyboard.KeyCodes.UP,
-                    'down': Phaser.Input.Keyboard.KeyCodes.DOWN,
-                    'left': Phaser.Input.Keyboard.KeyCodes.LEFT,
-                    'right': Phaser.Input.Keyboard.KeyCodes.RIGHT
-                }
-            ) as Phaser.Types.Input.Keyboard.CursorKeys;
-        }
-        const awsd = this.input?.keyboard?.addKeys(
-            {
-                'up': Phaser.Input.Keyboard.KeyCodes.W,
-                'down': Phaser.Input.Keyboard.KeyCodes.S,
-                'left': Phaser.Input.Keyboard.KeyCodes.A,
-                'right': Phaser.Input.Keyboard.KeyCodes.D,
-
-            }
-        ) as Phaser.Types.Input.Keyboard.CursorKeys;
-        if (!awsd) {
-            console.warn('Keyboard input is not available.');
-            return;
-        }
-        this.awsd = awsd;
-    }
-
     setupCollisions(): void {
         this.physics.world.setBoundsCollision(true, true, true, true);
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -200,39 +171,13 @@ export abstract class BaseScene extends Scene implements IBaseScene {
 
     handleInput(): void {
         // Movimento
-        let movement = new Phaser.Math.Vector2(0, 0);
+        this.player.character.playerMove(this.inputManager.handleArrows());
 
-        if (this.awsd.left.isDown) movement.x = -1;
-        if (this.awsd.right.isDown) movement.x = 1;
-        if (this.awsd.up.isDown) movement.y = -1;
-        if (this.awsd.down.isDown) movement.y = 1;
+        const angle = this.inputManager.handleAwsd();
+        if(angle != null) this.attackManager.fire(this.player.character.x, this.player.character.y, angle);
 
-        movement.x *= this.player.character!.baseSpeed;
-        movement.y *= this.player.character!.baseSpeed;
-
-        this.player.character.playerMove(movement);
-
-        // Atirar com o teclado
-        let coords = new Phaser.Math.Vector2(0, 0);
-
-        if (this.arrows.left.isDown) coords.x = -1;
-        if (this.arrows.right.isDown) coords.x = 1;
-        if (this.arrows.up.isDown) coords.y = -1;
-        if (this.arrows.down.isDown) coords.y = 1;
-        if(coords.x || coords.y) {
-            const angle = Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
-            this.attackManager.fire(this.player.character.x, this.player.character.y, angle);
-        }
-
-        // Atirar com o mouse
-        let pointer = this.input.activePointer;
-        if(pointer.isDown) {
-            const angle = Phaser.Math.Angle.Between(
-              this.player.character!.x, this.player.character!.y,
-              pointer.worldX, pointer.worldY
-            );
-            this.attackManager.fire(this.player.character.x, this.player.character.y, angle);
-        }
+        const anglePointer = this.inputManager.handlePointer(this.player.character.x, this.player.character.y);
+        if(anglePointer != null) this.attackManager.fire(this.player.character.x, this.player.character.y, anglePointer);
     }
 
     handleAnimatedTiles(delta: number): void {

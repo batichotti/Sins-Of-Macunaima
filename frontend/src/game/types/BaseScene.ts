@@ -3,6 +3,7 @@ import { SceneData } from "./SceneData";
 import { Player } from "../entities/Player";
 import { AnimatedTileData } from "./Tiles";
 import AttackManager from "../entities/Attack";
+import InputManager from "../entities/Input";
 
 /**
  * Cena básica do mundo.
@@ -41,14 +42,9 @@ export default interface IBaseScene {
     map: Phaser.Tilemaps.Tilemap;
 
     /**
-     * As setas do teclado.
+     * As configuraçẽoes do teclado e mouse.
      */
-    arrows: Phaser.Types.Input.Keyboard.CursorKeys;
-
-    /**
-     * As teclas 'A', 'W', 'S' e 'D'.
-     */
-    awsd: Phaser.Types.Input.Keyboard.CursorKeys;
+    inputManager:InputManager;
 
     /**
      * Os dados da cena. Obtidos da cena de boot.
@@ -99,11 +95,6 @@ export default interface IBaseScene {
      * Configura as câmeras do jogo.
      */
     setupCameras(): void;
-
-    /**
-     * Configura os eventos de entrada do jogo (teclado e mouse).
-     */
-    setupInput(): void;
 
     /**
      * Configura o gerenciador de ataques.

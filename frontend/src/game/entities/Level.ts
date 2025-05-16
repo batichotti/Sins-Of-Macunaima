@@ -1,4 +1,4 @@
-import { ILevel } from "../types";
+import { ILevel, levelModifers } from "../types";
 
 export class Level implements ILevel {
     level!: number;
@@ -10,5 +10,6 @@ export class Level implements ILevel {
 
     constructor(level: number) {
         this.level = level;
+        this.cooldownDecrease = this.level * levelModifers.cooldown;
     }
-}
+};

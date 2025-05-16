@@ -86,3 +86,11 @@ export interface ILevel {
      */
     defenseIncrease: number;
 }
+
+export const levelModifers = {
+    cooldown: 1.05,
+    speed: 1.05,
+    health: 1.05,
+    damage: 1.05,
+    defense: 1.05
+};

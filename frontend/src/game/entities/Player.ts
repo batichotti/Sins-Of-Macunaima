@@ -1,6 +1,5 @@
 import { ICharacter, IPlayer, WeaponSet } from "../types";
 import { Level } from "./Level";
-import { IWeapon } from "../types";
 
 export class Player implements IPlayer {
     name!: string;
@@ -32,7 +31,6 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
     }
 
     public playerMove(direction: Phaser.Math.Vector2): void {
-        const normalized = direction.normalize().scale(this.baseSpeed);
-        this.setVelocity(normalized.x, normalized.y);
+        this.setVelocity(direction.x * this.baseSpeed, direction.y * this.baseSpeed);
     }
 }
