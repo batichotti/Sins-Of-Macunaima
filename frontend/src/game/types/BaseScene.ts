@@ -1,9 +1,9 @@
-import GameCameras from "../entities/GameCameras";
+import GameCameras from "../components/GameCameras";
 import { SceneData } from "./SceneData";
 import { Player } from "../entities/Player";
 import { AnimatedTileData } from "./Tiles";
 import AttackManager from "../entities/Attack";
-import InputManager from "../entities/Input";
+import InputManager from "../components/Input";
 
 /**
  * Cena básica do mundo.

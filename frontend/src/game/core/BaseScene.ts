@@ -1,14 +1,14 @@
 import { EventBus } from '@/game/core/EventBus';
 import { Scene } from 'phaser';
-import { WindowResolution } from '@/game/components/configs/Properties';
+import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
 import { AnimatedTileData } from '../types/Tiles';
 import { SceneData } from '../types';
-import GameCameras from '../entities/GameCameras';
+import GameCameras from '../components/GameCameras';
 import { Level } from '../entities/Level';
 import IBaseScene from '../types/BaseScene';
 import AttackManager from '../entities/Attack';
-import InputManager from '../entities/Input';
+import InputManager from '../components/Input';
 
 export class BaseScene extends Scene implements IBaseScene {
     gameCameras: GameCameras;
@@ -94,7 +94,7 @@ export class BaseScene extends Scene implements IBaseScene {
             (spawnPoint?.y ?? WindowResolution.height / 2) + (spawnPoint?.height ?? 0) * 0.5
         );
 
-        const character = new Character(this, { x: startingPosition.x, y: startingPosition.y } as Phaser.Math.Vector2, this.sceneData.character.spriteKey, this.sceneData.character.baseSpeed, this.sceneData.character.baseLife);
+        const character = new Character(this, { x: startingPosition.x, y: startingPosition.y } as Phaser.Math.Vector2, this.sceneData.character.name, this.sceneData.character.spriteKey, this.sceneData.character.baseSpeed, this.sceneData.character.baseHealth);
         const level = new Level(1);
         this.player = new Player(this.sceneData.player.name, character, level, this.sceneData.weaponSet);
 

@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
-import { PathScenarios } from '@/game/components/configs/SceneManager';
-import { ICharacter, ILevel, IPlayer, IWeapon, SceneData, WeaponSet } from '../types';
+import { PathScenarios } from '@/game/components/PathAssets';
+import { ICharacter, ILevel, IPlayer, SceneData, WeaponSet } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets específicos da cena de destino.

@@ -16,17 +16,19 @@ export class Player implements IPlayer {
 }
 
 export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacter {
-    baseLife!: number;
+    name!: string;
+    baseHealth!: number;
     baseSpeed!: number;
     spriteKey!: string;
 
-    constructor(scene: Phaser.Scene, position: Phaser.Math.Vector2, spriteKey: string, baseSpeed: number, baseLife: number) {
+    constructor(scene: Phaser.Scene, position: Phaser.Math.Vector2, name: string, spriteKey: string, baseSpeed: number, baseHealth: number) {
         super(scene, position.x, position.y, spriteKey);
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.name = name;
         this.spriteKey = spriteKey;
         this.baseSpeed = baseSpeed;
-        this.baseLife = baseLife;
+        this.baseHealth = baseHealth;
         this.setScale(1.5).setCollideWorldBounds(true).setDepth(100);
     }
 

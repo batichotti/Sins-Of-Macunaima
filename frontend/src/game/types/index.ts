@@ -6,3 +6,5 @@ export * from './Weapon';
 export * from './BaseScene';
 export * from './TextBox';
 export * from './Input';
+export * from './TextBoxesContent';
+export * from './Enemy';

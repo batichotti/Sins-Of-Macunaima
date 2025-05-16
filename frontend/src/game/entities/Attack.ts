@@ -1,4 +1,4 @@
-import { WeaponType, IWeapon, IProjectile, IMelee, BaseProjectileStats, WeaponSet } from "../types";
+import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet } from "../types";
 import { BaseScene } from "../core/BaseScene";
 
 export default class AttackManager {
@@ -110,6 +110,7 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     }
 }
 
+// TODO: Fazer MeleeHitbox extender Phaser.Zone
 class MeleeHitbox extends Phaser.Physics.Arcade.Sprite {
     spriteKey: string;
     baseCooldown: number;

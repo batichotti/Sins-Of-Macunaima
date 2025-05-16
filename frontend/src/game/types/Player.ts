@@ -32,6 +32,10 @@ export interface IPlayer {
  */
 export interface ICharacter {
     /**
+     * Nome oficial do personagem.
+     */
+    name: string;
+    /**
      * A chave do asset utilizado pelo personagem do jogador. 
      * 
      * Deve corresponder exatamente ao nome usado no arquivo de assets.
@@ -41,7 +45,7 @@ export interface ICharacter {
     /**
      * A quantidade de vida base que o personagem tem.
      */
-    baseLife: number;
+    baseHealth: number;
 
     /**
      * A velocidade base que o personagem tem

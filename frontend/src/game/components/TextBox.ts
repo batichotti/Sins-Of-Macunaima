@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { Text } from '@/game/components/configs/Properties';
+import { Text } from '@/game/components/Properties';
 import { ITextBox } from '../types';
 
 export default class TextBox extends Phaser.GameObjects.Container implements ITextBox {
@@ -16,7 +16,7 @@ export default class TextBox extends Phaser.GameObjects.Container implements ITe
     this.background.lineStyle(2, 0xffff00, 1);
     this.background.fillRoundedRect(0, 0, this.size.x, this.size.y);
 
-    this.text = new Phaser.GameObjects.Text(this.scene, this.size.x * 0.5, this.size.y * 0.5, '', { ...Text.Dialog1, wordWrap: { width: this.size.y } }).setOrigin(0.5).setDepth(100);
+    this.text = new Phaser.GameObjects.Text(this.scene, this.size.x * 0.5, this.size.y * 0.5, '', { ...Text.Dialog1 }).setOrigin(0.5).setDepth(100);
     this.setDepth(1010);
     this.setScrollFactor(0); 
     this.add([ this.background, this.text ]);

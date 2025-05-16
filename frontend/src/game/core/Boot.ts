@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
-import { TilePaths, TileSets } from '@/game/components/configs/PathTiles';
-import { WindowResolution } from '@/game/components/configs/Properties';
+import { TilePaths, TileSets } from '@/game/components/PathAssets';
+import { WindowResolution } from '@/game/components/Properties';
 import { ICharacter, ILevel, IPlayer, SceneData, WeaponSet, WeaponType } from '../types';
 
 /**
@@ -55,7 +55,7 @@ export class Boot extends Scene {
 
         // Aqui seria o lugar ideal para pegar tudo do backend. Mas enquanto isso construímos o personagem do zero.
         this.level = { level: 1 } as ILevel;
-        this.character = { spriteKey: 'Macunaima', baseLife: 200, baseSpeed: 200 } as ICharacter;
+        this.character = { name: 'Macunaíma', spriteKey: 'Macunaima', baseHealth: 200, baseSpeed: 200 } as ICharacter;
         this.weaponSet = {
             projectile: { name: 'Flecha', weaponType: WeaponType.PROJECTILE, spriteKey: 'arrow_sprite', baseDamage: 150, baseCooldown: 150, baseSpeed: 500 },
             melee: { name: 'Bananeira', weaponType: WeaponType.MELEE, spriteKey: 'aaa', baseDamage: 150, baseCooldown: 150 }
