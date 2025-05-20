@@ -8,3 +8,5 @@ export * from './TextBox';
 export * from './Input';
 export * from './TextBoxesContent';
 export * from './Enemy';
+export * from './EnemySpawnPoints';
+export * from './CachedPath'

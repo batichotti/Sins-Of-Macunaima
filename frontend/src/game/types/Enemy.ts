@@ -15,6 +15,11 @@ export interface IEnemy {
     spriteKey: string;
 
     /**
+     * Região onde o inimigo aparece.
+     */
+    spawnRegion: string;
+
+    /**
      * Arma do inimigo.
      */
     weapon: IMelee;
@@ -26,8 +31,6 @@ export interface IEnemy {
 
     /**
      * Velocidade base do inimigo.
-     * 
-     * Por enquanto é uma constante porque ninguém pipipi pópópó...
      */
     baseSpeed: number;
 }
@@ -36,5 +39,17 @@ export interface IEnemy {
  * Array com os inimigos. Necessário para o 'EnemyManager' gerar um aleatoriamente.
  */
 export const EnemyTypes = [
-    { name: 'Chupa-cú', spriteKey: 'temNao', weapon: { name: 'bengala', spriteKey: 'bengala', baseDamage: 50, baseCooldown: 500 } as IMelee, baseHealth: 200, baseSpeed: 150 }
+    { 
+        name: 'Chupa-cú', 
+        spriteKey: 'Macunaima', 
+        spawnRegion: 'Floresta',
+        weapon: { 
+                    name: 'bengala', 
+                    spriteKey: 'bengala',
+                    baseDamage: 50, 
+                    baseCooldown: 500 
+                } as IMelee, 
+        baseHealth: 200, 
+        baseSpeed: 200 
+    }
 ];

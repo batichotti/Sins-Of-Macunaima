@@ -4,6 +4,8 @@ import { Player } from "../entities/Player";
 import { AnimatedTileData } from "./Tiles";
 import AttackManager from "../entities/Attack";
 import InputManager from "../components/Input";
+import { EnemySpawnPoints } from "./EnemySpawnPoints";
+import EnemyManager from "../entities/EnemyManager";
 
 /**
  * Cena básica do mundo.
@@ -37,12 +39,22 @@ export default interface IBaseScene {
     animatedTiles: AnimatedTileData[];
 
     /**
+     * Spawn points dos inimigos.
+     */
+    enemySpawnPoints: EnemySpawnPoints[];
+
+    /**
+     * O gerenciador de inimigos.
+     */
+    enemyManager: EnemyManager;
+
+    /**
      * O map do jogo.
      */
     map: Phaser.Tilemaps.Tilemap;
 
     /**
-     * As configuraçẽoes do teclado e mouse.
+     * O gerenciador do teclado e mouse.
      */
     inputManager:InputManager;
 
@@ -70,6 +82,11 @@ export default interface IBaseScene {
      * Configura camadas.
      */
     setupLayers(): void;
+
+    /**
+     * Configura spawn points dos inimigos.
+     */
+    setupEnemySpawnPoints(): void;
 
     /**
      * Configura tiles animados.
@@ -100,6 +117,11 @@ export default interface IBaseScene {
      * Configura o gerenciador de ataques.
      */
     setupAttackManager(): void;
+
+    /**
+     * Configura o gerenciador de inimigos
+     */
+    setupEnemyManager(): void;
 
     /**
      * Manuseia a entrada do jogador.

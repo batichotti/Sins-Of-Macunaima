@@ -3,13 +3,17 @@ import { Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
 import { AnimatedTileData } from '../types/Tiles';
-import { SceneData } from '../types';
+import { EnemySpawnPoints, SceneData } from '../types';
 import GameCameras from '../components/GameCameras';
 import { Level } from '../entities/Level';
 import IBaseScene from '../types/BaseScene';
 import AttackManager from '../entities/Attack';
 import InputManager from '../components/Input';
+import EnemyManager from '../entities/EnemyManager';
 
+/**
+ * Cena básica de jogo.
+ */
 export class BaseScene extends Scene implements IBaseScene {
     gameCameras: GameCameras;
     player: Player;
@@ -17,7 +21,9 @@ export class BaseScene extends Scene implements IBaseScene {
     layers: Phaser.Tilemaps.TilemapLayer[];
     animatedTiles: AnimatedTileData[];
     inputManager: InputManager;
-    map: Phaser.Tilemaps.Tilemap;
+    enemyManager: EnemyManager;
+    enemySpawnPoints: EnemySpawnPoints[];
+    public map: Phaser.Tilemaps.Tilemap;
     sceneData: SceneData;
     transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
     transitionRects: Phaser.Geom.Rectangle[];
@@ -40,6 +46,7 @@ export class BaseScene extends Scene implements IBaseScene {
         this.layers = [];
         this.animatedTiles = [];
         this.transitionRects = [];
+        this.enemySpawnPoints = [];
         this.sceneData = data;
         this.gameCameras = new GameCameras(this);
         this.inputManager = new InputManager(this);
@@ -53,15 +60,26 @@ export class BaseScene extends Scene implements IBaseScene {
         this.setupCollisions();
         this.setupCameras();
         this.setupAttackManager();
+        this.setupEnemyManager();
+        this.setupEnemySpawnPoints();
     
 
         EventBus.emit('current-scene-ready', this);
     }
 
     update(time: number, delta: number): void {
+        if(this.inputManager.arrows.space.isDown) {
+            const point = Phaser.Utils.Array.GetRandom(this.enemySpawnPoints);
+            if(point) {
+                this.enemyManager.spawnEnemy(point.name, { x: point.position.x, y: point.position.y } as Phaser.Math.Vector2);
+            }
+        }
+
         this.handleInput();
         this.handleAnimatedTiles(delta);
         this.changeScenario();
+        this.enemyManager.updatePathing();
+        this.enemyManager.updateMovement();
     }
 
     // Usados em create()
@@ -84,6 +102,17 @@ export class BaseScene extends Scene implements IBaseScene {
         });
     }
 
+    setupEnemySpawnPoints(): void {
+        const layer = this.map.getObjectLayer('enemySpawnPoints')
+        if(layer) {
+            layer.objects.forEach(
+                (obj) => { 
+                    this.enemySpawnPoints.push({ name: obj.name, position: new Phaser.Math.Vector2(obj.x! + obj.width!/2, obj.y! - obj.height!/2) });
+                }
+            )
+        }
+    }
+
     setupPlayer(): void {
         const spawnPoint = this.map.findObject(
             'spawnPoints', // nome da Object Layer
@@ -91,7 +120,7 @@ export class BaseScene extends Scene implements IBaseScene {
         ) as Phaser.Types.Tilemaps.TiledObject;
         const startingPosition = new Phaser.Math.Vector2(
             (spawnPoint?.x ?? WindowResolution.width / 2) + (spawnPoint?.width ?? 0) * 0.5,
-            (spawnPoint?.y ?? WindowResolution.height / 2) + (spawnPoint?.height ?? 0) * 0.5
+            (spawnPoint?.y ?? WindowResolution.height / 2) - (spawnPoint?.height ?? 0) * 0.5
         );
 
         const character = new Character(this, { x: startingPosition.x, y: startingPosition.y } as Phaser.Math.Vector2, this.sceneData.character.name, this.sceneData.character.spriteKey, this.sceneData.character.baseSpeed, this.sceneData.character.baseHealth);
@@ -120,13 +149,15 @@ export class BaseScene extends Scene implements IBaseScene {
     setupCollisions(): void {
         this.physics.world.setBoundsCollision(true, true, true, true);
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.layers.forEach((layer) => {
-            const collides = layer.layer.properties?.find((prop: any) => prop.name === 'collides') ?? false;
-            if (collides) {
-                layer.setCollisionByExclusion([-1]);
-                this.physics.add.collider(this.player.character!, layer);
-            }
-        });
+     
+        const collisionLayer = this.map.getLayer('colisao')?.tilemapLayer;
+        if (collisionLayer) {
+            collisionLayer.setCollisionByProperty({ collides: true });
+
+            this.physics.add.collider(this.player.character, collisionLayer);
+        } else {
+            console.error("Camada 'colisao' não encontrada no mapa.");
+        }
     }
 
     setupCameras(): void {
@@ -138,6 +169,10 @@ export class BaseScene extends Scene implements IBaseScene {
 
     setupAttackManager(): void {
         this.attackManager = new AttackManager(this, this.player.weaponSet);
+    }
+
+    setupEnemyManager(): void {
+        this.enemyManager = new EnemyManager(this);
     }
 
     setupAnimatedTiles(): void {
