@@ -1,4 +1,6 @@
-export default class GameCameras  {
+import { IGameCameras } from "../types";
+
+export default class GameCameras implements IGameCameras {
     main!: Phaser.Cameras.Scene2D.Camera;
     ui!: Phaser.Cameras.Scene2D.Camera;
     scene: Phaser.Scene;

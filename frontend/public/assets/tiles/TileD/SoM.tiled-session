@@ -5,8 +5,8 @@
     },
     "activeFile": "cenarios/mapa.tmx",
     "expandedProjectPaths": [
-        ".",
-        "cenarios"
+        "cenarios",
+        "."
     ],
     "fileStates": {
         "": {
@@ -418,16 +418,17 @@
         },
         "cenarios/mapa.tmx": {
             "expandedGroupLayers": [
+                17,
                 18
             ],
             "expandedObjectLayers": [
                 13
             ],
-            "scale": 1.5,
-            "selectedLayer": 22,
+            "scale": 0.33,
+            "selectedLayer": 21,
             "viewCenter": {
-                "x": 681.3333333333333,
-                "y": 147.99999999999997
+                "x": 760.6060606060607,
+                "y": 703.0303030303032
             }
         },
         "cenarios/mapa.tmx#10_dirt": {
@@ -437,7 +438,8 @@
             "scaleInDock": 1
         },
         "cenarios/mapa.tmx#12_extra1": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "cenarios/mapa.tmx#13_extra2": {
             "scaleInDock": 1

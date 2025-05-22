@@ -1,4 +1,5 @@
-// Guarda caminhos de tiles 
+// diretório com os cenários
+export const PathScenarios = 'tiles/TileD/cenariosJson/';
 
 export const TilePaths = {
     normal: 'tilesets',
