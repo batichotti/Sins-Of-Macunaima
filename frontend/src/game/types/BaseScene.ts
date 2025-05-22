@@ -6,6 +6,7 @@ import AttackManager from "../entities/Attack";
 import InputManager from "../components/Input";
 import { EnemySpawnPoints } from "./EnemySpawnPoints";
 import EnemyManager from "../entities/EnemyManager";
+import GameUI from "../components/TextBox";
 
 /**
  * Cena básica do mundo.
@@ -79,6 +80,11 @@ export default interface IBaseScene {
     attackManager: AttackManager;
 
     /**
+     * A UI do jogo.
+     */
+    gameUI: GameUI;
+
+    /**
      * Configura camadas.
      */
     setupLayers(): void;
@@ -122,6 +128,11 @@ export default interface IBaseScene {
      * Configura o gerenciador de inimigos
      */
     setupEnemyManager(): void;
+
+    /**
+     * Configura a Ui do jogo.
+     */
+    setupGameUi(): void;
 
     /**
      * Manuseia a entrada do jogador.

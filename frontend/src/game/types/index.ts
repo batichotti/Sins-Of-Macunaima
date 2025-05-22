@@ -9,4 +9,5 @@ export * from './Input';
 export * from './TextBoxesContent';
 export * from './Enemy';
 export * from './EnemySpawnPoints';
-export * from './CachedPath'
+export * from './CachedPath';
+export * from './GameUI';

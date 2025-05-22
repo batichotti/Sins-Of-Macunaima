@@ -10,6 +10,7 @@ import IBaseScene from '../types/BaseScene';
 import AttackManager from '../entities/Attack';
 import InputManager from '../components/Input';
 import EnemyManager from '../entities/EnemyManager';
+import GameUI from '../components/TextBox';
 
 /**
  * Cena básica de jogo.
@@ -23,6 +24,7 @@ export class BaseScene extends Scene implements IBaseScene {
     inputManager: InputManager;
     enemyManager: EnemyManager;
     enemySpawnPoints: EnemySpawnPoints[];
+    gameUI: GameUI;
     public map: Phaser.Tilemaps.Tilemap;
     sceneData: SceneData;
     transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
@@ -62,6 +64,7 @@ export class BaseScene extends Scene implements IBaseScene {
         this.setupAttackManager();
         this.setupEnemyManager();
         this.setupEnemySpawnPoints();
+        this.setupGameUi();
     
 
         EventBus.emit('current-scene-ready', this);
@@ -199,6 +202,10 @@ export class BaseScene extends Scene implements IBaseScene {
                 });
             });
         });
+    }
+
+    setupGameUi() : void {
+        this.gameUI = new GameUI(this);
     }
       
 

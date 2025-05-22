@@ -1,8 +1,33 @@
 import { Scene } from 'phaser';
 import { Text } from '@/game/components/Properties';
 import { ITextBox } from '../types';
+import IGameUI from '../types/GameUI';
+import { BaseScene } from '../core/BaseScene';
 
-export default class TextBox extends Phaser.GameObjects.Container implements ITextBox {
+export default class GameUI implements IGameUI {
+  scene: BaseScene;
+  playerLabel: TextBox;
+  characterLabel: TextBox;
+  levelLabel: TextBox;
+  healthLabel: TextBox;
+  weaponSetLabel: TextBox;
+  constructor(scene: BaseScene) {
+    this.scene = scene;
+    this.playerLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 10 } as Phaser.Math.Vector2);
+    this.characterLabel = new TextBox(scene, { x: 300, y : 50 } as Phaser.Math.Vector2, { x: 220, y: 10 } as Phaser.Math.Vector2);
+    this.levelLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 530, y: 10 } as Phaser.Math.Vector2);
+    this.healthLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 530, y: 10 } as Phaser.Math.Vector2);
+    this.weaponSetLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 530, y: 10 } as Phaser.Math.Vector2);
+
+    this.scene.gameCameras.main.ignore(this.playerLabel);
+    this.scene.gameCameras.main.ignore(this.characterLabel);
+    this.scene.gameCameras.main.ignore(this.levelLabel);
+    this.scene.gameCameras.main.ignore(this.healthLabel);
+    this.scene.gameCameras.main.ignore(this.weaponSetLabel);
+  }
+}
+
+export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
   size: Phaser.Math.Vector2;
   background: Phaser.GameObjects.Graphics;
   text: Phaser.GameObjects.Text;
