@@ -23,9 +23,9 @@ export default class EnemyManager {
         this.pathFinder = new Pathfinding(this.grid);
         this.enemyPool = scene.physics.add.group({
             classType: Enemy,
-            maxSize: 20,
+            maxSize: 40,
             collideWorldBounds: true,
-            runChildUpdate: false,
+            runChildUpdate: true,
             createCallback: (enemyObj: Phaser.GameObjects.GameObject) => {
                 const enemy = enemyObj as Enemy;
                 enemy.setActive(true).setVisible(true).setCollideWorldBounds(true);
@@ -80,11 +80,7 @@ export default class EnemyManager {
         
             if (index === this.updateIndex) break;
         }
-
-            const baseDelay = 100;
-        const enemyCountFactor = enemies.length * 2;
-        const delay = Math.min(500, baseDelay + enemyCountFactor);
-        this.scene.time.delayedCall(delay, () => this.canPath = true);
+        this.scene.time.delayedCall(100, () => this.canPath = true);
     }
 
     updateMovement() {
