@@ -31,7 +31,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
 
     private getCacheKey(targetTile: Phaser.Math.Vector2): string {
         const startTile = this.scene.map.worldToTileXY(this.x, this.y)!;
-        return this.scene.enemyManager.pathCache.generateKey(startTile, targetTile, 3);
+        return this.scene.enemyManager.pathCache.generateKey(startTile, targetTile, 12);
     }
 
     public setPathFinder(pf: Pathfinding) {
@@ -47,15 +47,91 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         this.baseSpeed = config.baseSpeed;
     }
 
-    private canPath(position: Phaser.Math.Vector2) {
-        const currentTile = this.scene.map.worldToTileXY(this.x, this.y)!;
-        return !currentTile.equals(this.lastTileTarget) || this.nextNode >= this.path.length;
+    private canPath(targetPosition: Phaser.Math.Vector2) {
+        const targetTile = this.scene.map.worldToTileXY(targetPosition.x, targetPosition.y)!;
+        const targetMoved = !targetTile.equals(this.lastTileTarget);
+        const reachedEndOfPath = this.nextNode >= this.path.length - 1;
+        return targetMoved || reachedEndOfPath;
+    }
+
+    private simplifyPath(path: Phaser.Math.Vector2[]): Phaser.Math.Vector2[] {
+        if (path.length <= 2) return path;
+        
+        const result: Phaser.Math.Vector2[] = [path[0]];
+        
+        for (let i = 1; i < path.length - 1; i++) {
+            const prev = path[i-1];
+            const current = path[i];
+            const next = path[i+1];
+            
+            const dx1 = current.x - prev.x;
+            const dy1 = current.y - prev.y;
+            const dx2 = next.x - current.x;
+            const dy2 = next.y - current.y;
+            
+            if (Math.abs(Math.atan2(dy1, dx1) - Math.atan2(dy2, dx2)) > 0.1) {
+                result.push(current);
+            }
+        }
+    
+        result.push(path[path.length - 1]);
+        return result;
+    }
+
+
+    private calculatePartialPath(targetPx: Phaser.Math.Vector2) {
+        const direction = new Phaser.Math.Vector2(targetPx.x - this.x, targetPx.y - this.y).normalize();
+        
+        const intermediateDistance = 350;
+        const intermediatePx = new Phaser.Math.Vector2(
+            this.x + direction.x * intermediateDistance,
+            this.y + direction.y * intermediateDistance
+        );
+        
+        const intermediateTile = this.scene.map.worldToTileXY(intermediatePx.x, intermediatePx.y);
+        let walkableTile = intermediateTile;
+        
+        if(!intermediateTile) return;
+
+        if (!this.scene.enemyManager.grid.getNode(intermediateTile.x, intermediateTile.y)?.walkable) {
+            walkableTile = this.findNearestWalkableTile(intermediateTile);
+        }
+        
+        if(!walkableTile) return;
+
+        const startTile = this.scene.map.worldToTileXY(this.x, this.y);
+        const raw = this.pathFinder.findPathBetweenTl(startTile!, walkableTile, { distanceMethod: DistanceMethod.Octile, diagonal: true, simplify: true });
+        
+        this.path = raw.map(n => this.scene.map.tileToWorldXY(n.tileX, n.tileY)!.add(new Phaser.Math.Vector2(this.scene.map.tileWidth/2, this.scene.map.tileWidth/2)));
+        
+        this.nextNode = 0;
+        this.lastTileTarget = walkableTile.clone();
+    }
+
+    private findNearestWalkableTile(tile: Phaser.Math.Vector2): Phaser.Math.Vector2 {
+        const searchRadius = 10;
+        
+        for (let r = 1; r <= searchRadius; r++) {
+            for (let dx = -r; dx <= r; dx++) {
+                for (let dy = -r; dy <= r; dy++) {
+                    if (Math.abs(dx) < r && Math.abs(dy) < r) continue;
+                    
+                    const checkX = tile.x + dx;
+                    const checkY = tile.y + dy;
+
+                    if (this.scene.enemyManager.grid.getNode(checkX, checkY)?.walkable) {
+                        return new Phaser.Math.Vector2(checkX, checkY);
+                    }
+                }
+            }
+        }
+        return tile.clone();
     }
 
     updatePathing(targetPx: Phaser.Math.Vector2) {
         if (!this.body || !this.pathFinder) return;
 
-        if(!this.canPath(targetPx) || Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y } as Phaser.Math.Vector2, targetPx) < 64) {
+        if(!this.canPath(targetPx)) {
             return;
         }
 
@@ -73,16 +149,16 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
 
         const startTile = this.scene.map.worldToTileXY(this.x, this.y);
 
-        const raw = this.pathFinder.findPathBetweenTl(startTile!, targetTile!, { distanceMethod: DistanceMethod.Octile, diagonal: true, simplify: true });
+        const raw = this.pathFinder.findPathBetweenTl(startTile!, targetTile!, { distanceMethod: DistanceMethod.Octile, diagonal: true, simplify: true }).map(n => this.scene.map.tileToWorldXY(n.tileX, n.tileY)!.add(new Phaser.Math.Vector2(this.scene.map.tileWidth/2, this.scene.map.tileWidth/2)));
 
-        this.path = raw.map(n => this.scene.map.tileToWorldXY(n.tileX, n.tileY)!.add(new Phaser.Math.Vector2(this.scene.map.tileWidth/2, this.scene.map.tileWidth/2)));
+        this.path = this.simplifyPath(raw);
         this.scene.enemyManager.pathCache.set(cacheKey, this.path);
         this.nextNode = 0;
         this.lastTileTarget = targetTile!.clone();
     }
 
     updateMovement() {
-        if (this.nextNode >= this.path.length-1) {
+        if (this.nextNode >= this.path.length) {
             this.setVelocity(0, 0);
             return;
         }
