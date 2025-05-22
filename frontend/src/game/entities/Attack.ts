@@ -1,5 +1,6 @@
 import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet } from "../types";
 import { BaseScene } from "../core/BaseScene";
+import Enemy from "./Enemy";
 
 export default class AttackManager {
     private projectiles: Phaser.Physics.Arcade.Group;
@@ -25,7 +26,18 @@ export default class AttackManager {
             maxSize: 5,
             runChildUpdate: true
         });
+
+        this.scene.physics.add.overlap(this.projectiles, this.scene.enemyManager.enemyPool, this.handleHit);
     }
+
+
+    private handleHit = (obj1: object, obj2: object) => {
+        const projectile = obj1 as Projectile;
+        const enemy = obj2 as Enemy;
+
+        projectile.disableBody(true, true);
+        enemy.die();
+    };
 
     toggleWeapon(): void {
         if(this.currentWeapon.weaponType === WeaponType.PROJECTILE) {
@@ -101,13 +113,12 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
 
     fire(x: number, y: number, angle: number): void {
         this.enableBody(true, x, y, true, true);
-        
 
         const velocity = this.scene.physics.velocityFromRotation(angle, this.baseSpeed);
         this.setRotation(angle);
         this.setVelocity(velocity.x, velocity.y);
 
-        this.scene.time.delayedCall(2000, () => { this.disableBody(true, true); });
+        this.scene.time.delayedCall(2000, () => { if(this.active) this.disableBody(true, true); });
     }
 }
 

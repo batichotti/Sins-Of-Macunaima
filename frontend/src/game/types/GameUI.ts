@@ -24,5 +24,6 @@ export const GameUIPlaceholders = {
     CHARACTER: "Personagem: ",
     LEVEL: "Nível: ",
     HEALTH: "Vida: ",
-    WEAPONSET: "Armas: "
+    WEAPONSET: "Armas: ",
+    POINTS: "PTS: "
 }

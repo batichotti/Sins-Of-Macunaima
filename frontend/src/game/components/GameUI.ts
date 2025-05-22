@@ -11,6 +11,7 @@ export default class GameUI implements IGameUI {
   levelLabel: TextBox;
   healthLabel: TextBox;
   weaponSetLabel: TextBox;
+  pointsLabel: TextBox;
   constructor(scene: BaseScene) {
     this.scene = scene;
     this.playerLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
@@ -18,6 +19,7 @@ export default class GameUI implements IGameUI {
     this.levelLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 530, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.LEVEL);
     this.healthLabel = new TextBox(scene, { x: 150, y: 50 } as Phaser.Math.Vector2, { x: 640, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.HEALTH);
     this.weaponSetLabel = new TextBox(scene, { x: 300, y: 50 } as Phaser.Math.Vector2, { x: 800, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
+    this.pointsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 1110, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.POINTS);
 
     this.scene.gameCameras.main.ignore(this.playerLabel);
     this.scene.gameCameras.main.ignore(this.characterLabel);
@@ -31,6 +33,7 @@ export default class GameUI implements IGameUI {
     this.levelLabel.setText(this.scene.player.level.level.toString());
     this.healthLabel.setText(this.scene.player.character.baseHealth.toString());
     this.weaponSetLabel.setText(this.scene.player.weaponSet.projectile.name + ' - ' + this.scene.player.weaponSet.melee.name);
+    this.pointsLabel.setText("0");
   }
 }
 

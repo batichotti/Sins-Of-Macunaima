@@ -33,6 +33,11 @@ export interface IEnemy {
      * Velocidade base do inimigo.
      */
     baseSpeed: number;
+
+    /**
+     * Pontuação ganha por matar o inimigo.
+     */
+    pointGain: number;
 }
 
 /**
@@ -50,6 +55,7 @@ export const EnemyTypes = [
             baseCooldown: 500 
         } as IMelee, 
         baseHealth: 200, 
-        baseSpeed: 200 
+        baseSpeed: 200,
+        pointGain: 20
     }
 ];

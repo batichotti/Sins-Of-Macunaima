@@ -82,7 +82,7 @@ export const BaseProjectileStats = {
     /**
      * Quantas projéteis o pool pai deve fazer.
      */
-    groupSize: 40,
+    groupSize: 50,
 
     /**
      * CoolDown base.

@@ -7,6 +7,7 @@ export default class InputManager implements IInput {
     arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
     awsd!: Phaser.Types.Input.Keyboard.CursorKeys;
     scene: Phaser.Scene;
+    toggleKey!: Phaser.Input.Keyboard.Key;
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene;

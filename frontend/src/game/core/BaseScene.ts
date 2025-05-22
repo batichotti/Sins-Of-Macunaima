@@ -61,8 +61,8 @@ export class BaseScene extends Scene implements IBaseScene {
         this.setupTransitionPoints();
         this.setupCollisions();
         this.setupCameras();
-        this.setupAttackManager();
         this.setupEnemyManager();
+        this.setupAttackManager();
         this.setupEnemySpawnPoints();
         this.setupGameUi();
     

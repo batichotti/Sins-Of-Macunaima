@@ -10,6 +10,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     weapon: IMelee;
     baseHealth: number;
     baseSpeed: number;
+    pointGain: number;
     pathFinder!: Pathfinding;
     private path: Phaser.Math.Vector2[] = [];
     private nextNode = 0;
@@ -47,6 +48,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         this.weapon = config.weapon;
         this.baseHealth = config.baseHealth;
         this.baseSpeed = config.baseSpeed;
+        this.pointGain = config.pointGain;
     }
 
     private canPath(position: Phaser.Math.Vector2) {
@@ -110,7 +112,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         if (Phaser.Math.Distance.Between(this.x, this.y, dest.x, dest.y) < 8) this.nextNode++;
     }
 
-    private destroyEnemy(): void {
-        this.setActive(false).setVisible(false);
+    die(): void {
+        this.destroy();
+        //this.setActive(false).setVisible(false);   
     }
 }

@@ -21,4 +21,9 @@ export interface IInput {
      * As teclas 'A', 'W', 'S' e 'D' do teclado.
      */
     awsd: Phaser.Types.Input.Keyboard.CursorKeys;
+
+    /**
+     * Tecla usada para trocar de arma.
+     */
+    toggleKey: Phaser.Input.Keyboard.Key;
 }
