@@ -2,7 +2,7 @@ import { DistanceMethod, Pathfinding, PathNode } from "../components/phaser-path
 import { BaseScene } from "../core/BaseScene";
 import { IMelee, IEnemy } from "../types";
 
-export default class Enemy extends Phaser.Physics.Matter.Sprite implements IEnemy {
+export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnemy {
     name: string;
     scene: BaseScene;
     spriteKey: string;
@@ -16,13 +16,17 @@ export default class Enemy extends Phaser.Physics.Matter.Sprite implements IEnem
     private lastTileTarget = new Phaser.Math.Vector2(0, 0);
 
     constructor(scene: BaseScene, position: Phaser.Math.Vector2, spriteKey: string) {
-        super(scene.matter.world, position.x, position.y, spriteKey);
+        super(scene, position.x, position.y, spriteKey);
         this.spriteKey = spriteKey;
         scene.add.existing(this);
-        this.setFixedRotation();
-        this.setCollidesWith(0xFFFF);
+        scene.physics.add.existing(this);
+        this.setBodySize(16, 32);
+        /**
+         * Por algum motivo o corpo do inimigo fica deslocado e é necessário fazer isso.
+         */
+        this.setOffset(0, 0);
         
-        this.setScale(1.5).setDepth(100);
+        this.setScale(1.5).setCollideWorldBounds(true).setDepth(100);
     }
 
     private getCacheKey(targetTile: Phaser.Math.Vector2): string {
@@ -154,14 +158,33 @@ export default class Enemy extends Phaser.Physics.Matter.Sprite implements IEnem
     }
 
     updateMovement() {
-        if (this.nextNode >= this.path.length) return;
-        
-        const target = this.path[this.nextNode];
-        const direction = new Phaser.Math.Vector2(target.x - this.x, target.y - this.y).normalize();
-        this.setVelocity(direction.x * this.baseSpeed, direction.y * this.baseSpeed);
-        
-        if (Phaser.Math.Distance.Between(this.x, this.y, target.x, target.y) < 5) {
-            this.nextNode++;
+        if (this.nextNode >= this.path.length) {
+            this.setVelocity(0, 0);
+            return;
         }
+
+        const dest = this.path[this.nextNode];
+        const dir  = new Phaser.Math.Vector2(dest.x - this.x, dest.y - this.y).normalize();
+
+        let speed = this.baseSpeed;
+        
+
+        const nextX = this.x + (dir.x * speed * 0.032);
+        const nextY = this.y + (dir.y * speed * 0.032);
+        const nextTile = this.scene.map.worldToTileXY(nextX, nextY);
+        
+        if (nextTile && !this.scene.enemyManager.grid.getNode(nextTile.x, nextTile.y)?.walkable) {
+            this.setVelocity(0, 0);
+            this.nextNode = this.path.length;
+            return;
+        }
+
+        this.setVelocity(dir.x * speed, dir.y * speed);
+
+        if (Phaser.Math.Distance.Between(this.x, this.y, dest.x, dest.y) < 8) this.nextNode++;
+    }
+
+    private destroyEnemy(): void {
+        this.setActive(false).setVisible(false);
     }
 }

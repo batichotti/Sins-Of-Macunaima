@@ -12,16 +12,12 @@ const config: Phaser.Types.Core.GameConfig = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
     pixelArt: true,
     backgroundColor: '#028af8',
-    fps: {
-        target: 60,
-        forceSetTimeOut: true,
-        smoothStep: true
-    },
     physics: {
-        default: 'matter',
-        matter: { 
-            gravity: { x: 0, y: 0 }, 
-            enableSleeping: true
+        default: 'arcade',
+        arcade: {
+            fps: 60,
+            gravity: { x: 0, y: 0 },
+            debug: false
         }
     },
     scene: [
