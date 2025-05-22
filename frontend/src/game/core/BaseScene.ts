@@ -147,14 +147,14 @@ export class BaseScene extends Scene implements IBaseScene {
     }
 
     setupCollisions(): void {
-        this.physics.world.setBoundsCollision(true, true, true, true);
-        this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+        //this.physics.world.setBoundsCollision(true, true, true, true);
+        this.matter.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
      
         const collisionLayer = this.map.getLayer('colisao')?.tilemapLayer;
         if (collisionLayer) {
             collisionLayer.setCollisionByProperty({ collides: true });
 
-            this.physics.add.collider(this.player.character, collisionLayer);
+            this.matter.world.convertTilemapLayer(collisionLayer);
         } else {
             console.error("Camada 'colisao' não encontrada no mapa.");
         }

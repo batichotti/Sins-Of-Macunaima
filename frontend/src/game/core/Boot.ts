@@ -55,9 +55,9 @@ export class Boot extends Scene {
 
         // Aqui seria o lugar ideal para pegar tudo do backend. Mas enquanto isso construímos o personagem do zero.
         this.level = { level: 1 } as ILevel;
-        this.character = { name: 'Macunaíma', spriteKey: 'Macunaima', baseHealth: 200, baseSpeed: 200 } as ICharacter;
+        this.character = { name: 'Macunaíma', spriteKey: 'Macunaima', baseHealth: 200, baseSpeed: 8 } as ICharacter;
         this.weaponSet = {
-            projectile: { name: 'Flecha', weaponType: WeaponType.PROJECTILE, spriteKey: 'arrow_sprite', baseDamage: 150, baseCooldown: 150, baseSpeed: 500 },
+            projectile: { name: 'Flecha', weaponType: WeaponType.PROJECTILE, spriteKey: 'arrow_sprite', baseDamage: 150, baseCooldown: 150, baseSpeed: 15 },
             melee: { name: 'Bananeira', weaponType: WeaponType.MELEE, spriteKey: 'aaa', baseDamage: 150, baseCooldown: 150 }
 
         }

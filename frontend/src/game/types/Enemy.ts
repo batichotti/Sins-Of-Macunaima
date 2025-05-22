@@ -50,6 +50,6 @@ export const EnemyTypes = [
                     baseCooldown: 500 
                 } as IMelee, 
         baseHealth: 200, 
-        baseSpeed: 200 
+        baseSpeed: 4 
     }
 ];

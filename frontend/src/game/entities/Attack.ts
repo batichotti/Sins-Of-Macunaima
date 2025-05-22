@@ -2,8 +2,8 @@ import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet } from "../types";
 import { BaseScene } from "../core/BaseScene";
 
 export default class AttackManager {
-    private projectiles: Phaser.Physics.Arcade.Group;
-    private meleeHitboxes: Phaser.Physics.Arcade.Group;
+    private projectiles: Set<Projectile> = new Set();
+    private meleeHitboxes: Set<MeleeHitbox> = new Set();
     private scene: BaseScene;
     private canAttack = true;
     private weaponSet: WeaponSet;
@@ -13,18 +13,6 @@ export default class AttackManager {
         this.scene = scene;
         this.weaponSet = weaponSet;
         this.currentWeapon = weaponSet.projectile;
-
-        this.projectiles = scene.physics.add.group({
-            classType: Projectile,
-            maxSize: BaseProjectileStats.groupSize,
-            runChildUpdate: true
-        });
-
-        this.meleeHitboxes = scene.physics.add.group({
-            classType: MeleeHitbox,
-            maxSize: 5,
-            runChildUpdate: true
-        });
     }
 
     toggleWeapon(): void {
@@ -56,16 +44,18 @@ export default class AttackManager {
     }
 
     private fireProjectile(x: number, y: number, angle: number): void {
-        const projectile = this.projectiles.get(x, y, this.currentWeapon.spriteKey, this.weaponSet.projectile.baseSpeed) as Projectile;
+        if(this.projectiles.size <= BaseProjectileStats.groupSize) {
+            const projectile = new Projectile(this.scene, x, y, this.weaponSet.projectile.spriteKey, this.weaponSet.projectile.baseSpeed);;
 
-        if (projectile) {
-            this.scene.gameCameras.ui.ignore(projectile);
-            projectile.fire(x, y, angle);
+            if (projectile) {
+                this.scene.gameCameras.ui.ignore(projectile);
+                projectile.fire(x, y, angle);
+            }
         }
     }
 
     private executeMeleeAttack(x: number, y: number, angle: number): void {
-        const hitbox = this.meleeHitboxes.get(x, y, this.currentWeapon.spriteKey) as MeleeHitbox;
+        const hitbox = new MeleeHitbox(this.scene, x, y, this.weaponSet.melee.name, this.weaponSet.melee.spriteKey, this.weaponSet.melee.baseDamage, this.weaponSet.melee.baseCooldown);
 
         if (hitbox) {
             const distanceFromPlayer = 30;
@@ -86,38 +76,41 @@ export default class AttackManager {
     }
 }
 
-class Projectile extends Phaser.Physics.Arcade.Sprite {
+class Projectile extends Phaser.Physics.Matter.Sprite {
     spriteKey: string;
     baseSpeed: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number, spritekey: string, baseSpeed: number) {
-        super(scene, x, y, spritekey);
+        super(scene.matter.world, x, y, spritekey);
         this.spriteKey = spritekey;
         this.baseSpeed = baseSpeed;
-        this.setDepth(1000);
         scene.add.existing(this);
-        scene.physics.add.existing(this);
+        this.setDepth(1000);
+        this.setActive(true);
+        this.setIgnoreGravity(true);
+        this.setFriction(0);
+        this.setBounce(0);
+        this.setSensor(true);
+        //scene.matter.add.gameObject(this);
     }
 
     fire(x: number, y: number, angle: number): void {
-        this.enableBody(true, x, y, true, true);
-        
-
-        const velocity = this.scene.physics.velocityFromRotation(angle, this.baseSpeed);
+        const velocityX = Math.cos(angle) * this.baseSpeed;
+        const velocityY = Math.sin(angle) * this.baseSpeed;
         this.setRotation(angle);
-        this.setVelocity(velocity.x, velocity.y);
+        this.setVelocity(velocityX, velocityY);
 
-        this.scene.time.delayedCall(2000, () => { this.disableBody(true, true); });
+        this.scene.time.delayedCall(2000, () => { this.destroy() });
     }
 }
 
 // TODO: Fazer MeleeHitbox extender Phaser.Zone
-class MeleeHitbox extends Phaser.Physics.Arcade.Sprite {
+class MeleeHitbox extends Phaser.Physics.Matter.Sprite {
     spriteKey: string;
     baseCooldown: number;
 
     constructor(scene: BaseScene, x: number, y: number, name: string, spriteKey: string, baseDamage: number, baseCooldown: number) {
-        super(scene, x, y, spriteKey);
+        super(scene.matter.world, x, y, spriteKey);
         this.spriteKey = spriteKey;
         this.baseCooldown = baseCooldown;
 
@@ -125,18 +118,15 @@ class MeleeHitbox extends Phaser.Physics.Arcade.Sprite {
         this.setVisible(false);
         this.setActive(false);
         // Arrumar dps
-        this.body!.setSize(40, 40);
+        this.setSize(40, 40);
     }
 
     activate(x: number, y: number): void {
-        this.enableBody(true, x, y, true, true);
         this.setVisible(true);
         this.setActive(true);
     }
 
     deactivate(): void {
-        this.disableBody(true, true);
-        this.setVisible(false);
-        this.setActive(false);
+        this.destroy();
     }
 }
