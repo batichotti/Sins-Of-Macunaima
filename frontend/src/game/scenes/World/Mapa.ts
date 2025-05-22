@@ -33,5 +33,8 @@ export class Mapa extends BaseScene {
     }
     update(time: number, delta: number): void {
         super.update(time, delta);
+        if(this.inputManager.arrows.space.isDown) {
+            this.enemyManager.spawnEnemy({ x: this.player.character.x, y: this.player.character.y } as Phaser.Math.Vector2);
+        }
     }
 }

@@ -57,9 +57,9 @@ export default class AttackManager {
 
     private fireProjectile(x: number, y: number, angle: number): void {
         const projectile = this.projectiles.get(x, y, this.currentWeapon.spriteKey, this.weaponSet.projectile.baseSpeed) as Projectile;
+        this.scene.gameCameras.ui.ignore(projectile);
 
         if (projectile) {
-            this.scene.gameCameras.ui.ignore(projectile);
             projectile.fire(x, y, angle);
         }
     }
@@ -101,7 +101,6 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
 
     fire(x: number, y: number, angle: number): void {
         this.enableBody(true, x, y, true, true);
-        
 
         const velocity = this.scene.physics.velocityFromRotation(angle, this.baseSpeed);
         this.setRotation(angle);
