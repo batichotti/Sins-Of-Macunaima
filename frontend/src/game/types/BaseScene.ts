@@ -6,7 +6,7 @@ import AttackManager from "../entities/Attack";
 import InputManager from "../components/Input";
 import { EnemySpawnPoints } from "./EnemySpawnPoints";
 import EnemyManager from "../entities/EnemyManager";
-import GameUI from "../components/TextBox";
+import GameUI from "../components/GameUI";
 
 /**
  * Cena básica do mundo.

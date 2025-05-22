@@ -44,11 +44,11 @@ export const EnemyTypes = [
         spriteKey: 'Macunaima', 
         spawnRegion: 'Floresta',
         weapon: { 
-                    name: 'bengala', 
-                    spriteKey: 'bengala',
-                    baseDamage: 50, 
-                    baseCooldown: 500 
-                } as IMelee, 
+            name: 'bengala', 
+            spriteKey: 'bengala',
+            baseDamage: 50, 
+            baseCooldown: 500 
+        } as IMelee, 
         baseHealth: 200, 
         baseSpeed: 200 
     }

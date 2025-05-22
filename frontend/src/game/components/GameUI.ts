@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { Text } from '@/game/components/Properties';
 import { ITextBox } from '../types';
-import IGameUI from '../types/GameUI';
+import { IGameUI, GameUIPlaceholders }from '../types/GameUI';
 import { BaseScene } from '../core/BaseScene';
 
 export default class GameUI implements IGameUI {
@@ -13,17 +13,24 @@ export default class GameUI implements IGameUI {
   weaponSetLabel: TextBox;
   constructor(scene: BaseScene) {
     this.scene = scene;
-    this.playerLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 10 } as Phaser.Math.Vector2);
-    this.characterLabel = new TextBox(scene, { x: 300, y : 50 } as Phaser.Math.Vector2, { x: 220, y: 10 } as Phaser.Math.Vector2);
-    this.levelLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 530, y: 10 } as Phaser.Math.Vector2);
-    this.healthLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 530, y: 10 } as Phaser.Math.Vector2);
-    this.weaponSetLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 530, y: 10 } as Phaser.Math.Vector2);
+    this.playerLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
+    this.characterLabel = new TextBox(scene, { x: 300, y : 50 } as Phaser.Math.Vector2, { x: 220, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.CHARACTER);
+    this.levelLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 530, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.LEVEL);
+    this.healthLabel = new TextBox(scene, { x: 150, y: 50 } as Phaser.Math.Vector2, { x: 640, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.HEALTH);
+    this.weaponSetLabel = new TextBox(scene, { x: 300, y: 50 } as Phaser.Math.Vector2, { x: 800, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
 
     this.scene.gameCameras.main.ignore(this.playerLabel);
     this.scene.gameCameras.main.ignore(this.characterLabel);
     this.scene.gameCameras.main.ignore(this.levelLabel);
     this.scene.gameCameras.main.ignore(this.healthLabel);
     this.scene.gameCameras.main.ignore(this.weaponSetLabel);
+
+
+    this.playerLabel.setText(this.scene.player.name);
+    this.characterLabel.setText(this.scene.player.character.name);
+    this.levelLabel.setText(this.scene.player.level.level.toString());
+    this.healthLabel.setText(this.scene.player.character.baseHealth.toString());
+    this.weaponSetLabel.setText(this.scene.player.weaponSet.projectile.name + ' - ' + this.scene.player.weaponSet.melee.name);
   }
 }
 
@@ -31,11 +38,13 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
   size: Phaser.Math.Vector2;
   background: Phaser.GameObjects.Graphics;
   text: Phaser.GameObjects.Text;
+  placeholder: string;
 
-  constructor(scene: Scene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
+  constructor(scene: Scene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2, placeholder: string) {
     super(scene, position.x, position.y);
     this.scene = scene;
     this.size = size;
+    this.placeholder = placeholder;
     this.background = new Phaser.GameObjects.Graphics(this.scene);
     this.background.fillStyle(0x000000, 0.8);
     this.background.lineStyle(2, 0xffff00, 1);
@@ -50,7 +59,7 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
   }
 
   setText(newText: string): void {
-    this.text.text = newText;
+    this.text.text = this.placeholder + newText;
   }
 
   show(): void {

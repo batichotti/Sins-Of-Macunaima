@@ -10,7 +10,7 @@ import IBaseScene from '../types/BaseScene';
 import AttackManager from '../entities/Attack';
 import InputManager from '../components/Input';
 import EnemyManager from '../entities/EnemyManager';
-import GameUI from '../components/TextBox';
+import GameUI from '../components/GameUI';
 
 /**
  * Cena básica de jogo.

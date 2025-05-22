@@ -1,4 +1,4 @@
-import { TextBox } from "../components/TextBox";
+import { TextBox } from "../components/GameUI";
 
 /**
  * Interface com os elementos da UI na partida:
@@ -8,10 +8,21 @@ import { TextBox } from "../components/TextBox";
  * - Vida.
  * - Armas.
  */
-export default interface IGameUI {
+export interface IGameUI {
     playerLabel: TextBox;
     characterLabel: TextBox;
     levelLabel: TextBox;
     healthLabel: TextBox;
     weaponSetLabel: TextBox;
+}
+
+/**
+ * Contém placeholders para textos da UI.
+ */
+export const GameUIPlaceholders = {
+    PLAYER: "Jogador: ",
+    CHARACTER: "Personagem: ",
+    LEVEL: "Nível: ",
+    HEALTH: "Vida: ",
+    WEAPONSET: "Armas: "
 }
