@@ -32,9 +32,7 @@ export default class EnemyManager {
                 enemy.setPathFinder(this.pathFinder);
             }
         });
-        this.scene.physics.add.collider(this.enemyPool, this.enemyPool);
         this.scene.physics.add.collider(blockers, this.enemyPool);
-        this.scene.physics.add.collider(this.scene.player.character, this.enemyPool);
     }
 
     spawnEnemy(region: string, position: Phaser.Math.Vector2) {

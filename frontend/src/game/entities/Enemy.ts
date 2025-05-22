@@ -14,9 +14,11 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     private path: Phaser.Math.Vector2[] = [];
     private nextNode = 0;
     private lastTileTarget = new Phaser.Math.Vector2(0, 0);
+    private randomPivot: number = 0;
 
     constructor(scene: BaseScene, position: Phaser.Math.Vector2, spriteKey: string) {
         super(scene, position.x, position.y, spriteKey);
+        this.randomPivot = Phaser.Utils.Array.GetRandom([ -3, -4, -5, -6, -7, -8, 3, 4, 5, 6, 7, 8 ]);
         this.spriteKey = spriteKey;
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -82,13 +84,13 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     updateMovement() {
-        if (this.nextNode >= this.path.length-1) {
+        if (this.nextNode >= this.path.length) {
             this.setVelocity(0, 0);
             return;
         }
 
         const dest = this.path[this.nextNode];
-        const dir  = new Phaser.Math.Vector2(dest.x - this.x, dest.y - this.y).normalize();
+        const dir  = new Phaser.Math.Vector2(dest.x - this.x + this.randomPivot, dest.y - this.y - this.randomPivot).normalize();
 
         let speed = this.baseSpeed;
         
