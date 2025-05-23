@@ -112,8 +112,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         if (Phaser.Math.Distance.Between(this.x, this.y, dest.x, dest.y) < 8) this.nextNode++;
     }
 
-    die(): void {
-        this.destroy();
-        //this.setActive(false).setVisible(false);   
+    takeDamage(damage: number): void {
+        this.baseHealth -= damage;
+        if(this.baseHealth <= 0) {
+            this.destroy();
+        }
     }
 }

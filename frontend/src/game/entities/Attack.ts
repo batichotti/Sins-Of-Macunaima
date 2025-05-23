@@ -34,9 +34,10 @@ export default class AttackManager {
     private handleHit = (obj1: object, obj2: object) => {
         const projectile = obj1 as Projectile;
         const enemy = obj2 as Enemy;
+        const damage = this.currentWeapon.baseDamage * this.scene.player.level.damageIncrease;
 
         projectile.disableBody(true, true);
-        enemy.die();
+        enemy.takeDamage(damage);
     };
 
     toggleWeapon(): void {
