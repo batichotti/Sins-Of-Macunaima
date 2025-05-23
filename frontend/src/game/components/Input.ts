@@ -26,7 +26,7 @@ export default class InputManager implements IInput {
                 }
             ) as Phaser.Types.Input.Keyboard.CursorKeys;
 
-            this.toggleKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L);
+            this.toggleKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         } else {
             console.error("Teclado não disponível.\n");
         }

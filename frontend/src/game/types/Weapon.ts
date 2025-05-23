@@ -23,13 +23,6 @@ export interface IWeapon {
     name: string;
 
     /**
-     * Chave do sprite usado.
-     * 
-     * Deve corresponder exatamente ao nome do asset.
-     */
-    spriteKey: string;
-
-    /**
      * Dano base causado.
      */
     baseDamage: number;
@@ -61,6 +54,14 @@ export interface IProjectile extends IWeapon {
      * Tipo de arma.
      */
     weaponType: WeaponType.PROJECTILE;
+
+    /**
+     * Chave do sprite usado.
+     * 
+     * Deve corresponder exatamente ao nome do asset.
+     */
+    spriteKey: string;
+
 
     /**
      * Velocidade de disparo base do projétil.
@@ -108,4 +109,32 @@ export const BaseProjectileStats = {
      * Dano base.
      */
     damage: 50
+}
+
+/**
+ * Contém os projéteis disponíveis.
+ */
+export const ProjectileTypes: IProjectile[] = [
+    { name: 'Flecha', weaponType: WeaponType.PROJECTILE, spriteKey: 'arrow_sprite', baseDamage: 40, baseCooldown: 150, baseSpeed: 500 }
+];
+
+/**
+ * Usado para escolher os projéteis.
+ */
+export enum ProjectileEnum {
+    FLECHA
+}
+
+/**
+ * Contém os projéteis disponíveis.
+ */
+export const MeleeTypes: IMelee[] = [
+    { name: 'Bananeira', weaponType: WeaponType.MELEE, baseDamage: 75, baseCooldown: 350, range: 32, duration: 50 }
+];
+
+/**
+ * Usado para escolher os projéteis.
+ */
+export enum MeleeEnum {
+    BANANEIRA
 }

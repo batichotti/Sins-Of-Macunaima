@@ -47,7 +47,7 @@ export default class AttackManager {
             this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.25);
             EventManager.getInstance().emit(GameEvents.ENEMY_DIED, { 
                 points: this.playerProgressionSystem.pointsGained,
-                xp:  this.playerProgressionSystem.xpGained
+                xp: this.playerProgressionSystem.xpGained
             });
         }
         

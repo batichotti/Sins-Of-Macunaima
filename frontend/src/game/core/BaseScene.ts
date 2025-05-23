@@ -64,7 +64,7 @@ export class BaseScene extends Scene implements IBaseScene {
         this.setupEnemySpawnPoints();
         this.inputManager = new InputManager(this);
         this.enemyManager = new EnemyManager(this);
-        this.playerProgressionSystem = new PlayerProgressionSystem(this.player, this.gameUI);
+        this.playerProgressionSystem = new PlayerProgressionSystem(this.player);
         this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
         this.gameUI = new GameUI(this);
     
@@ -72,7 +72,7 @@ export class BaseScene extends Scene implements IBaseScene {
     }
 
     update(time: number, delta: number): void {
-        if(time > 120) {
+        if(time > 2000) {
             const point = Phaser.Utils.Array.GetRandom(this.enemySpawnPoints);
             if(point) {
                 this.enemyManager.spawnEnemy(point.name, { x: point.position.x, y: point.position.y } as Phaser.Math.Vector2);

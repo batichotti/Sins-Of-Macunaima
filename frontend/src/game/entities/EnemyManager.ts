@@ -61,7 +61,6 @@ export default class EnemyManager {
             const enemyType = Phaser.Utils.Array.GetRandom(validEnemies);
             const enemy = this.enemyPool.get(position.x, position.y, enemyType.spriteKey) as Enemy;
             if(enemy) {
-                console.log("Inimigoo");
                 this.canSpawn = false;
                 enemy.configureEnemy(enemyType);
                 enemy.enableBody(true, position.x, position.y, true, true);
