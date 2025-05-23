@@ -4,6 +4,7 @@ import { BaseScene } from "../core/BaseScene";
 import { Pathfinding } from "../components/phaser-pathfinding";
 import { Grid } from "../components/phaser-pathfinding";
 import PathCache from "../core/PathCache";
+import { Character } from "./Player";
 
 export default class EnemyManager {
     enemyPool: Phaser.Physics.Arcade.Group;
@@ -13,8 +14,10 @@ export default class EnemyManager {
     canPath = true;
     canSpawn = true;
     grid: Grid;
-    private playerPos = new Phaser.Math.Vector2();
-    private updateIndex = 0;
+    playerPos = new Phaser.Math.Vector2();
+    updateIndex = 0;
+    coolDownAttack: boolean = true;
+
 
     constructor(scene: BaseScene) {
         this.scene = scene;
@@ -23,7 +26,7 @@ export default class EnemyManager {
         this.pathFinder = new Pathfinding(this.grid);
         this.enemyPool = scene.physics.add.group({
             classType: Enemy,
-            maxSize: 40,
+            maxSize: 10,
             collideWorldBounds: true,
             runChildUpdate: true,
             createCallback: (enemyObj: Phaser.GameObjects.GameObject) => {
@@ -33,7 +36,22 @@ export default class EnemyManager {
             }
         });
         this.scene.physics.add.collider(blockers, this.enemyPool);
+        this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
     }
+
+    private attack = (obj1: object, obj2: object) => {
+        const enemy = obj2 as Enemy;
+        const character = obj1 as Character;
+
+        if (!enemy.active || !enemy.weapon?.baseDamage) return;
+
+        if(this.coolDownAttack) {
+            character.takeDamage(enemy.weapon.baseDamage);
+            this.coolDownAttack = false;
+            this.scene.time.delayedCall(1250, () => { this.coolDownAttack = true; });
+        }
+    };
+
 
     spawnEnemy(region: string, position: Phaser.Math.Vector2) {
         if(this.canSpawn) {
@@ -45,12 +63,12 @@ export default class EnemyManager {
             if(enemy) {
                 console.log("Inimigoo");
                 this.canSpawn = false;
-                enemy.setPosition(position.x, position.y)
                 enemy.configureEnemy(enemyType);
+                enemy.enableBody(true, position.x, position.y, true, true);
                 this.scene.gameCameras.ui.ignore(enemy);
             }
         }
-        this.scene.time.delayedCall(1000, () => this.canSpawn = true);
+        this.scene.time.delayedCall(1250, () => this.canSpawn = true);
     }
 
     updatePathing() {

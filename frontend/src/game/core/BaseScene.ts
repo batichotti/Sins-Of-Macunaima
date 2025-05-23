@@ -1,5 +1,5 @@
 import { EventBus } from '@/game/core/EventBus';
-import { Scene } from 'phaser';
+import { Game, Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
 import { AnimatedTileData } from '../types/Tiles';
@@ -11,6 +11,7 @@ import AttackManager from '../entities/Attack';
 import InputManager from '../components/Input';
 import EnemyManager from '../entities/EnemyManager';
 import GameUI from '../components/GameUI';
+import PlayerProgressionSystem from '../entities/PlayerProgressionSystem';
 
 /**
  * Cena básica de jogo.
@@ -25,11 +26,12 @@ export class BaseScene extends Scene implements IBaseScene {
     enemyManager: EnemyManager;
     enemySpawnPoints: EnemySpawnPoints[];
     gameUI: GameUI;
-    public map: Phaser.Tilemaps.Tilemap;
+    map: Phaser.Tilemaps.Tilemap;
     sceneData: SceneData;
     transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
     transitionRects: Phaser.Geom.Rectangle[];
     attackManager: AttackManager;
+    playerProgressionSystem: PlayerProgressionSystem;
 
     constructor(config: Phaser.Types.Scenes.SettingsConfig) {
         super(config);
@@ -50,8 +52,6 @@ export class BaseScene extends Scene implements IBaseScene {
         this.transitionRects = [];
         this.enemySpawnPoints = [];
         this.sceneData = data;
-        this.gameCameras = new GameCameras(this);
-        this.inputManager = new InputManager(this);
     }
 
     protected create(): void {
@@ -61,17 +61,18 @@ export class BaseScene extends Scene implements IBaseScene {
         this.setupTransitionPoints();
         this.setupCollisions();
         this.setupCameras();
-        this.setupEnemyManager();
-        this.setupAttackManager();
         this.setupEnemySpawnPoints();
-        this.setupGameUi();
+        this.inputManager = new InputManager(this);
+        this.enemyManager = new EnemyManager(this);
+        this.gameUI = new GameUI(this);
+        this.playerProgressionSystem = new PlayerProgressionSystem(this.player, this.gameUI);
+        this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
     
-
         EventBus.emit('current-scene-ready', this);
     }
 
     update(time: number, delta: number): void {
-        if(this.inputManager.arrows.space.isDown) {
+        if(time > 120) {
             const point = Phaser.Utils.Array.GetRandom(this.enemySpawnPoints);
             if(point) {
                 this.enemyManager.spawnEnemy(point.name, { x: point.position.x, y: point.position.y } as Phaser.Math.Vector2);
@@ -164,18 +165,11 @@ export class BaseScene extends Scene implements IBaseScene {
     }
 
     setupCameras(): void {
+        this.gameCameras = new GameCameras(this);
         this.gameCameras.initCameras(this.map.widthInPixels, this.map.heightInPixels);
         this.gameCameras.ui.ignore(this.layers);
         this.gameCameras.ui.ignore(this.player.character!);
         this.gameCameras.main.startFollow(this.player.character);
-    }
-
-    setupAttackManager(): void {
-        this.attackManager = new AttackManager(this, this.player.weaponSet);
-    }
-
-    setupEnemyManager(): void {
-        this.enemyManager = new EnemyManager(this);
     }
 
     setupAnimatedTiles(): void {
@@ -203,11 +197,6 @@ export class BaseScene extends Scene implements IBaseScene {
             });
         });
     }
-
-    setupGameUi() : void {
-        this.gameUI = new GameUI(this);
-    }
-      
 
     // Usados em update()
 

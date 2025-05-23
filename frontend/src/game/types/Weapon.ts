@@ -80,14 +80,14 @@ export interface IMelee extends IWeapon {
  */
 export const BaseProjectileStats = {
     /**
-     * Quantas projéteis o pool pai deve fazer.
+     * Quantos projéteis o pool pai deve fazer.
      */
     groupSize: 50,
 
     /**
      * CoolDown base.
      */
-    cooldown: 150,
+    cooldown: 300,
 
     /**
      * Velocidade base.
@@ -97,5 +97,5 @@ export const BaseProjectileStats = {
     /**
      * Dano base.
      */
-    damage: 200
+    damage: 50
 }

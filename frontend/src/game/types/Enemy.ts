@@ -51,7 +51,7 @@ export const EnemyTypes = [
         weapon: { 
             name: 'bengala', 
             spriteKey: 'bengala',
-            baseDamage: 50, 
+            baseDamage: 15, 
             baseCooldown: 500 
         } as IMelee, 
         baseHealth: 200, 

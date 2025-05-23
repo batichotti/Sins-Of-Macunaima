@@ -7,6 +7,7 @@ import InputManager from "../components/Input";
 import { EnemySpawnPoints } from "./EnemySpawnPoints";
 import EnemyManager from "../entities/EnemyManager";
 import GameUI from "../components/GameUI";
+import PlayerProgressionSystem from "../entities/PlayerProgressionSystem";
 
 /**
  * Cena básica do mundo.
@@ -85,6 +86,11 @@ export default interface IBaseScene {
     gameUI: GameUI;
 
     /**
+     * Sistema de pontos e xp do jogo.
+     */
+    playerProgressionSystem: PlayerProgressionSystem;
+
+    /**
      * Configura camadas.
      */
     setupLayers(): void;
@@ -118,22 +124,6 @@ export default interface IBaseScene {
      * Configura as câmeras do jogo.
      */
     setupCameras(): void;
-
-    /**
-     * Configura o gerenciador de ataques.
-     */
-    setupAttackManager(): void;
-
-    /**
-     * Configura o gerenciador de inimigos
-     */
-    setupEnemyManager(): void;
-
-    /**
-     * Configura a Ui do jogo.
-     */
-    setupGameUi(): void;
-
     /**
      * Manuseia a entrada do jogador.
      */

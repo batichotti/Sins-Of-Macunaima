@@ -1,6 +1,6 @@
 import { DistanceMethod, Pathfinding, PathNode } from "../components/phaser-pathfinding";
 import { BaseScene } from "../core/BaseScene";
-import { IMelee, IEnemy } from "../types";
+import { IMelee, IEnemy, WeaponType } from "../types";
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnemy {
     name: string;
@@ -112,10 +112,12 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         if (Phaser.Math.Distance.Between(this.x, this.y, dest.x, dest.y) < 8) this.nextNode++;
     }
 
-    takeDamage(damage: number): void {
+    takeDamage(damage: number): boolean {
         this.baseHealth -= damage;
         if(this.baseHealth <= 0) {
-            this.destroy();
+            this.disableBody(true, true);
+            return true;
         }
+        return false;
     }
 }

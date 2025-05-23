@@ -32,7 +32,17 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
         this.setScale(1.5).setCollideWorldBounds(true).setDepth(100);
     }
 
-    public playerMove(direction: Phaser.Math.Vector2): void {
+    takeDamage(damage: number) {
+        if(this.baseHealth > 0) {
+            this.baseHealth -= damage;
+            if(this.baseHealth < 0) this.baseHealth = 0;
+        } else {
+            console.log("Morreuuuu");
+        }
+        console.log(this.baseHealth);
+    }
+
+    playerMove(direction: Phaser.Math.Vector2): void {
         this.setVelocity(direction.x * this.baseSpeed, direction.y * this.baseSpeed);
     }
 }

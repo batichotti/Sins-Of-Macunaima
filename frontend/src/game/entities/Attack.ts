@@ -1,6 +1,7 @@
 import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet } from "../types";
 import { BaseScene } from "../core/BaseScene";
 import Enemy from "./Enemy";
+import PlayerProgressionSystem from "./PlayerProgressionSystem";
 
 export default class AttackManager {
     private projectiles: Phaser.Physics.Arcade.Group;
@@ -9,9 +10,11 @@ export default class AttackManager {
     private canAttack = true;
     private weaponSet: WeaponSet;
     private currentWeapon: IWeapon;
+    private playerProgressionSystem !: PlayerProgressionSystem;
 
-    constructor(scene: BaseScene, weaponSet: WeaponSet) {
+    constructor(scene: BaseScene, playerProgessionSytem: PlayerProgressionSystem, weaponSet: WeaponSet) {
         this.scene = scene;
+        this.playerProgressionSystem = playerProgessionSytem;
         this.weaponSet = weaponSet;
         this.currentWeapon = weaponSet.projectile;
 
@@ -28,6 +31,9 @@ export default class AttackManager {
         });
 
         this.scene.physics.add.overlap(this.projectiles, this.scene.enemyManager.enemyPool, this.handleHit);
+
+        const blockers = this.scene.map.getLayer('colisao')?.tilemapLayer;
+        if(blockers) this.scene.physics.add.collider(this.projectiles, blockers, this.eraseProjectile);
     }
 
 
@@ -37,7 +43,14 @@ export default class AttackManager {
         const damage = this.currentWeapon.baseDamage * this.scene.player.level.damageIncrease;
 
         projectile.disableBody(true, true);
-        enemy.takeDamage(damage);
+        if(enemy.takeDamage(damage)) {
+            this.playerProgressionSystem.increasePoints(enemy.pointGain);
+            this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.5);
+        }
+    };
+
+    private eraseProjectile = (obj1: object) => {
+        (obj1 as Projectile).disableBody(true, true);
     };
 
     toggleWeapon(): void {
@@ -102,6 +115,7 @@ export default class AttackManager {
 class Projectile extends Phaser.Physics.Arcade.Sprite {
     spriteKey: string;
     baseSpeed: number;
+    lifespanTimer: Phaser.Time.TimerEvent | null = null;
 
     constructor(scene: Phaser.Scene, x: number, y: number, spritekey: string, baseSpeed: number) {
         super(scene, x, y, spritekey);
@@ -113,13 +127,18 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     }
 
     fire(x: number, y: number, angle: number): void {
+        if(this.lifespanTimer) {
+            this.lifespanTimer.destroy();
+            this.lifespanTimer = null;
+        }
+
         this.enableBody(true, x, y, true, true);
 
         const velocity = this.scene.physics.velocityFromRotation(angle, this.baseSpeed);
         this.setRotation(angle);
         this.setVelocity(velocity.x, velocity.y);
 
-        this.scene.time.delayedCall(2000, () => { if(this.active) this.disableBody(true, true); });
+        this.lifespanTimer = this.scene.time.delayedCall(2000, () => { if(this.active) this.disableBody(true, true); });
     }
 }
 
