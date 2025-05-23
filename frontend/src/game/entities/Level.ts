@@ -1,3 +1,4 @@
+import { EventManager, GameEvents } from "../core/EventBus";
 import { ILevel, levelModifiers } from "../types";
 
 export class Level implements ILevel {
@@ -17,5 +18,15 @@ export class Level implements ILevel {
             this.damageIncrease = level * levelModifiers.damage;
             this.defenseIncrease = level * levelModifiers.defense;
         }
+    }
+
+    levelUp() {
+        this.level += 1;
+        this.cooldownDecrease += levelModifiers.cooldown; 
+        this.speedIncrease += levelModifiers.speed;
+        this.healthIncrease += levelModifiers.health;
+        this.damageIncrease += levelModifiers.damage;
+        this.defenseIncrease += levelModifiers.defense;
+        EventManager.getInstance().emit(GameEvents.LEVEL_UP, { level: this.level });
     }
 };

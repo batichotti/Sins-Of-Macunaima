@@ -18,4 +18,9 @@ export default interface IPlayerInMatchProgressionSystem {
      * Pontos ganhos até agora.
      */
     pointsGained: number;
+
+    /**
+     * XP necessário para subir de nível.
+     */
+    xpLevelUpNeeded: number;
 }

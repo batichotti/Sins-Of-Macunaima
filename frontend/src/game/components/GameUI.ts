@@ -40,6 +40,7 @@ export default class GameUI implements IGameUI {
     eventManager.on(GameEvents.HEALTH_CHANGE, (health: { health: number }) => { this.healthLabel.setText(health.health.toString()) });
     eventManager.on(GameEvents.TOGGLE_WEAPON, () => { this.weaponSetLabel.setText( this.scene.attackManager.weapon.name ) });
     eventManager.on(GameEvents.ENEMY_DIED, (point: { points: number, xp: number }) => { this.pointsLabel.setText(point.points.toString()) });
+    eventManager.on(GameEvents.LEVEL_UP, (level: { level: number }) => { this.levelLabel.setText(level.level.toString()) });
   }
 }
 
