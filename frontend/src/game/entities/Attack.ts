@@ -13,9 +13,9 @@ export default class AttackManager {
     private currentWeapon: IWeapon;
     private playerProgressionSystem !: PlayerProgressionSystem;
 
-    constructor(scene: BaseScene, playerProgessionSytem: PlayerProgressionSystem, weaponSet: WeaponSet) {
+    constructor(scene: BaseScene, playerProgessionSystem: PlayerProgressionSystem, weaponSet: WeaponSet) {
         this.scene = scene;
-        this.playerProgressionSystem = playerProgessionSytem;
+        this.playerProgressionSystem = playerProgessionSystem;
         this.weaponSet = weaponSet;
         this.currentWeapon = weaponSet.projectile;
 
@@ -33,12 +33,22 @@ export default class AttackManager {
 
 
     private handleHit = (obj1: object, obj2: object) => {
+        if (obj1 instanceof Melee && !(obj1 as Melee).active) return;
+
         const attacker = obj1 instanceof Melee ? this.melee : obj1 as Projectile;
         const enemy = obj2 as Enemy;
-        const damage = this.currentWeapon.baseDamage * this.scene.player.level.damageIncrease;
+
+        const weaponDamage = attacker instanceof Melee ? this.weaponSet.melee.baseDamage : this.weaponSet.projectile.baseDamage;
+        
+        const damage = weaponDamage * this.scene.player.level.damageIncrease;
 
         if (enemy.takeDamage(damage)) {
-            EventManager.getInstance().emit(GameEvents.ENEMY_DIED, { points: enemy.pointGain, xp: enemy.pointGain * 0.25 });
+            this.playerProgressionSystem.increasePoints(enemy.pointGain);
+            this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.25);
+            EventManager.getInstance().emit(GameEvents.ENEMY_DIED, { 
+                points: this.playerProgressionSystem.pointsGained,
+                xp:  this.playerProgressionSystem.xpGained
+            });
         }
         
         if (attacker instanceof Projectile) {
@@ -128,38 +138,30 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
 }
 
 class Melee extends Phaser.GameObjects.Zone {
-    private cooldown: number;
     private attackDuration: number;
     private config: IMelee;
-    private isReady: boolean = true;
 
     constructor(scene: BaseScene, config: IMelee) {
         super(scene, 0, 0, config.range, config.range);
         scene.add.existing(this);
-        
-        scene.physics.add.existing(this, true);
+        scene.physics.add.existing(this);
         this.setSize(config.range, config.range);
         this.setActive(false);
+        this.body?.gameObject?.setActive(false);
 
         this.config = config;
-        this.cooldown = config.baseCooldown;
         this.attackDuration = config.duration;
     }
 
     attack(origin: Phaser.Math.Vector2, angle: number): void {
-        if (!this.isReady) return;
-
-        this.isReady = false;
-        
-        // Posicionamento da hitbox
         const offset = new Phaser.Math.Vector2(
-            Math.cos(angle) * this.config.range,
-            Math.sin(angle) * this.config.range
+            Math.cos(angle) * (this.config.range * 0.5), // Distância da hitbox do jogador
+            Math.sin(angle) * (this.config.range * 0.5)
         );
         
         this.setPosition(origin.x + offset.x, origin.y + offset.y);
         this.setActive(true);
-        console.log("ataqueee")
-        this.scene.time.delayedCall(this.attackDuration, () => { this.setActive(false); this.isReady = true; });
+        
+        this.scene.time.delayedCall(this.attackDuration, () => { this.setActive(false) });
     }
 }
