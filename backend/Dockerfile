@@ -13,7 +13,7 @@ RUN yarn install
 COPY . .
 
 # Expõe a porta que o NestJS usa (ajuste se necessário)
-EXPOSE 3000
+EXPOSE 3001
 
 # Comando padrão para iniciar a aplicação
 CMD ["yarn", "start"]
