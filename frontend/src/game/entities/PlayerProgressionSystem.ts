@@ -19,6 +19,5 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
 
     increasePoints(points: number) {
         this.pointsGained += points;
-        this.gameUI.pointsLabel.setText(this.pointsGained.toString());
     }
 }

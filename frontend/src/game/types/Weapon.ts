@@ -73,6 +73,16 @@ export interface IMelee extends IWeapon {
      * Tipo de arma.
      */
     weaponType: WeaponType.MELEE;
+
+    /**
+     * Duração do ataque.
+     */
+    duration: number;
+
+    /**
+     * Alcance do ataque.
+     */
+    range: number;
 }
 
 /**

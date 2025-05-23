@@ -58,8 +58,7 @@ export class Boot extends Scene {
         this.character = { name: 'Macunaíma', spriteKey: 'Macunaima', baseHealth: 200, baseSpeed: 200 } as ICharacter;
         this.weaponSet = {
             projectile: { name: 'Flecha', weaponType: WeaponType.PROJECTILE, spriteKey: 'arrow_sprite', baseDamage: 150, baseCooldown: 150, baseSpeed: 500 },
-            melee: { name: 'Bananeira', weaponType: WeaponType.MELEE, spriteKey: 'aaa', baseDamage: 150, baseCooldown: 150 }
-
+            melee: { name: 'Bananeira', weaponType: WeaponType.MELEE, spriteKey: 'aaa', baseDamage: 150, baseCooldown: 150, range: 32, duration: 500 }
         }
         this.player = { name: 'Irineu' } as IPlayer;
     }

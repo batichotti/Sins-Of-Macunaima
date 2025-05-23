@@ -59,7 +59,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     updatePathing(targetPx: Phaser.Math.Vector2) {
         if (!this.body || !this.pathFinder) return;
 
-        if(!this.canPath(targetPx) || Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y } as Phaser.Math.Vector2, targetPx) < 64) {
+        if(!this.canPath(targetPx) || Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y } as Phaser.Math.Vector2, targetPx) < 64 + this.randomPivot) {
             return;
         }
 
@@ -90,9 +90,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
             this.setVelocity(0, 0);
             return;
         }
+        const randomMultiplier = Phaser.Utils.Array.GetRandom([ -1, 1 ]);
 
         const dest = this.path[this.nextNode];
-        const dir  = new Phaser.Math.Vector2(dest.x - this.x + this.randomPivot, dest.y - this.y - this.randomPivot).normalize();
+        const dir  = new Phaser.Math.Vector2(dest.x - this.x + this.randomPivot * randomMultiplier, dest.y - this.y - this.randomPivot * randomMultiplier).normalize();
 
         let speed = this.baseSpeed;
         

@@ -1,8 +1,9 @@
-import { Scene } from 'phaser';
+import { Game, Scene } from 'phaser';
 import { Text } from '@/game/components/Properties';
 import { ITextBox } from '../types';
 import { IGameUI, GameUIPlaceholders }from '../types/GameUI';
 import { BaseScene } from '../core/BaseScene';
+import { EventManager, GameEvents } from '../core/EventBus';
 
 export default class GameUI implements IGameUI {
   scene: BaseScene;
@@ -32,8 +33,13 @@ export default class GameUI implements IGameUI {
     this.characterLabel.setText(this.scene.player.character.name);
     this.levelLabel.setText(this.scene.player.level.level.toString());
     this.healthLabel.setText(this.scene.player.character.baseHealth.toString());
-    this.weaponSetLabel.setText(this.scene.player.weaponSet.projectile.name + ' - ' + this.scene.player.weaponSet.melee.name);
+    this.weaponSetLabel.setText(this.scene.attackManager.weapon.name);
     this.pointsLabel.setText("0");
+
+    const eventManager = EventManager.getInstance();
+    eventManager.on(GameEvents.HEALTH_CHANGE, (health: { health: number }) => { this.healthLabel.setText(health.health.toString()) });
+    eventManager.on(GameEvents.TOGGLE_WEAPON, () => { this.weaponSetLabel.setText( this.scene.attackManager.weapon.name ) });
+    eventManager.on(GameEvents.ENEMY_DIED, (point: { points: number, xp: number }) => { this.pointsLabel.setText(point.points.toString()) });
   }
 }
 

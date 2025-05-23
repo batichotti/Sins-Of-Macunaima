@@ -1,5 +1,6 @@
 import { Cormorant } from "next/font/google";
 import { IInput } from "../types";
+import { EventManager, GameEvents } from "../core/EventBus";
 
 export default class InputManager implements IInput {
     keyboard: Phaser.Input.Keyboard.KeyboardPlugin;
@@ -24,6 +25,8 @@ export default class InputManager implements IInput {
 
                 }
             ) as Phaser.Types.Input.Keyboard.CursorKeys;
+
+            this.toggleKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.L);
         } else {
             console.error("Teclado não disponível.\n");
         }
@@ -45,6 +48,10 @@ export default class InputManager implements IInput {
         if (this.awsd.right.isDown) movement.x = 1;
         if (this.awsd.up.isDown) movement.y = -1;
         if (this.awsd.down.isDown) movement.y = 1;
+
+        if(Phaser.Input.Keyboard.JustDown(this.toggleKey)) {
+            EventManager.getInstance().emit(GameEvents.TOGGLE_WEAPON);
+        }
 
         return movement.normalize();
     }

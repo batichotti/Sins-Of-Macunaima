@@ -16,7 +16,7 @@ export default class EnemyManager {
     grid: Grid;
     playerPos = new Phaser.Math.Vector2();
     updateIndex = 0;
-    coolDownAttack: boolean = true;
+    cooldownAttack: boolean = true;
 
 
     constructor(scene: BaseScene) {
@@ -45,10 +45,10 @@ export default class EnemyManager {
 
         if (!enemy.active || !enemy.weapon?.baseDamage) return;
 
-        if(this.coolDownAttack) {
+        if(this.cooldownAttack) {
             character.takeDamage(enemy.weapon.baseDamage);
-            this.coolDownAttack = false;
-            this.scene.time.delayedCall(1250, () => { this.coolDownAttack = true; });
+            this.cooldownAttack = false;
+            this.scene.time.delayedCall(1250, () => { this.cooldownAttack = true; });
         }
     };
 

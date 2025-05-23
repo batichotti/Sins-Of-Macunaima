@@ -1,3 +1,4 @@
+import { EventManager, GameEvents } from "../core/EventBus";
 import { ICharacter, IPlayer, WeaponSet } from "../types";
 import { Level } from "./Level";
 
@@ -33,13 +34,13 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
     }
 
     takeDamage(damage: number) {
-        if(this.baseHealth > 0) {
-            this.baseHealth -= damage;
-            if(this.baseHealth < 0) this.baseHealth = 0;
+        if(this.baseHealth > 0) this.baseHealth -= damage;
+        if(this.baseHealth < 0) {
+            this.baseHealth = 0;
+            EventManager.getInstance().emit(GameEvents.PLAYER_DIED);
         } else {
-            console.log("Morreuuuu");
+            EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.baseHealth })
         }
-        console.log(this.baseHealth);
     }
 
     playerMove(direction: Phaser.Math.Vector2): void {

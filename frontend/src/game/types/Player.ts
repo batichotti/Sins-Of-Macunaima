@@ -68,7 +68,7 @@ export interface ILevel {
      */
     level: number;
     /**
-     * O quanto o coolDown de balas diminui.
+     * O quanto o cooldown de balas diminui.
      */
     cooldownDecrease: number;
     /**
