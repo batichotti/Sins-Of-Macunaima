@@ -59,7 +59,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
     }
 
     heal(): void {
-        if(this.health < this.maximumHealth) this.health = Math.ceil(this.maximumHealth * 0.1);
+        if(this.health < this.maximumHealth) this.health += Math.ceil(this.maximumHealth * 0.1);
         EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.health })
     }
 
