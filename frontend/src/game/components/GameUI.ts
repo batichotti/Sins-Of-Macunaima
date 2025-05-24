@@ -32,7 +32,7 @@ export default class GameUI implements IGameUI {
     this.playerLabel.setText(this.scene.player.name);
     this.characterLabel.setText(this.scene.player.character.name);
     this.levelLabel.setText(this.scene.player.level.level.toString());
-    this.healthLabel.setText(this.scene.player.character.baseHealth.toString());
+    this.healthLabel.setText(this.scene.player.character.health.toString());
     this.weaponSetLabel.setText(this.scene.attackManager.weapon.name);
     this.pointsLabel.setText("0");
 

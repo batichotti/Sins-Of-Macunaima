@@ -43,9 +43,14 @@ export interface ICharacter {
     spriteKey: string;
 
     /**
-     * A quantidade de vida base que o personagem tem.
+     * A quantidade de vida que o personagem tem começa.
      */
-    baseHealth: number;
+    health: number;
+
+    /**
+     * A quantidade de vida máxima que o jogador pode ter.
+     */
+    maximumHealth: number;
 
     /**
      * A velocidade base que o personagem tem
@@ -62,14 +67,6 @@ export interface ILevel {
      */
     level: number;
     /**
-     * O quanto o cooldown de balas diminui.
-     */
-    cooldownDecrease: number;
-    /**
-     * O quanto a velocidade de movimento aumenta.
-     */
-    speedIncrease: number;
-    /**
      * O quanto a vida base aumenta.
      */
     healthIncrease: number;
@@ -77,30 +74,21 @@ export interface ILevel {
      * O quanto o dano causado aumenta.
      */
     damageIncrease: number;
-    /**
-     * O quando a defesa aumenta.
-     * 
-     * Isto é, a tolerância ao dano recebido.
-     */
-    defenseIncrease: number;
 }
 
 /**
  * Modificadores de níveis. Multiplique com o nível atual e a vida base do personagem para ter a vida total.
  */
 export const levelModifiers = {
-    cooldown: 0.05,
-    speed: 0.05,
     health: 0.05,
-    damage: 0.05,
-    defense: 0.05
+    damage: 0.05
 };
 
 /**
  * Os personagens existentes no jogo.
  */
 export const CharacterTypes: ICharacter[] = [
-    { name: 'Macunaíma', spriteKey: 'Macunaima', baseHealth: 200, baseSpeed: 200 }
+    { name: 'Macunaíma', spriteKey: 'Macunaima', maximumHealth: 200, health: 200, baseSpeed: 200 }
 ];
 
 /**

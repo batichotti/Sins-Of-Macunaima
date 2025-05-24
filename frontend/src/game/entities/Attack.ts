@@ -11,6 +11,7 @@ export default class AttackManager {
     private canAttack = true;
     private weaponSet: WeaponSet;
     private currentWeapon: IWeapon;
+    private kills: number = 0;
     private playerProgressionSystem !: PlayerProgressionSystem;
 
     constructor(scene: BaseScene, playerProgessionSystem: PlayerProgressionSystem, weaponSet: WeaponSet) {
@@ -43,6 +44,12 @@ export default class AttackManager {
         const damage = weaponDamage * this.scene.player.level.damageIncrease;
 
         if (enemy.takeDamage(damage)) {
+            this.kills += 1;
+            if(this.kills % 10 == 0) {
+                this.scene.player.character.heal();
+                EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.scene.player.character.health });
+            }
+
             this.playerProgressionSystem.increasePoints(enemy.pointGain);
             this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.25);
             EventManager.getInstance().emit(GameEvents.ENEMY_DIED, { 
@@ -89,7 +96,7 @@ export default class AttackManager {
     }
 
     private fireProjectile(x: number, y: number, angle: number): void {
-        const projectile = this.projectiles.get(x, y, this.currentWeapon.spriteKey, this.weaponSet.projectile.baseSpeed) as Projectile;
+        const projectile = this.projectiles.get(x, y, this.weaponSet.projectile.spriteKey, this.weaponSet.projectile.baseSpeed) as Projectile;
 
         if (projectile) {
             this.scene.gameCameras.ui.ignore(projectile);

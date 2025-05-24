@@ -127,7 +127,7 @@ export class BaseScene extends Scene implements IBaseScene {
             (spawnPoint?.y ?? WindowResolution.height / 2) - (spawnPoint?.height ?? 0) * 0.5
         );
 
-        const character = new Character(this, { x: startingPosition.x, y: startingPosition.y } as Phaser.Math.Vector2, this.sceneData.character.name, this.sceneData.character.spriteKey, this.sceneData.character.baseSpeed, this.sceneData.character.baseHealth);
+        const character = new Character(this, { x: startingPosition.x, y: startingPosition.y } as Phaser.Math.Vector2, this.sceneData.character);
         const level = new Level(1);
         this.player = new Player(this.sceneData.player.name, character, level, this.sceneData.weaponSet);
 

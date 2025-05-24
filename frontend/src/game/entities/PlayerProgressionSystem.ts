@@ -23,6 +23,6 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
     }
 
     levelUp() {
-        this.player.level.levelUp();
+        this.player.levelUp();
     }
 }
