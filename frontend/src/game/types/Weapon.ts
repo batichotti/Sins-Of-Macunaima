@@ -1,4 +1,20 @@
 /**
+ * Define o modo de ataque do jogador.
+ */
+export enum AttackMode {
+    /**
+     * Ataque automático: o jogo mira automaticamente.
+     */
+    AUTO,
+
+    /**
+     * Ataque manual: o jogador precisa mirar.
+     */
+    MANUAL
+}
+
+
+/**
  * Define se a arma é de curto ou longo alcance.
  */
 export enum WeaponType {

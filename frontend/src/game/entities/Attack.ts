@@ -1,4 +1,4 @@
-import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet, IMelee } from "../types";
+import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet, IMelee, AttackMode } from "../types";
 import { BaseScene } from "../core/BaseScene";
 import Enemy from "./Enemy";
 import PlayerProgressionSystem from "./PlayerProgressionSystem";
@@ -8,11 +8,14 @@ export default class AttackManager {
     private projectiles: Phaser.Physics.Arcade.Group;
     private melee: Melee;
     private scene: BaseScene;
-    private canAttack = true;
+    private canAttack: boolean = true;
+    private canSearch: boolean = true;
+    private enemyAngle: number = 0;
     private weaponSet: WeaponSet;
     private currentWeapon: IWeapon;
     private kills: number = 0;
-    private playerProgressionSystem !: PlayerProgressionSystem;
+    private playerProgressionSystem: PlayerProgressionSystem;
+    private attackMode: AttackMode = AttackMode.AUTO;
 
     constructor(scene: BaseScene, playerProgessionSystem: PlayerProgressionSystem, weaponSet: WeaponSet) {
         this.scene = scene;
@@ -30,8 +33,8 @@ export default class AttackManager {
         if(blockers) this.scene.physics.add.collider(this.projectiles, blockers, this.eraseProjectile);
 
         EventManager.getInstance().on(GameEvents.TOGGLE_WEAPON, () => { this.toggleWeapon() });
+        EventManager.getInstance().on(GameEvents.TOGGLE_ATTACK_MODE, () => { this.toggleAttackMode() });
     }
-
 
     private handleHit = (obj1: object, obj2: object) => {
         if (obj1 instanceof Melee && !(obj1 as Melee).active) return;
@@ -54,7 +57,7 @@ export default class AttackManager {
             this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.25);
             EventManager.getInstance().emit(GameEvents.ENEMY_DIED, { 
                 points: this.playerProgressionSystem.pointsGained,
-                xp: this.playerProgressionSystem.xpGained
+                kills: this.kills
             });
         }
         
@@ -67,12 +70,21 @@ export default class AttackManager {
         (obj1 as Projectile).disableBody(true, true);
     };
 
-    toggleWeapon(): void {
+    private toggleWeapon(): void {
         if(this.currentWeapon.weaponType === WeaponType.PROJECTILE) {
             this.currentWeapon = this.weaponSet.melee;
         } else {
             this.currentWeapon = this.weaponSet.projectile;
         }
+    }
+
+    private toggleAttackMode() {
+        if(this.attackMode === AttackMode.AUTO) {
+            this.attackMode = AttackMode.MANUAL;
+        } else {
+            this.attackMode = AttackMode.AUTO;
+        }
+        EventManager.getInstance().emit(GameEvents.TOGGLE_ATTACK_MODE_SUCCEDED, this.attackMode);
     }
 
     get weapon(): IWeapon {
@@ -82,13 +94,24 @@ export default class AttackManager {
     fire(x: number, y: number, angle: number): void {
         if (!this.canAttack) return;
 
+        let ang = angle;
+
+        if(this.attackMode === AttackMode.AUTO) {
+            if(this.canSearch) {
+                ang = this.scene.enemyManager.findNearestEnemy() ?? angle;
+                
+                this.canSearch = false;
+                this.scene.time.delayedCall(100, () => { this.canSearch = true });
+            }
+        }
+
         switch (this.currentWeapon.weaponType) {
             case WeaponType.PROJECTILE:
-                this.fireProjectile(x, y, angle);
+                this.fireProjectile(x, y, ang);
                 break;
             
             case WeaponType.MELEE:
-                this.executeMeleeAttack(x, y, angle);
+                this.executeMeleeAttack(x, y, ang);
                 break;
         }
 

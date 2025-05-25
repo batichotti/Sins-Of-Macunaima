@@ -52,7 +52,6 @@ export default class EnemyManager {
         }
     };
 
-
     spawnEnemy(region: string, position: Phaser.Math.Vector2) {
         if(this.canSpawn) {
             const validEnemies = EnemyTypes.filter(e => e.spawnRegion === region);
@@ -68,6 +67,27 @@ export default class EnemyManager {
             }
         }
         this.scene.time.delayedCall(1250, () => this.canSpawn = true);
+    }
+
+    findNearestEnemy(): number | null {
+        const children = this.enemyPool.getChildren();
+        if(children.length <= 0) return null;
+
+        const playerPos = this.scene.player.character.body!.position;
+
+        let nearest = Phaser.Math.Distance.Between(playerPos.x, playerPos.x, children[0].body!.position.x, children[0].body!.position.y);
+        let res = children[0].body!.position;
+
+        for(let i = 1; i < children.length; i++) {
+            const temp = children[i].body!.position;
+            const distTemp = Phaser.Math.Distance.Between(playerPos.x, playerPos.y, temp.x, temp.y);
+            if(distTemp < nearest) {
+                nearest = distTemp;
+                res = temp;
+            }
+        }
+
+        return Phaser.Math.Angle.Between(playerPos.x, playerPos.y, res.x, res.y);
     }
 
     updatePathing() {

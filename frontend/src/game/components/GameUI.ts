@@ -1,6 +1,6 @@
 import { Game, Scene } from 'phaser';
 import { Text } from '@/game/components/Properties';
-import { ITextBox } from '../types';
+import { AttackMode, ITextBox } from '../types';
 import { IGameUI, GameUIPlaceholders }from '../types/GameUI';
 import { BaseScene } from '../core/BaseScene';
 import { EventManager, GameEvents } from '../core/EventBus';
@@ -14,24 +14,33 @@ export default class GameUI implements IGameUI {
   weaponSetLabel: TextBox;
   weaponCooldownBar: CooldownBar;
   pointsLabel: TextBox;
+  killsLabel: TextBox;
+  attackModeLabel: TextBox;
 
 
   constructor(scene: BaseScene) {
     this.scene = scene;
-    this.playerLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
-    this.characterLabel = new TextBox(scene, { x: 220, y : 50 } as Phaser.Math.Vector2, { x: 180, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.CHARACTER);
-    this.levelLabel = new TextBox(scene, { x: 80, y: 50 } as Phaser.Math.Vector2, { x: 410, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.LEVEL);
-    this.healthLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 500, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.HEALTH);
-    this.weaponSetLabel = new TextBox(scene, { x: 180, y: 50 } as Phaser.Math.Vector2, { x: 610, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
-    this.pointsLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 800, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.POINTS);
 
-    this.weaponCooldownBar = new CooldownBar(this.scene, 630, 45, 140, 5);
+    this.characterLabel = new TextBox(scene, { x: 220, y : 50 } as Phaser.Math.Vector2, { x: 10, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.CHARACTER);
+    this.levelLabel = new TextBox(scene, { x: 80, y: 50 } as Phaser.Math.Vector2, { x: 240, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.LEVEL);
+    this.healthLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 330, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.HEALTH);
+    this.weaponSetLabel = new TextBox(scene, { x: 180, y: 50 } as Phaser.Math.Vector2, { x: 440, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
+    this.pointsLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 630, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.POINTS);
+
+    this.playerLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
+    this.attackModeLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 180, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.ATTACK_MODE);
+    this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 390, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
+
+    this.weaponCooldownBar = new CooldownBar(this.scene, 460, 45, 140, 5);
 
     this.scene.gameCameras.main.ignore(this.playerLabel);
     this.scene.gameCameras.main.ignore(this.characterLabel);
     this.scene.gameCameras.main.ignore(this.levelLabel);
     this.scene.gameCameras.main.ignore(this.healthLabel);
     this.scene.gameCameras.main.ignore(this.weaponSetLabel);
+    this.scene.gameCameras.main.ignore(this.weaponCooldownBar);
+    this.scene.gameCameras.main.ignore(this.attackModeLabel);
+    this.scene.gameCameras.main.ignore(this.killsLabel);
 
 
     this.playerLabel.setText(this.scene.player.name);
@@ -40,13 +49,17 @@ export default class GameUI implements IGameUI {
     this.healthLabel.setText(this.scene.player.character.health.toString());
     this.weaponSetLabel.setText(this.scene.attackManager.weapon.name);
     this.pointsLabel.setText("0");
+    this.attackModeLabel.setText("");
+    this.killsLabel.setText("0");
+    this.attackModeLabel.setText("Auto");
 
     const eventManager = EventManager.getInstance();
     eventManager.on(GameEvents.HEALTH_CHANGE, (health: { health: number }) => { this.healthLabel.setText(health.health.toString()) });
     eventManager.on(GameEvents.TOGGLE_WEAPON, () => { this.weaponSetLabel.setText( this.scene.attackManager.weapon.name ) });
-    eventManager.on(GameEvents.ENEMY_DIED, (point: { points: number, xp: number }) => { this.pointsLabel.setText(point.points.toString()) });
+    eventManager.on(GameEvents.ENEMY_DIED, (info: { points: number, kills: number }) => { this.pointsLabel.setText(info.points.toString()); this.killsLabel.setText(info.kills.toString()) });
     eventManager.on(GameEvents.LEVEL_UP, (level: { level: number }) => { this.levelLabel.setText(level.level.toString()) });
     eventManager.on(GameEvents.WEAPON_COOLDOWN, (cooldown: number) => { this.weaponCooldownBar.startCooldown(cooldown) });
+    eventManager.on(GameEvents.TOGGLE_ATTACK_MODE_SUCCEDED, (obj: AttackMode) => { this.attackModeLabel.setText(obj === AttackMode.AUTO ? "Auto" : "Manual") });
   }
 }
 

@@ -202,6 +202,8 @@ export class BaseScene extends Scene implements IBaseScene {
         // Movimento
         this.player.character.playerMove(this.inputManager.handleArrows());
 
+        this.inputManager.handleUtilKeys();
+
         const angle = this.inputManager.handleAwsd();
         if(angle != null) this.attackManager.fire(this.player.character.x, this.player.character.y, angle);
 

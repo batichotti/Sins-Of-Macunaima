@@ -14,7 +14,9 @@ export enum GameEvents {
     TOGGLE_WEAPON = 'toggleWeapon',
     WEAPON_COOLDOWN = 'weaponCooldown',
     PLAYER_DIED = 'playerDied',
-    POINT_CHANGE = 'pointChange'
+    POINT_CHANGE = 'pointChange',
+    TOGGLE_ATTACK_MODE = 'tooggleAttackMode',
+    TOGGLE_ATTACK_MODE_SUCCEDED = 'toggleAttackModeSucceded'
 }
 
 /**

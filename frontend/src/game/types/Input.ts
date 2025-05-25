@@ -26,4 +26,9 @@ export interface IInput {
      * Tecla usada para trocar de arma.
      */
     toggleKey: Phaser.Input.Keyboard.Key;
+
+    /**
+     * Tecla usada para trocar de modo de ataque (manual ou automático).
+     */
+    attackModeKey: Phaser.Input.Keyboard.Key;
 }
