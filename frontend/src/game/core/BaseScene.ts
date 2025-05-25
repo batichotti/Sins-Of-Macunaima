@@ -74,9 +74,7 @@ export class BaseScene extends Scene implements IBaseScene {
     update(time: number, delta: number): void {
         if(time > 2000) {
             const point = Phaser.Utils.Array.GetRandom(this.enemySpawnPoints);
-            if(point) {
-                this.enemyManager.spawnEnemy(point.name, { x: point.position.x, y: point.position.y } as Phaser.Math.Vector2);
-            }
+            if(point) this.enemyManager.spawnEnemy(point.name, { x: point.position.x, y: point.position.y } as Phaser.Math.Vector2);
         }
 
         this.handleInput();

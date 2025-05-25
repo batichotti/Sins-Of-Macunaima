@@ -1,6 +1,7 @@
 import { DistanceMethod, Pathfinding, PathNode } from "../components/phaser-pathfinding";
 import { BaseScene } from "../core/BaseScene";
 import { IMelee, IEnemy, WeaponType } from "../types";
+import TweenManager from "./TweenManager";
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnemy {
     name: string;
@@ -115,19 +116,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
 
     takeDamage(damage: number): boolean {
         this.baseHealth -= damage;
-    
-        this.setTint(0xff0000);
-        const tween = this.scene.tweens.add(
-            {
-                targets: this,
-                tint: 0xffffff,
-                duration: 150,
-                ease: 'Power2.easeOut',
-                onComplete: () => {
-                    tween.destroy();
-                }
-            }
-        );
+
+        TweenManager.Instance.damageTween(this);
 
         if(this.baseHealth <= 0) {
             this.disableBody(true, true);

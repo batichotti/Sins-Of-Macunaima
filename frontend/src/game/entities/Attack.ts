@@ -92,6 +92,8 @@ export default class AttackManager {
                 break;
         }
 
+        EventManager.getInstance().emit(GameEvents.WEAPON_COOLDOWN, this.currentWeapon.baseCooldown);
+
         this.startCooldown();
     }
 
@@ -162,8 +164,8 @@ class Melee extends Phaser.GameObjects.Zone {
 
     attack(origin: Phaser.Math.Vector2, angle: number): void {
         const offset = new Phaser.Math.Vector2(
-            Math.cos(angle) * (this.config.range * 0.5), // Distância da hitbox do jogador
-            Math.sin(angle) * (this.config.range * 0.5)
+            Math.cos(angle) * (this.config.range * 0.5),
+            Math.sin(angle) * (this.config.range * 0.75)
         );
         
         this.setPosition(origin.x + offset.x, origin.y + offset.y);

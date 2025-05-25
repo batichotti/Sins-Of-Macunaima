@@ -12,6 +12,7 @@ export enum GameEvents {
     LEVEL_UP = 'levelUp',
     HEALTH_CHANGE = 'healthChange',
     TOGGLE_WEAPON = 'toggleWeapon',
+    WEAPON_COOLDOWN = 'weaponCooldown',
     PLAYER_DIED = 'playerDied',
     POINT_CHANGE = 'pointChange'
 }

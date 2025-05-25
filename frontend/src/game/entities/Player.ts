@@ -1,6 +1,7 @@
 import { EventManager, GameEvents } from "../core/EventBus";
 import { ICharacter, IPlayer, WeaponSet } from "../types";
 import { Level } from "./Level";
+import TweenManager from "./TweenManager";
 
 export class Player implements IPlayer {
     name!: string;
@@ -24,6 +25,9 @@ export class Player implements IPlayer {
         this.character.maximumHealth *= this.level.healthIncrease;
         this.weaponSet.melee.baseDamage *= this.level.damageIncrease;
         this.weaponSet.projectile.baseDamage *= this.level.damageIncrease;
+    
+        TweenManager.Instance.healTween(this.character);
+
         EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.character.health });
         this.level.levelUp();
     }
@@ -50,6 +54,9 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
 
     takeDamage(damage: number) {
         if(this.health > 0) this.health -= damage;
+
+        TweenManager.Instance.damageTween(this);
+
         if(this.health < 0) {
             this.health = 0;
             EventManager.getInstance().emit(GameEvents.PLAYER_DIED);
@@ -60,6 +67,9 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
 
     heal(): void {
         if(this.health < this.maximumHealth) this.health += Math.ceil(this.maximumHealth * 0.1);
+
+        TweenManager.Instance.healTween(this);
+
         EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.health })
     }
 

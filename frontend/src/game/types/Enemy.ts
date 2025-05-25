@@ -50,7 +50,6 @@ export const EnemyTypes = [
         spawnRegion: 'Floresta',
         weapon: { 
             name: 'bengala', 
-            spriteKey: 'bengala',
             baseDamage: 15, 
             baseCooldown: 500 
         } as IMelee, 

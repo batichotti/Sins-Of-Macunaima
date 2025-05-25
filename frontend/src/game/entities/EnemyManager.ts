@@ -46,9 +46,9 @@ export default class EnemyManager {
         if (!enemy.active || !enemy.weapon?.baseDamage) return;
 
         if(this.cooldownAttack) {
-            character.takeDamage(enemy.weapon.baseDamage);
+            character.takeDamage(enemy.weapon.baseDamage + character.maximumHealth / 20);
             this.cooldownAttack = false;
-            this.scene.time.delayedCall(1250, () => { this.cooldownAttack = true; });
+            this.scene.time.delayedCall(750, () => { this.cooldownAttack = true; });
         }
     };
 
