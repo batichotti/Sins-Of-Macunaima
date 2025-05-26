@@ -101,7 +101,7 @@ export default class AttackManager {
                 ang = this.scene.enemyManager.findNearestEnemy() ?? angle;
                 
                 this.canSearch = false;
-                this.scene.time.delayedCall(100, () => { this.canSearch = true });
+                this.scene.time.delayedCall(200, () => { this.canSearch = true });
             }
         }
 

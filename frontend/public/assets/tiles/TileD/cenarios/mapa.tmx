@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="200" height="120" tilewidth="16" tileheight="16" infinite="0" nextlayerid="37" nextobjectid="34">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="200" height="120" tilewidth="16" tileheight="16" infinite="0" nextlayerid="39" nextobjectid="109">
  <editorsettings>
   <export target="../cenariosJson/Mapa.json" format="json"/>
  </editorsettings>
@@ -2286,7 +2286,7 @@
   <object id="32" name="Praia" gid="5800" x="2432" y="304" width="16" height="16"/>
   <object id="33" name="Praia" gid="5800" x="2144" y="144" width="16" height="16"/>
  </objectgroup>
- <layer id="36" name="colisao" width="200" height="120" opacity="0">
+ <layer id="36" name="colisao" width="200" height="120" locked="1" opacity="0">
   <data encoding="csv">
 5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,
 5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,
@@ -2410,4 +2410,60 @@
 5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861
 </data>
  </layer>
+ <objectgroup id="38" name="waypoints">
+  <object id="49" name="waypoint" gid="5792" x="208" y="1360" width="16" height="16"/>
+  <object id="50" name="waypoint" gid="5792" x="112" y="1120" width="16" height="16"/>
+  <object id="51" name="waypoint" gid="5792" x="176" y="944" width="16" height="16"/>
+  <object id="52" name="waypoint" gid="5792" x="496" y="896" width="16" height="16"/>
+  <object id="53" name="waypoint" gid="5792" x="720" y="976" width="16" height="16"/>
+  <object id="54" name="waypoint" gid="5792" x="816" y="1568" width="16" height="16"/>
+  <object id="55" name="waypoint" gid="5792" x="1120" y="1568" width="16" height="16"/>
+  <object id="56" name="waypoint" gid="5792" x="1120" y="1440" width="16" height="16"/>
+  <object id="57" name="waypoint" gid="5792" x="1328" y="1296" width="16" height="16"/>
+  <object id="58" name="waypoint" gid="5792" x="1376" y="752" width="16" height="16"/>
+  <object id="59" name="waypoint" gid="5792" x="1456" y="960" width="16" height="16"/>
+  <object id="60" name="waypoint" gid="5792" x="1440" y="1456" width="16" height="16"/>
+  <object id="61" name="waypoint" gid="5792" x="1376" y="448" width="16" height="16"/>
+  <object id="62" name="waypoint" gid="5792" x="1008" y="240" width="16" height="16"/>
+  <object id="63" name="waypoint" gid="5792" x="672" y="240" width="16" height="16"/>
+  <object id="64" name="waypoint" gid="5792" x="496" y="624" width="16" height="16"/>
+  <object id="65" name="waypoint" gid="5792" x="480" y="400" width="16" height="16"/>
+  <object id="66" name="waypoint" gid="5792" x="208" y="448" width="16" height="16"/>
+  <object id="67" name="waypoint" gid="5792" x="368" y="496" width="16" height="16"/>
+  <object id="68" name="waypoint" gid="5792" x="688" y="576" width="16" height="16"/>
+  <object id="70" name="waypoint" gid="5792" x="416" y="176" width="16" height="16"/>
+  <object id="71" name="waypoint" gid="5792" x="240" y="176" width="16" height="16"/>
+  <object id="72" name="waypoint" gid="5792" x="1184" y="368" width="16" height="16"/>
+  <object id="73" name="waypoint" gid="5792" x="1088" y="288" width="16" height="16"/>
+  <object id="74" name="waypoint" gid="5792" x="1264" y="176" width="16" height="16"/>
+  <object id="75" name="waypoint" gid="5792" x="1360" y="256" width="16" height="16"/>
+  <object id="76" name="waypoint" gid="5792" x="1472" y="176" width="16" height="16"/>
+  <object id="77" name="waypoint" gid="5792" x="1600" y="224" width="16" height="16"/>
+  <object id="78" name="waypoint" gid="5792" x="1632" y="336" width="16" height="16"/>
+  <object id="79" name="waypoint" gid="5792" x="1600" y="800" width="16" height="16"/>
+  <object id="80" name="waypoint" gid="5792" x="1760" y="960" width="16" height="16"/>
+  <object id="81" name="waypoint" gid="5792" x="1920" y="736" width="16" height="16"/>
+  <object id="82" name="waypoint" gid="5792" x="1632" y="1216" width="16" height="16"/>
+  <object id="83" name="waypoint" gid="5792" x="1840" y="1408" width="16" height="16"/>
+  <object id="84" name="waypoint" gid="5792" x="1680" y="1552" width="16" height="16"/>
+  <object id="85" name="waypoint" gid="5792" x="1888" y="1632" width="16" height="16"/>
+  <object id="89" name="waypoint" gid="5792" x="1168" y="1232" width="16" height="16"/>
+  <object id="92" name="waypoint" gid="5792" x="2000" y="1104" width="16" height="16"/>
+  <object id="93" name="waypoint" gid="5792" x="2192" y="1504" width="16" height="16"/>
+  <object id="94" name="waypoint" gid="5792" x="2400" y="1184" width="16" height="16"/>
+  <object id="95" name="waypoint" gid="5792" x="2448" y="1504" width="16" height="16"/>
+  <object id="96" name="waypoint" gid="5792" x="2128" y="896" width="16" height="16"/>
+  <object id="97" name="waypoint" gid="5792" x="2432" y="720" width="16" height="16"/>
+  <object id="98" name="waypoint" gid="5792" x="2176" y="432" width="16" height="16"/>
+  <object id="99" name="waypoint" gid="5792" x="2000" y="288" width="16" height="16"/>
+  <object id="100" name="waypoint" gid="5792" x="1312" y="1616" width="16" height="16"/>
+  <object id="101" name="waypoint" gid="5792" x="464" y="1136" width="16" height="16"/>
+  <object id="102" name="waypoint" gid="5792" x="560" y="1296" width="16" height="16"/>
+  <object id="103" name="waypoint" gid="5792" x="384" y="1312" width="16" height="16"/>
+  <object id="104" name="waypoint" gid="5792" x="752" y="1152" width="16" height="16"/>
+  <object id="105" name="waypoint" gid="5792" x="800" y="1392" width="16" height="16"/>
+  <object id="106" name="waypoint" gid="5792" x="384" y="1552" width="16" height="16"/>
+  <object id="107" name="waypoint" gid="5792" x="240" y="1648" width="16" height="16"/>
+  <object id="108" name="waypoint" gid="5792" x="128" y="1552" width="16" height="16"/>
+ </objectgroup>
 </map>

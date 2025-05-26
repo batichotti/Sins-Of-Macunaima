@@ -16,6 +16,8 @@ export default class EnemyManager {
     grid: Grid;
     playerPos = new Phaser.Math.Vector2();
     updateIndex = 0;
+    waypoints: Phaser.Math.Vector2[] = [];
+    maxDirectDistance: number = 200;
     cooldownAttack: boolean = true;
 
 
@@ -37,6 +39,55 @@ export default class EnemyManager {
         });
         this.scene.physics.add.collider(blockers, this.enemyPool);
         this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
+
+        this.loadWaypoints();
+    }
+
+    private loadWaypoints(): void {
+        const objectLayers = this.scene.map.objects;
+        
+        objectLayers.forEach(layer => {
+            layer.objects.forEach(obj => {
+                if (obj.name === 'waypoint') {
+                    this.waypoints.push(new Phaser.Math.Vector2(obj.x!, obj.y!));
+                }
+            });
+        });
+    }
+
+    private findNearestWaypoint(position: Phaser.Math.Vector2): Phaser.Math.Vector2 | null {
+        if (this.waypoints.length === 0) return null;
+
+        let nearest = this.waypoints[0];
+        let nearestDistance = Phaser.Math.Distance.Between(
+            position.x, position.y, nearest.x, nearest.y
+        );
+
+        for (let i = 1; i < this.waypoints.length; i++) {
+            const distance = Phaser.Math.Distance.Between(
+                position.x, position.y, this.waypoints[i].x, this.waypoints[i].y
+            );
+            
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearest = this.waypoints[i];
+            }
+        }
+
+        return nearest;
+    }
+
+    public getTargetPosition(enemyPos: Phaser.Math.Vector2, playerPos: Phaser.Math.Vector2): Phaser.Math.Vector2 {
+        const distance = Phaser.Math.Distance.Between(
+            enemyPos.x, enemyPos.y, playerPos.x, playerPos.y
+        );
+
+        if (distance <= this.maxDirectDistance) {
+            return playerPos;
+        }
+
+        const nearestWaypoint = this.findNearestWaypoint(enemyPos);
+        return nearestWaypoint || playerPos;
     }
 
     private attack = (obj1: object, obj2: object) => {

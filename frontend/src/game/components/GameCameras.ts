@@ -13,7 +13,7 @@ export default class GameCameras implements IGameCameras {
         this.main = this.scene.cameras.main;
         this.main.setBounds(0, 0, width, height);
         this.main.setScroll(0);
-        this.main.setZoom(2);
+        this.main.setZoom(1);
         this.main.roundPixels = false;
 
         this.ui = this.scene.cameras.add(0, 0, width, height);

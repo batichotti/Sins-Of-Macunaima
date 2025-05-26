@@ -60,14 +60,15 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     updatePathing(targetPx: Phaser.Math.Vector2) {
         if (!this.body || !this.pathFinder) return;
 
-        if(!this.canPath(targetPx) || Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y } as Phaser.Math.Vector2, targetPx) < 64 + this.randomPivot) {
+        const targetPos = this.scene.enemyManager.getTargetPosition(new Phaser.Math.Vector2(this.x, this.y), targetPx);
+
+        if(!this.canPath(targetPos) || Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y } as Phaser.Math.Vector2, targetPos) < 64 + this.randomPivot) {
             return;
         }
 
-        const cacheKey = this.getCacheKey(targetPx);
+        const targetTile = this.scene.map.worldToTileXY(targetPos.x, targetPos.y);
+        const cacheKey = this.getCacheKey(targetTile!);
         const cachedPath = this.scene.enemyManager.pathCache.get(cacheKey) ?? [];
-
-        const targetTile = this.scene.map.worldToTileXY(targetPx.x, targetPx.y);
 
         if(this.scene.enemyManager.pathCache.isValid(cacheKey) && cachedPath.length > 0) {
             this.path = cachedPath;
