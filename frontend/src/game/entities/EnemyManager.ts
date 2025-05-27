@@ -28,7 +28,6 @@ export default class EnemyManager {
     waypoints: Phaser.Math.Vector2[] = [];
     maxDirectDistance: number = 300;
     cooldownAttack: boolean = true;
-    debugGraphics: Phaser.GameObjects.Graphics;
 
 
     constructor(scene: BaseScene) {
