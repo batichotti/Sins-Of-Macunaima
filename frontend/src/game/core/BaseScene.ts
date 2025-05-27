@@ -126,7 +126,7 @@ export class BaseScene extends Scene implements IBaseScene {
         );
 
         const character = new Character(this, { x: startingPosition.x, y: startingPosition.y } as Phaser.Math.Vector2, this.sceneData.character);
-        const level = new Level(1);
+        const level = new Level(this.sceneData.level.level);
         this.player = new Player(this.sceneData.player.name, character, level, this.sceneData.weaponSet);
 
         if (!this.player) {

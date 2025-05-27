@@ -15,21 +15,26 @@ export class Player implements IPlayer {
         this.level = level;
         this.weaponSet = weaponSet;
 
-        this.character.health = this.character.maximumHealth *= this.level.healthIncrease;
+        this.character.maximumHealth *= this.level.healthIncrease;
+        this.character.health = this.character.maximumHealth;
         this.weaponSet.melee.baseDamage *= this.level.damageIncrease;
         this.weaponSet.projectile.baseDamage *= this.level.damageIncrease;
     }
 
     levelUp(): void {
+        const previousHealth = this.level.healthIncrease;
+        const previousDamage = this.level.damageIncrease;
+
+        this.level.levelUp();
+
+        this.character.maximumHealth = Math.floor(this.character.maximumHealth * (this.level.healthIncrease / previousHealth));
         this.character.health = this.character.maximumHealth;
-        this.character.maximumHealth *= this.level.healthIncrease;
-        this.weaponSet.melee.baseDamage *= this.level.damageIncrease;
-        this.weaponSet.projectile.baseDamage *= this.level.damageIncrease;
+        this.weaponSet.melee.baseDamage *= (this.level.damageIncrease / previousDamage);
+        this.weaponSet.projectile.baseDamage *= (this.level.damageIncrease / previousDamage);
     
         TweenManager.Instance.healTween(this.character);
 
         EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.character.health });
-        this.level.levelUp();
     }
 }
 

@@ -6,19 +6,29 @@ import { Grid } from "../components/phaser-pathfinding";
 import PathCache from "../core/PathCache";
 import { Character } from "./Player";
 
+interface WaypointNode {
+    point: Phaser.Math.Vector2;
+    g: number;
+    h: number;
+    f: number;
+    parent: WaypointNode | null;
+}
+
 export default class EnemyManager {
     enemyPool: Phaser.Physics.Arcade.Group;
     scene: BaseScene;
     pathFinder: Pathfinding;
     pathCache = new PathCache(7000);
+    waypointGraph: Map<string, Phaser.Math.Vector2[]> = new Map();
     canPath = true;
     canSpawn = true;
     grid: Grid;
     playerPos = new Phaser.Math.Vector2();
     updateIndex = 0;
     waypoints: Phaser.Math.Vector2[] = [];
-    maxDirectDistance: number = 200;
+    maxDirectDistance: number = 300;
     cooldownAttack: boolean = true;
+    debugGraphics: Phaser.GameObjects.Graphics;
 
 
     constructor(scene: BaseScene) {
@@ -44,50 +54,167 @@ export default class EnemyManager {
     }
 
     private loadWaypoints(): void {
-        const objectLayers = this.scene.map.objects;
-        
-        objectLayers.forEach(layer => {
-            layer.objects.forEach(obj => {
-                if (obj.name === 'waypoint') {
-                    this.waypoints.push(new Phaser.Math.Vector2(obj.x!, obj.y!));
-                }
-            });
-        });
-    }
+        const waypointLayer = this.scene.map.getObjectLayer('waypoints');
+        if (!waypointLayer) return;
 
-    private findNearestWaypoint(position: Phaser.Math.Vector2): Phaser.Math.Vector2 | null {
-        if (this.waypoints.length === 0) return null;
-
-        let nearest = this.waypoints[0];
-        let nearestDistance = Phaser.Math.Distance.Between(
-            position.x, position.y, nearest.x, nearest.y
-        );
-
-        for (let i = 1; i < this.waypoints.length; i++) {
-            const distance = Phaser.Math.Distance.Between(
-                position.x, position.y, this.waypoints[i].x, this.waypoints[i].y
-            );
-            
-            if (distance < nearestDistance) {
-                nearestDistance = distance;
-                nearest = this.waypoints[i];
+        waypointLayer.objects.forEach(obj => {
+            if (obj.type === 'waypoint') {
+                const wp = new Phaser.Math.Vector2(
+                    obj.x! + (obj.width! / 2),
+                    obj.y! - (obj.height! / 2) // Ajuste para coordenadas do Phaser
+                );
+                this.waypoints.push(wp);
             }
-        }
+        });
 
-        return nearest;
+        this.buildWaypointGraph();
     }
 
     public getTargetPosition(enemyPos: Phaser.Math.Vector2, playerPos: Phaser.Math.Vector2): Phaser.Math.Vector2 {
-        const distance = Phaser.Math.Distance.Between(
-            enemyPos.x, enemyPos.y, playerPos.x, playerPos.y
+        const distanceToPlayer = Phaser.Math.Distance.Between(
+            enemyPos.x, 
+            enemyPos.y, 
+            playerPos.x, 
+            playerPos.y
         );
 
-        if (distance <= this.maxDirectDistance) {
-            return playerPos;
+        if (distanceToPlayer <= this.maxDirectDistance) {
+            return playerPos.clone();
         }
 
         const nearestWaypoint = this.findNearestWaypoint(enemyPos);
-        return nearestWaypoint || playerPos;
+        
+        return nearestWaypoint ? nearestWaypoint.clone() : playerPos.clone();
+    }
+
+    private getTilesAlongLine(start: Phaser.Math.Vector2, end: Phaser.Math.Vector2): Phaser.Tilemaps.Tile[] {
+        const tiles: Phaser.Tilemaps.Tile[] = [];
+        const tilemap = this.scene.map;
+        
+        let x0 = tilemap.worldToTileX(start.x)!;
+        let y0 = tilemap.worldToTileY(start.y)!;
+        const x1 = tilemap.worldToTileX(end.x)!;
+        const y1 = tilemap.worldToTileY(end.y)!;
+
+        const dx = Math.abs(x1 - x0);
+        const dy = -Math.abs(y1 - y0);
+        const sx = x0 < x1 ? 1 : -1;
+        const sy = y0 < y1 ? 1 : -1;
+        let err = dx + dy;
+
+        while (true) {
+            const tile = tilemap.getTileAt(x0, y0);
+            if (tile) tiles.push(tile);
+
+            if (x0 === x1 && y0 === y1) break;
+            const e2 = 2 * err;
+            if (e2 >= dy) {
+                err += dy;
+                x0 += sx;
+            }
+            if (e2 <= dx) {
+                err += dx;
+                y0 += sy;
+            }
+        }
+        return tiles;
+    }
+
+    private buildWaypointGraph(): void {
+        const CONNECTION_RADIUS = 600;
+
+        this.waypoints.forEach(wp => {
+            const neighbors = this.waypoints.filter(other => {
+                if (wp.equals(other)) return false;
+
+                if (Phaser.Math.Distance.Between(wp.x, wp.y, other.x, other.y) > CONNECTION_RADIUS) return false;
+
+                const tiles = this.getTilesAlongLine(wp, other);
+                return tiles.every(tile => this.grid.getNode(tile.x, tile.y)?.walkable);
+            });
+
+            this.waypointGraph.set(`${wp.x},${wp.y}`, neighbors);
+        });
+    }
+
+    public findPathViaWaypoints(start: Phaser.Math.Vector2, end: Phaser.Math.Vector2): Phaser.Math.Vector2[] {
+        const startWp = this.findNearestWaypoint(start);
+        const endWp = this.findNearestWaypoint(end);
+        if (!startWp || !endWp) return [end];
+
+        const openSet: WaypointNode[] = [];
+        const allNodes = new Map<string, WaypointNode>();
+        
+        // Inicializa A*
+        const startNode: WaypointNode = {
+            point: startWp,
+            g: 0,
+            h: Phaser.Math.Distance.Between(startWp.x, startWp.y, endWp.x, endWp.y),
+            f: 0,
+            parent: null
+        };
+        startNode.f = startNode.g + startNode.h;
+        openSet.push(startNode);
+        allNodes.set(`${startWp.x},${startWp.y}`, startNode);
+
+        while (openSet.length > 0) {
+            openSet.sort((a, b) => a.f - b.f);
+            const current = openSet.shift()!;
+
+            if (current.point.equals(endWp)) {
+                return this.reconstructPath(current);
+            }
+
+            const neighbors = this.waypointGraph.get(`${current.point.x},${current.point.y}`) || [];
+            for (const neighborPoint of neighbors) {
+                const tentativeG = current.g + Phaser.Math.Distance.Between(
+                    current.point.x, current.point.y,
+                    neighborPoint.x, neighborPoint.y
+                );
+
+                const existing = allNodes.get(`${neighborPoint.x},${neighborPoint.y}`);
+                if (!existing || tentativeG < existing.g) {
+                    const newNode: WaypointNode = {
+                        point: neighborPoint,
+                        g: tentativeG,
+                        h: Phaser.Math.Distance.Between(neighborPoint.x, neighborPoint.y, endWp.x, endWp.y),
+                        f: tentativeG + Phaser.Math.Distance.Between(neighborPoint.x, neighborPoint.y, endWp.x, endWp.y),
+                        parent: current
+                    };
+
+                    if (!existing) {
+                        openSet.push(newNode);
+                        allNodes.set(`${neighborPoint.x},${neighborPoint.y}`, newNode);
+                    } else {
+                        existing.g = tentativeG;
+                        existing.f = tentativeG + existing.h;
+                        existing.parent = current;
+                    }
+                }
+            }
+        }
+
+        return [endWp];
+    }
+
+    private reconstructPath(node: WaypointNode): Phaser.Math.Vector2[] {
+        const path: Phaser.Math.Vector2[] = [];
+        let current: WaypointNode | null = node;
+        
+        while (current) {
+            path.unshift(current.point);
+            current = current.parent;
+        }
+        return path;
+    }
+
+    public findNearestWaypoint(position: Phaser.Math.Vector2): Phaser.Math.Vector2 | null {
+        if (this.waypoints.length === 0) return null;
+
+        return this.waypoints.reduce((prev, curr) => 
+            Phaser.Math.Distance.Between(position.x, position.y, curr.x, curr.y) < 
+            Phaser.Math.Distance.Between(position.x, position.y, prev.x, prev.y) ? curr : prev
+        );
     }
 
     private attack = (obj1: object, obj2: object) => {
@@ -97,7 +224,7 @@ export default class EnemyManager {
         if (!enemy.active || !enemy.weapon?.baseDamage) return;
 
         if(this.cooldownAttack) {
-            character.takeDamage(enemy.weapon.baseDamage + character.maximumHealth / 20);
+            character.takeDamage(enemy.weapon.baseDamage * enemy.damageMultiplier);
             this.cooldownAttack = false;
             this.scene.time.delayedCall(750, () => { this.cooldownAttack = true; });
         }
@@ -126,7 +253,7 @@ export default class EnemyManager {
 
         const playerPos = this.scene.player.character.body!.position;
 
-        let nearest = Phaser.Math.Distance.Between(playerPos.x, playerPos.x, children[0].body!.position.x, children[0].body!.position.y);
+        let nearest = Phaser.Math.Distance.Between(playerPos.x, playerPos.y, children[0].body!.position.x, children[0].body!.position.y);
         let res = children[0].body!.position;
 
         for(let i = 1; i < children.length; i++) {

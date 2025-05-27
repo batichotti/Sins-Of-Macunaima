@@ -35,6 +35,11 @@ export interface IEnemy {
     baseSpeed: number;
 
     /**
+     * Multiplicador de dano do inimigo. Escala com o nível do jogador.
+     */
+    damageMultiplier: number; 
+
+    /**
      * Pontuação ganha por matar o inimigo.
      */
     pointGain: number;
@@ -54,9 +59,10 @@ export const EnemyTypes = [
             baseCooldown: 500 
         } as IMelee, 
         baseHealth: 200, 
-        baseSpeed: 175,
+        baseSpeed: 200,
+        damageMultiplier: 1.2,
         pointGain: 20
-    }
+    } as IEnemy
 ];
 
 /**

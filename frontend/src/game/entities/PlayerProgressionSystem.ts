@@ -9,6 +9,7 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
 
     constructor(player: Player) {
         this.player = player;
+        this.xpLevelUpNeeded += this.player.level.level * 10;
     }
 
     increaseXP(xp: number) {
