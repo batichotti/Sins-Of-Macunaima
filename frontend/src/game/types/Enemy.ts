@@ -33,6 +33,16 @@ export interface IEnemy {
      * Velocidade base do inimigo.
      */
     baseSpeed: number;
+
+    /**
+     * Multiplicador de dano do inimigo. Escala com o nível do jogador.
+     */
+    damageMultiplier: number; 
+
+    /**
+     * Pontuação ganha por matar o inimigo.
+     */
+    pointGain: number;
 }
 
 /**
@@ -45,11 +55,55 @@ export const EnemyTypes = [
         spawnRegion: 'Floresta',
         weapon: { 
             name: 'bengala', 
-            spriteKey: 'bengala',
-            baseDamage: 50, 
+            baseDamage: 15, 
+            baseCooldown: 500 
+        } as IMelee, 
+        baseHealth: 200,
+        baseSpeed: 200,
+        damageMultiplier: 1.2,
+        pointGain: 20
+    } as IEnemy,
+        { 
+        name: 'Colonizador', 
+        spriteKey: 'Colonizador', 
+        spawnRegion: 'Praia',
+        weapon: { 
+            name: 'Espada', 
+            baseDamage: 20, 
             baseCooldown: 500 
         } as IMelee, 
         baseHealth: 200, 
-        baseSpeed: 200 
-    }
+        baseSpeed: 200,
+        damageMultiplier: 1.2,
+        pointGain: 20
+    } as IEnemy
 ];
+
+/**
+ * Enum usado para escolher inimigos.
+ */
+export enum EnemyEnum {
+    CHUPACU,
+    COLONIZADOR
+};
+
+export const BossTypes = [
+    { 
+        name: 'Curu-Ré', 
+        spriteKey: 'TODO', 
+        spawnRegion: 'PlanicieClaraSuperior',
+        weapon: { 
+            name: 'Paulada', 
+            baseDamage: 50, 
+            baseCooldown: 1250 
+        } as IMelee, 
+        baseHealth: 1500,
+        baseSpeed: 150,
+        damageMultiplier: 1.2,
+        pointGain: 500
+    } as IEnemy,
+];
+
+export enum BossEnum {
+    CURURE
+}

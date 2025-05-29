@@ -7,6 +7,9 @@ import InputManager from "../components/Input";
 import { EnemySpawnPoints } from "./EnemySpawnPoints";
 import EnemyManager from "../entities/EnemyManager";
 import GameUI from "../components/GameUI";
+import PlayerProgressionSystem from "../entities/PlayerProgressionSystem";
+import AnimationManager from "../entities/AnimationManager";
+import EnemySpawner from "../entities/EnemySpawner";
 
 /**
  * Cena básica do mundo.
@@ -40,9 +43,9 @@ export default interface IBaseScene {
     animatedTiles: AnimatedTileData[];
 
     /**
-     * Spawn points dos inimigos.
+     * O gerenciador de animações da cena base.
      */
-    enemySpawnPoints: EnemySpawnPoints[];
+    animationManager: AnimationManager;
 
     /**
      * O gerenciador de inimigos.
@@ -85,14 +88,14 @@ export default interface IBaseScene {
     gameUI: GameUI;
 
     /**
+     * Sistema de pontos e xp do jogo.
+     */
+    playerProgressionSystem: PlayerProgressionSystem;
+
+    /**
      * Configura camadas.
      */
     setupLayers(): void;
-
-    /**
-     * Configura spawn points dos inimigos.
-     */
-    setupEnemySpawnPoints(): void;
 
     /**
      * Configura tiles animados.
@@ -103,6 +106,11 @@ export default interface IBaseScene {
      * Constrói e configura o jogador.
      */
     setupPlayer(): void;
+
+    /**
+     * Configura as animações dos sprites.
+     */
+    setupAnimations(): void;
 
     /**
      * Configura os pontos de transição de cena.
@@ -118,22 +126,6 @@ export default interface IBaseScene {
      * Configura as câmeras do jogo.
      */
     setupCameras(): void;
-
-    /**
-     * Configura o gerenciador de ataques.
-     */
-    setupAttackManager(): void;
-
-    /**
-     * Configura o gerenciador de inimigos
-     */
-    setupEnemyManager(): void;
-
-    /**
-     * Configura a Ui do jogo.
-     */
-    setupGameUi(): void;
-
     /**
      * Manuseia a entrada do jogador.
      */

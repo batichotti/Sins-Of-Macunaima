@@ -1,4 +1,20 @@
 /**
+ * Define o modo de ataque do jogador.
+ */
+export enum AttackMode {
+    /**
+     * Ataque automático: o jogo mira automaticamente.
+     */
+    AUTO,
+
+    /**
+     * Ataque manual: o jogador precisa mirar.
+     */
+    MANUAL
+}
+
+
+/**
  * Define se a arma é de curto ou longo alcance.
  */
 export enum WeaponType {
@@ -21,13 +37,6 @@ export interface IWeapon {
      * Nome da arma (ava).
      */
     name: string;
-
-    /**
-     * Chave do sprite usado.
-     * 
-     * Deve corresponder exatamente ao nome do asset.
-     */
-    spriteKey: string;
 
     /**
      * Dano base causado.
@@ -63,6 +72,14 @@ export interface IProjectile extends IWeapon {
     weaponType: WeaponType.PROJECTILE;
 
     /**
+     * Chave do sprite usado.
+     * 
+     * Deve corresponder exatamente ao nome do asset.
+     */
+    spriteKey: string;
+
+
+    /**
      * Velocidade de disparo base do projétil.
      */
     baseSpeed: number;
@@ -73,6 +90,16 @@ export interface IMelee extends IWeapon {
      * Tipo de arma.
      */
     weaponType: WeaponType.MELEE;
+
+    /**
+     * Duração do ataque.
+     */
+    duration: number;
+
+    /**
+     * Alcance do ataque.
+     */
+    range: number;
 }
 
 /**
@@ -80,14 +107,14 @@ export interface IMelee extends IWeapon {
  */
 export const BaseProjectileStats = {
     /**
-     * Quantas projéteis o pool pai deve fazer.
+     * Quantos projéteis o pool pai deve fazer.
      */
-    groupSize: 40,
+    groupSize: 50,
 
     /**
      * CoolDown base.
      */
-    cooldown: 150,
+    cooldown: 300,
 
     /**
      * Velocidade base.
@@ -97,5 +124,33 @@ export const BaseProjectileStats = {
     /**
      * Dano base.
      */
-    damage: 200
+    damage: 50
+}
+
+/**
+ * Contém os projéteis disponíveis.
+ */
+export const ProjectileTypes: IProjectile[] = [
+    { name: 'Flecha', weaponType: WeaponType.PROJECTILE, spriteKey: 'arrow_sprite', baseDamage: 40, baseCooldown: 150, baseSpeed: 500 }
+];
+
+/**
+ * Usado para escolher os projéteis.
+ */
+export enum ProjectileEnum {
+    FLECHA
+}
+
+/**
+ * Contém os projéteis disponíveis.
+ */
+export const MeleeTypes: IMelee[] = [
+    { name: 'Bananeira', weaponType: WeaponType.MELEE, baseDamage: 75, baseCooldown: 350, range: 32, duration: 50 }
+];
+
+/**
+ * Usado para escolher os projéteis.
+ */
+export enum MeleeEnum {
+    BANANEIRA
 }

@@ -8,6 +8,7 @@
         "cenarios",
         "."
     ],
+    "file.lastUsedOpenFilter": "Todos os Ficheiros (*)",
     "fileStates": {
         "": {
             "scaleInDock": 1
@@ -424,11 +425,11 @@
             "expandedObjectLayers": [
                 13
             ],
-            "scale": 0.33,
+            "scale": 0.5,
             "selectedLayer": 21,
             "viewCenter": {
-                "x": 760.6060606060607,
-                "y": 703.0303030303032
+                "x": 1652,
+                "y": 978
             }
         },
         "cenarios/mapa.tmx#10_dirt": {

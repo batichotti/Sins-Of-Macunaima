@@ -31,7 +31,7 @@ export const Text = {
     align: 'center'
   },
   Dialog1: {
-    font: '20px Arial',
+    font: '16px Arial',
     color: '#FFFFFF',
     wordWrap: { width: 960 }
   }

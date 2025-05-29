@@ -1,5 +1,5 @@
-import { Cormorant } from "next/font/google";
 import { IInput } from "../types";
+import { EventManager, GameEvents } from "../core/EventBus";
 
 export default class InputManager implements IInput {
     keyboard: Phaser.Input.Keyboard.KeyboardPlugin;
@@ -7,6 +7,8 @@ export default class InputManager implements IInput {
     arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
     awsd!: Phaser.Types.Input.Keyboard.CursorKeys;
     scene: Phaser.Scene;
+    toggleKey!: Phaser.Input.Keyboard.Key;
+    attackModeKey!: Phaser.Input.Keyboard.Key;
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
@@ -23,6 +25,9 @@ export default class InputManager implements IInput {
 
                 }
             ) as Phaser.Types.Input.Keyboard.CursorKeys;
+
+            this.toggleKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+            this.attackModeKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         } else {
             console.error("Teclado não disponível.\n");
         }
@@ -46,6 +51,21 @@ export default class InputManager implements IInput {
         if (this.awsd.down.isDown) movement.y = 1;
 
         return movement.normalize();
+    }
+
+    /**
+     * Controla as teclas de modo de ataque e trocar de arma.
+     * 
+     * Usa-se o sistema de eventos do Phaser para atualizar a UI.
+     */
+    handleUtilKeys() {
+        if(Phaser.Input.Keyboard.JustDown(this.toggleKey)) {
+            EventManager.getInstance().emit(GameEvents.TOGGLE_WEAPON);
+        }
+
+        if(Phaser.Input.Keyboard.JustDown(this.attackModeKey)) {
+            EventManager.getInstance().emit(GameEvents.TOGGLE_ATTACK_MODE);
+        }
     }
 
     /**

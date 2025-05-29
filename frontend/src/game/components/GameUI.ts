@@ -1,8 +1,9 @@
-import { Scene } from 'phaser';
+import { Game, Scene } from 'phaser';
 import { Text } from '@/game/components/Properties';
-import { ITextBox } from '../types';
+import { AttackMode, ITextBox } from '../types';
 import { IGameUI, GameUIPlaceholders }from '../types/GameUI';
 import { BaseScene } from '../core/BaseScene';
+import { EventManager, GameEvents } from '../core/EventBus';
 
 export default class GameUI implements IGameUI {
   scene: BaseScene;
@@ -11,26 +12,54 @@ export default class GameUI implements IGameUI {
   levelLabel: TextBox;
   healthLabel: TextBox;
   weaponSetLabel: TextBox;
+  weaponCooldownBar: CooldownBar;
+  pointsLabel: TextBox;
+  killsLabel: TextBox;
+  attackModeLabel: TextBox;
+
+
   constructor(scene: BaseScene) {
     this.scene = scene;
-    this.playerLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
-    this.characterLabel = new TextBox(scene, { x: 300, y : 50 } as Phaser.Math.Vector2, { x: 220, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.CHARACTER);
-    this.levelLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 530, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.LEVEL);
-    this.healthLabel = new TextBox(scene, { x: 150, y: 50 } as Phaser.Math.Vector2, { x: 640, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.HEALTH);
-    this.weaponSetLabel = new TextBox(scene, { x: 300, y: 50 } as Phaser.Math.Vector2, { x: 800, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
+
+    this.characterLabel = new TextBox(scene, { x: 220, y : 50 } as Phaser.Math.Vector2, { x: 10, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.CHARACTER);
+    this.levelLabel = new TextBox(scene, { x: 80, y: 50 } as Phaser.Math.Vector2, { x: 240, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.LEVEL);
+    this.healthLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 330, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.HEALTH);
+    this.weaponSetLabel = new TextBox(scene, { x: 180, y: 50 } as Phaser.Math.Vector2, { x: 440, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
+    this.pointsLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 630, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.POINTS);
+
+    this.playerLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
+    this.attackModeLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 180, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.ATTACK_MODE);
+    this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 390, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
+
+    this.weaponCooldownBar = new CooldownBar(this.scene, 460, 45, 140, 5);
 
     this.scene.gameCameras.main.ignore(this.playerLabel);
     this.scene.gameCameras.main.ignore(this.characterLabel);
     this.scene.gameCameras.main.ignore(this.levelLabel);
     this.scene.gameCameras.main.ignore(this.healthLabel);
     this.scene.gameCameras.main.ignore(this.weaponSetLabel);
+    this.scene.gameCameras.main.ignore(this.weaponCooldownBar);
+    this.scene.gameCameras.main.ignore(this.attackModeLabel);
+    this.scene.gameCameras.main.ignore(this.killsLabel);
 
 
     this.playerLabel.setText(this.scene.player.name);
     this.characterLabel.setText(this.scene.player.character.name);
     this.levelLabel.setText(this.scene.player.level.level.toString());
-    this.healthLabel.setText(this.scene.player.character.baseHealth.toString());
-    this.weaponSetLabel.setText(this.scene.player.weaponSet.projectile.name + ' - ' + this.scene.player.weaponSet.melee.name);
+    this.healthLabel.setText(this.scene.player.character.health.toString());
+    this.weaponSetLabel.setText(this.scene.attackManager.weapon.name);
+    this.pointsLabel.setText("0");
+    this.attackModeLabel.setText("");
+    this.killsLabel.setText("0");
+    this.attackModeLabel.setText("Auto");
+
+    const eventManager = EventManager.getInstance();
+    eventManager.on(GameEvents.HEALTH_CHANGE, (health: { health: number }) => { this.healthLabel.setText(health.health.toString()) });
+    eventManager.on(GameEvents.TOGGLE_WEAPON, () => { this.weaponSetLabel.setText( this.scene.attackManager.weapon.name ) });
+    eventManager.on(GameEvents.ENEMY_DIED, (info: { points: number, kills: number }) => { this.pointsLabel.setText(info.points.toString()); this.killsLabel.setText(info.kills.toString()) });
+    eventManager.on(GameEvents.LEVEL_UP, (level: { level: number }) => { this.levelLabel.setText(level.level.toString()) });
+    eventManager.on(GameEvents.WEAPON_COOLDOWN, (cooldown: number) => { this.weaponCooldownBar.startCooldown(cooldown) });
+    eventManager.on(GameEvents.TOGGLE_ATTACK_MODE_SUCCEDED, (obj: AttackMode) => { this.attackModeLabel.setText(obj === AttackMode.AUTO ? "Auto" : "Manual") });
   }
 }
 
@@ -67,5 +96,64 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
   }
   hide(): void {
     this.setVisible(false);
+  }
+}
+
+export class CooldownBar extends Phaser.GameObjects.Container {
+  fill: Phaser.GameObjects.Graphics;
+  width: number;
+  height: number;
+  private currentTween?: Phaser.Tweens.Tween;
+
+  constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number) {
+    super(scene, x, y);
+    this.width = width;
+    this.height = height;
+    this.fill = scene.add.graphics();
+    this.fill.fillStyle(0xffffff, 1);
+    this.fill.fillRoundedRect(0, 0, 0, height, 4);
+
+    this.add([ this.fill ]);
+    scene.add.existing(this);
+  }
+
+  startCooldown(duration: number) {
+    if (this.currentTween) {
+      this.currentTween.destroy();
+    }
+
+    const animationObject = { progress: 1 };
+
+    this.updateFillBar(1);
+
+    this.currentTween = this.scene.tweens.add({
+      targets: animationObject,
+      progress: 0,
+      ease: 'Linear',
+      duration: duration,
+      onUpdate: () => {
+        this.updateFillBar(animationObject.progress);
+      },
+      onComplete: () => {
+        this.updateFillBar(0);
+        this.currentTween = undefined;
+      }
+    });
+  }
+
+  private updateFillBar(progress: number) {
+    this.fill.clear();
+    if (progress > 0) {
+      this.fill.fillStyle(0xffffff, 1);
+      this.fill.fillRoundedRect(0, 0, this.width * progress, this.height, 4);
+    }
+  }
+
+  destroy() {
+    if (this.currentTween) {
+      this.currentTween.destroy();
+      this.currentTween = undefined;
+    }
+    super.destroy();
   }
 }

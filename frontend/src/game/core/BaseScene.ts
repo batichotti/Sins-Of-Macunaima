@@ -3,7 +3,7 @@ import { Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
 import { AnimatedTileData } from '../types/Tiles';
-import { EnemySpawnPoints, SceneData } from '../types';
+import { CharacterTypes, EnemyTypes, SceneData } from '../types';
 import GameCameras from '../components/GameCameras';
 import { Level } from '../entities/Level';
 import IBaseScene from '../types/BaseScene';
@@ -11,6 +11,9 @@ import AttackManager from '../entities/Attack';
 import InputManager from '../components/Input';
 import EnemyManager from '../entities/EnemyManager';
 import GameUI from '../components/GameUI';
+import PlayerProgressionSystem from '../entities/PlayerProgressionSystem';
+import AnimationManager from '../entities/AnimationManager';
+import EnemySpawner from '../entities/EnemySpawner';
 
 /**
  * Cena básica de jogo.
@@ -23,13 +26,14 @@ export class BaseScene extends Scene implements IBaseScene {
     animatedTiles: AnimatedTileData[];
     inputManager: InputManager;
     enemyManager: EnemyManager;
-    enemySpawnPoints: EnemySpawnPoints[];
+    animationManager: AnimationManager;
     gameUI: GameUI;
-    public map: Phaser.Tilemaps.Tilemap;
+    map: Phaser.Tilemaps.Tilemap;
     sceneData: SceneData;
     transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
     transitionRects: Phaser.Geom.Rectangle[];
     attackManager: AttackManager;
+    playerProgressionSystem: PlayerProgressionSystem;
 
     constructor(config: Phaser.Types.Scenes.SettingsConfig) {
         super(config);
@@ -48,10 +52,7 @@ export class BaseScene extends Scene implements IBaseScene {
         this.layers = [];
         this.animatedTiles = [];
         this.transitionRects = [];
-        this.enemySpawnPoints = [];
         this.sceneData = data;
-        this.gameCameras = new GameCameras(this);
-        this.inputManager = new InputManager(this);
     }
 
     protected create(): void {
@@ -61,22 +62,19 @@ export class BaseScene extends Scene implements IBaseScene {
         this.setupTransitionPoints();
         this.setupCollisions();
         this.setupCameras();
-        this.setupAttackManager();
-        this.setupEnemyManager();
-        this.setupEnemySpawnPoints();
-        this.setupGameUi();
+        this.inputManager = new InputManager(this);
+        this.enemyManager = new EnemyManager(this);
+        this.animationManager = new AnimationManager(this);
+        this.setupAnimations();
+        this.playerProgressionSystem = new PlayerProgressionSystem(this.player);
+        this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
+        this.gameUI = new GameUI(this);
     
-
         EventBus.emit('current-scene-ready', this);
     }
 
     update(time: number, delta: number): void {
-        if(this.inputManager.arrows.space.isDown) {
-            const point = Phaser.Utils.Array.GetRandom(this.enemySpawnPoints);
-            if(point) {
-                this.enemyManager.spawnEnemy(point.name, { x: point.position.x, y: point.position.y } as Phaser.Math.Vector2);
-            }
-        }
+        this.enemyManager.spawnEnemy();
 
         this.handleInput();
         this.handleAnimatedTiles(delta);
@@ -105,17 +103,6 @@ export class BaseScene extends Scene implements IBaseScene {
         });
     }
 
-    setupEnemySpawnPoints(): void {
-        const layer = this.map.getObjectLayer('enemySpawnPoints')
-        if(layer) {
-            layer.objects.forEach(
-                (obj) => { 
-                    this.enemySpawnPoints.push({ name: obj.name, position: new Phaser.Math.Vector2(obj.x! + obj.width!/2, obj.y! - obj.height!/2) });
-                }
-            )
-        }
-    }
-
     setupPlayer(): void {
         const spawnPoint = this.map.findObject(
             'spawnPoints', // nome da Object Layer
@@ -126,8 +113,8 @@ export class BaseScene extends Scene implements IBaseScene {
             (spawnPoint?.y ?? WindowResolution.height / 2) - (spawnPoint?.height ?? 0) * 0.5
         );
 
-        const character = new Character(this, { x: startingPosition.x, y: startingPosition.y } as Phaser.Math.Vector2, this.sceneData.character.name, this.sceneData.character.spriteKey, this.sceneData.character.baseSpeed, this.sceneData.character.baseHealth);
-        const level = new Level(1);
+        const character = new Character(this, { x: startingPosition.x, y: startingPosition.y } as Phaser.Math.Vector2, this.sceneData.character);
+        const level = new Level(this.sceneData.level.level);
         this.player = new Player(this.sceneData.player.name, character, level, this.sceneData.weaponSet);
 
         if (!this.player) {
@@ -164,18 +151,11 @@ export class BaseScene extends Scene implements IBaseScene {
     }
 
     setupCameras(): void {
+        this.gameCameras = new GameCameras(this);
         this.gameCameras.initCameras(this.map.widthInPixels, this.map.heightInPixels);
         this.gameCameras.ui.ignore(this.layers);
         this.gameCameras.ui.ignore(this.player.character!);
         this.gameCameras.main.startFollow(this.player.character);
-    }
-
-    setupAttackManager(): void {
-        this.attackManager = new AttackManager(this, this.player.weaponSet);
-    }
-
-    setupEnemyManager(): void {
-        this.enemyManager = new EnemyManager(this);
     }
 
     setupAnimatedTiles(): void {
@@ -204,16 +184,18 @@ export class BaseScene extends Scene implements IBaseScene {
         });
     }
 
-    setupGameUi() : void {
-        this.gameUI = new GameUI(this);
+    setupAnimations(): void {
+        CharacterTypes.forEach((it) => this.animationManager.createStandardWalkAnimation(it.spriteKey));
+        EnemyTypes.forEach((it) => this.animationManager.createStandardWalkAnimation(it.spriteKey));
     }
-      
 
     // Usados em update()
 
     handleInput(): void {
         // Movimento
         this.player.character.playerMove(this.inputManager.handleArrows());
+
+        this.inputManager.handleUtilKeys();
 
         const angle = this.inputManager.handleAwsd();
         if(angle != null) this.attackManager.fire(this.player.character.x, this.player.character.y, angle);

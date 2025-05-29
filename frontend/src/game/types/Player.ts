@@ -43,20 +43,19 @@ export interface ICharacter {
     spriteKey: string;
 
     /**
-     * A quantidade de vida base que o personagem tem.
+     * A quantidade de vida que o personagem tem começa.
      */
-    baseHealth: number;
+    health: number;
+
+    /**
+     * A quantidade de vida máxima que o jogador pode ter.
+     */
+    maximumHealth: number;
 
     /**
      * A velocidade base que o personagem tem
      */
     baseSpeed: number;
-
-    /**
-     * Atuzaliza a posição do personagem.
-     * @param {Phaser.Math.Vector2} direction - Par de pontos x e y que indicam a direção que o personagem tomará.
-     */
-    playerMove(direction: Phaser.Math.Vector2): void;
 }
 
 /**
@@ -68,14 +67,6 @@ export interface ILevel {
      */
     level: number;
     /**
-     * O quanto o coolDown de balas diminui.
-     */
-    cooldownDecrease: number;
-    /**
-     * O quanto a velocidade de movimento aumenta.
-     */
-    speedIncrease: number;
-    /**
      * O quanto a vida base aumenta.
      */
     healthIncrease: number;
@@ -83,18 +74,26 @@ export interface ILevel {
      * O quanto o dano causado aumenta.
      */
     damageIncrease: number;
-    /**
-     * O quando a defesa aumenta.
-     * 
-     * Isto é, a tolerância ao dano recebido.
-     */
-    defenseIncrease: number;
 }
 
-export const levelModifers = {
-    cooldown: 1.05,
-    speed: 1.05,
-    health: 1.05,
-    damage: 1.05,
-    defense: 1.05
+/**
+ * Modificadores de níveis. Multiplique com o nível atual e a vida base do personagem para ter a vida total.
+ */
+export const levelModifiers = {
+    health: 0.05,
+    damage: 0.05
 };
+
+/**
+ * Os personagens existentes no jogo.
+ */
+export const CharacterTypes: ICharacter[] = [
+    { name: 'Macunaíma', spriteKey: 'Macunaima', maximumHealth: 200, health: 200, baseSpeed: 200 }
+];
+
+/**
+ * Usado para localizar o personagem em 'characterTypes'.
+ */
+export enum CharacterEnum {
+    MACUNAIMA
+}
