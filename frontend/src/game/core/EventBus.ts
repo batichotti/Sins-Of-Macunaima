@@ -3,10 +3,14 @@ import { Events } from 'phaser';
 /**
  * Usado para emitir eventos entre componentes React e cenas Phaser.
  * 
- * Ps: Já estava no template do PHaser + Nextjs. Logo melhor não mexer.
+ * Ps: Já estava no template do Phaser + NextJs. Logo melhor não mexer.
  */
 export const EventBus = new Events.EventEmitter();
 
+
+/**
+ * Usado para coordenar eventos do jogo.
+ */
 export enum GameEvents {
     ENEMY_DIED = 'enemyDied',
     LEVEL_UP = 'levelUp',
@@ -16,7 +20,9 @@ export enum GameEvents {
     PLAYER_DIED = 'playerDied',
     POINT_CHANGE = 'pointChange',
     TOGGLE_ATTACK_MODE = 'tooggleAttackMode',
-    TOGGLE_ATTACK_MODE_SUCCEDED = 'toggleAttackModeSucceded'
+    TOGGLE_ATTACK_MODE_SUCCEDED = 'toggleAttackModeSucceded',
+    SHOULD_SPAWN_BOSS = 'shouldSpawnBoss',
+    BOSS_SPAWNED = 'bossSpawned'
 }
 
 /**

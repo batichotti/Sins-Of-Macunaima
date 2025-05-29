@@ -26,7 +26,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     private lastPos = new Phaser.Math.Vector2(0, 0);
     private lastTileTarget = new Phaser.Math.Vector2(0, 0);
     private randomPivot: number = 0;
-    private isAtWaypoint: boolean = false;
 
     constructor(scene: BaseScene, position: Phaser.Math.Vector2, spriteKey: string) {
         super(scene, position.x, position.y, spriteKey);
@@ -38,7 +37,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         // Adiciona à cena e física
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        this.scene.animationManager.createStandardWalkAnimation(spriteKey);
 
         // Ajuste do corpo físico
         this.setBodySize(16, 32)

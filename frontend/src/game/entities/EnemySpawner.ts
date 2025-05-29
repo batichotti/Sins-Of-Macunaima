@@ -5,6 +5,7 @@ export default class EnemySpawner {
     scene: BaseScene;
     lastPlayerPos: Phaser.Math.Vector2;
     spawnPoints: EnemySpawnPoints[] = [];
+    minDistance: number = 50;
     canChoose: boolean = true;
 
     constructor(scene: BaseScene) {
@@ -37,7 +38,7 @@ export default class EnemySpawner {
 
             for(let i = 0; i < spawnPoints.length; i++) {
                 const temp = Phaser.Math.Distance.Between(playerPos!.x, playerPos!.y, spawnPoints[i].position.x, spawnPoints[i].position.y);
-                if(nearest > temp) {
+                if(nearest > temp && temp > this.minDistance) {
                     nearest = temp;
                     nearestPos = spawnPoints[i];
                 }

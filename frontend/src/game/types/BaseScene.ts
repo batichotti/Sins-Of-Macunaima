@@ -38,11 +38,6 @@ export default interface IBaseScene {
     layers: Phaser.Tilemaps.TilemapLayer[];
 
     /**
-     * O spawner de inimigos.
-     */
-    enemySpawner: EnemySpawner;
-
-    /**
      * Um array com os tiles animados.
      */
     animatedTiles: AnimatedTileData[];

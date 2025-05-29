@@ -30,7 +30,6 @@ export class BaseScene extends Scene implements IBaseScene {
     gameUI: GameUI;
     map: Phaser.Tilemaps.Tilemap;
     sceneData: SceneData;
-    enemySpawner: EnemySpawner;
     transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
     transitionRects: Phaser.Geom.Rectangle[];
     attackManager: AttackManager;
@@ -65,7 +64,6 @@ export class BaseScene extends Scene implements IBaseScene {
         this.setupCameras();
         this.inputManager = new InputManager(this);
         this.enemyManager = new EnemyManager(this);
-        this.enemySpawner = new EnemySpawner(this);
         this.animationManager = new AnimationManager(this);
         this.setupAnimations();
         this.playerProgressionSystem = new PlayerProgressionSystem(this.player);
@@ -76,8 +74,7 @@ export class BaseScene extends Scene implements IBaseScene {
     }
 
     update(time: number, delta: number): void {
-        const point = this.enemySpawner.chooseSpawn();
-        if(point) this.enemyManager.spawnEnemy(point.name, point.position);
+        this.enemyManager.spawnEnemy();
 
         this.handleInput();
         this.handleAnimatedTiles(delta);

@@ -86,3 +86,24 @@ export enum EnemyEnum {
     CHUPACU,
     COLONIZADOR
 };
+
+export const BossTypes = [
+    { 
+        name: 'Curu-Ré', 
+        spriteKey: 'TODO', 
+        spawnRegion: 'PlanicieClaraSuperior',
+        weapon: { 
+            name: 'Paulada', 
+            baseDamage: 50, 
+            baseCooldown: 1250 
+        } as IMelee, 
+        baseHealth: 1500,
+        baseSpeed: 150,
+        damageMultiplier: 1.2,
+        pointGain: 500
+    } as IEnemy,
+];
+
+export enum BossEnum {
+    CURURE
+}

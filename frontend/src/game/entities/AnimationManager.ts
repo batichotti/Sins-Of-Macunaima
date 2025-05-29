@@ -42,9 +42,4 @@ export default class AnimationManager {
             }
         );
     }
-
-    playWalkAnimation(sprite: Phaser.Physics.Arcade.Sprite, direction: Directions) {
-        const anim = `${sprite.texture.key}_${direction}`;
-        if (this.scene.anims.exists(anim)) sprite.play(anim);
-    }
 }

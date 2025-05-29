@@ -5,6 +5,8 @@ import { Pathfinding } from "../components/phaser-pathfinding";
 import { Grid } from "../components/phaser-pathfinding";
 import PathCache from "../core/PathCache";
 import { Character } from "./Player";
+import EnemySpawner from "./EnemySpawner";
+import { EventManager, GameEvents } from "../core/EventBus";
 
 interface WaypointNode {
     point: Phaser.Math.Vector2;
@@ -15,13 +17,15 @@ interface WaypointNode {
 }
 
 export default class EnemyManager {
+    enemySpawner: EnemySpawner;
     enemyPool: Phaser.Physics.Arcade.Group;
     scene: BaseScene;
     pathFinder: Pathfinding;
     pathCache = new PathCache(7000);
     waypointGraph: Map<string, Phaser.Math.Vector2[]> = new Map();
-    canPath = true;
-    canSpawn = true;
+    canPath: boolean = true;
+    canSpawn: boolean = true;
+    shouldSpawnBoss: boolean = false;
     grid: Grid;
     playerPos = new Phaser.Math.Vector2();
     updateIndex = 0;
@@ -32,6 +36,7 @@ export default class EnemyManager {
 
     constructor(scene: BaseScene) {
         this.scene = scene;
+        this.enemySpawner = new EnemySpawner(scene);
         const blockers = this.scene.map.getLayer('colisao')!.tilemapLayer;
         this.grid = Grid.createFromMap(this.scene.map, [blockers]);
         this.pathFinder = new Pathfinding(this.grid);
@@ -48,6 +53,8 @@ export default class EnemyManager {
         });
         this.scene.physics.add.collider(blockers, this.enemyPool, this.unblockEnemy);
         this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
+
+        EventManager.getInstance().on(GameEvents.SHOULD_SPAWN_BOSS, () => {});
 
         this.loadWaypoints();
     }
@@ -243,17 +250,19 @@ export default class EnemyManager {
     };
 
 
-    spawnEnemy(region: string, position: Phaser.Math.Vector2) {
-        if(this.canSpawn) {
-            const validEnemies = EnemyTypes.filter(e => e.spawnRegion === region);
+    spawnEnemy() {
+        const spawn = this.enemySpawner.chooseSpawn();
+        if(this.canSpawn && spawn && !this.shouldSpawnBoss) {
+
+            const validEnemies = EnemyTypes.filter(e => e.spawnRegion === spawn.name);
             if (validEnemies.length === 0) return;
 
             const enemyType = Phaser.Utils.Array.GetRandom(validEnemies);
-            const enemy = this.enemyPool.get(position.x, position.y, enemyType.spriteKey) as Enemy;
+            const enemy = this.enemyPool.get(spawn.position.x, spawn.position.y, enemyType.spriteKey) as Enemy;
             if(enemy) {
                 this.canSpawn = false;
                 enemy.configureEnemy(enemyType);
-                enemy.enableBody(true, position.x, position.y, true, true);
+                enemy.enableBody(true, spawn.position.x, spawn.position.y, true, true);
                 this.scene.gameCameras.ui.ignore(enemy);
             }
         }
