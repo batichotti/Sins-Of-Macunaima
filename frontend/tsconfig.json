@@ -28,7 +28,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/game/components/configs/Properties.ts", "src/game/components/ScreenRotation.ts"  ],
+, "src/game/components/Properties.ts", "src/game/components/ScreenRotation.ts"  ],
   "exclude": [
     "node_modules"
   ]
