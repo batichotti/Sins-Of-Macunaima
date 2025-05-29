@@ -8,6 +8,7 @@ import { EnemySpawnPoints } from "./EnemySpawnPoints";
 import EnemyManager from "../entities/EnemyManager";
 import GameUI from "../components/GameUI";
 import PlayerProgressionSystem from "../entities/PlayerProgressionSystem";
+import AnimationManager from "../entities/AnimationManager";
 
 /**
  * Cena básica do mundo.
@@ -39,6 +40,11 @@ export default interface IBaseScene {
      * Um array com os tiles animados.
      */
     animatedTiles: AnimatedTileData[];
+
+    /**
+     * O gerenciador de animações da cena base.
+     */
+    animationManager: AnimationManager;
 
     /**
      * Spawn points dos inimigos.
@@ -109,6 +115,11 @@ export default interface IBaseScene {
      * Constrói e configura o jogador.
      */
     setupPlayer(): void;
+
+    /**
+     * Configura as animações dos sprites.
+     */
+    setupAnimations(): void;
 
     /**
      * Configura os pontos de transição de cena.

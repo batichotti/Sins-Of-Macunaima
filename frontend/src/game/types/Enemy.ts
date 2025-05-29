@@ -58,6 +58,20 @@ export const EnemyTypes = [
             baseDamage: 15, 
             baseCooldown: 500 
         } as IMelee, 
+        baseHealth: 200,
+        baseSpeed: 200,
+        damageMultiplier: 1.2,
+        pointGain: 20
+    } as IEnemy,
+        { 
+        name: 'Colonizador', 
+        spriteKey: 'Colonizador', 
+        spawnRegion: 'Praia',
+        weapon: { 
+            name: 'Espada', 
+            baseDamage: 20, 
+            baseCooldown: 500 
+        } as IMelee, 
         baseHealth: 200, 
         baseSpeed: 200,
         damageMultiplier: 1.2,
@@ -68,6 +82,7 @@ export const EnemyTypes = [
 /**
  * Enum usado para escolher inimigos.
  */
-export enum enemyEnum {
-    CHUPACU
+export enum EnemyEnum {
+    CHUPACU,
+    COLONIZADOR
 };

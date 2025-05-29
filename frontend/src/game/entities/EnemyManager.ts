@@ -60,7 +60,7 @@ export default class EnemyManager {
             if (obj.type === 'waypoint') {
                 const wp = new Phaser.Math.Vector2(
                     obj.x! + (obj.width! / 2),
-                    obj.y! - (obj.height! / 2) // Ajuste para coordenadas do Phaser
+                    obj.y! - (obj.height! / 2)
                 );
                 this.waypoints.push(wp);
             }

@@ -3,7 +3,7 @@ import { Game, Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
 import { AnimatedTileData } from '../types/Tiles';
-import { EnemySpawnPoints, SceneData } from '../types';
+import { CharacterTypes, EnemySpawnPoints, EnemyTypes, SceneData } from '../types';
 import GameCameras from '../components/GameCameras';
 import { Level } from '../entities/Level';
 import IBaseScene from '../types/BaseScene';
@@ -12,6 +12,7 @@ import InputManager from '../components/Input';
 import EnemyManager from '../entities/EnemyManager';
 import GameUI from '../components/GameUI';
 import PlayerProgressionSystem from '../entities/PlayerProgressionSystem';
+import AnimationManager from '../entities/AnimationManager';
 
 /**
  * Cena básica de jogo.
@@ -25,6 +26,7 @@ export class BaseScene extends Scene implements IBaseScene {
     inputManager: InputManager;
     enemyManager: EnemyManager;
     enemySpawnPoints: EnemySpawnPoints[];
+    animationManager: AnimationManager;
     gameUI: GameUI;
     map: Phaser.Tilemaps.Tilemap;
     sceneData: SceneData;
@@ -64,6 +66,8 @@ export class BaseScene extends Scene implements IBaseScene {
         this.setupEnemySpawnPoints();
         this.inputManager = new InputManager(this);
         this.enemyManager = new EnemyManager(this);
+        this.animationManager = new AnimationManager(this);
+        this.setupAnimations();
         this.playerProgressionSystem = new PlayerProgressionSystem(this.player);
         this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
         this.gameUI = new GameUI(this);
@@ -194,6 +198,11 @@ export class BaseScene extends Scene implements IBaseScene {
                 });
             });
         });
+    }
+
+    setupAnimations(): void {
+        CharacterTypes.forEach((it) => this.animationManager.createStandardWalkAnimation(it.spriteKey));
+        EnemyTypes.forEach((it) => this.animationManager.createStandardWalkAnimation(it.spriteKey));
     }
 
     // Usados em update()
