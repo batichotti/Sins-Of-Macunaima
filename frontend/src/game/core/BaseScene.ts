@@ -77,9 +77,7 @@ export class BaseScene extends Scene implements IBaseScene {
 
     update(time: number, delta: number): void {
         const point = this.enemySpawner.chooseSpawn();
-        if(point) {
-            this.enemyManager.spawnEnemy(point.name, point.position);
-        }
+        if(point) this.enemyManager.spawnEnemy(point.name, point.position);
 
         this.handleInput();
         this.handleAnimatedTiles(delta);
