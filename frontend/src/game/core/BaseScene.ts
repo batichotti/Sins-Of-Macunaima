@@ -1,9 +1,9 @@
 import { EventBus } from '@/game/core/EventBus';
-import { Game, Scene } from 'phaser';
+import { Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
 import { AnimatedTileData } from '../types/Tiles';
-import { CharacterTypes, EnemySpawnPoints, EnemyTypes, SceneData } from '../types';
+import { CharacterTypes, EnemyTypes, SceneData } from '../types';
 import GameCameras from '../components/GameCameras';
 import { Level } from '../entities/Level';
 import IBaseScene from '../types/BaseScene';
@@ -13,6 +13,7 @@ import EnemyManager from '../entities/EnemyManager';
 import GameUI from '../components/GameUI';
 import PlayerProgressionSystem from '../entities/PlayerProgressionSystem';
 import AnimationManager from '../entities/AnimationManager';
+import EnemySpawner from '../entities/EnemySpawner';
 
 /**
  * Cena básica de jogo.
@@ -25,11 +26,11 @@ export class BaseScene extends Scene implements IBaseScene {
     animatedTiles: AnimatedTileData[];
     inputManager: InputManager;
     enemyManager: EnemyManager;
-    enemySpawnPoints: EnemySpawnPoints[];
     animationManager: AnimationManager;
     gameUI: GameUI;
     map: Phaser.Tilemaps.Tilemap;
     sceneData: SceneData;
+    enemySpawner: EnemySpawner;
     transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
     transitionRects: Phaser.Geom.Rectangle[];
     attackManager: AttackManager;
@@ -52,7 +53,6 @@ export class BaseScene extends Scene implements IBaseScene {
         this.layers = [];
         this.animatedTiles = [];
         this.transitionRects = [];
-        this.enemySpawnPoints = [];
         this.sceneData = data;
     }
 
@@ -63,9 +63,9 @@ export class BaseScene extends Scene implements IBaseScene {
         this.setupTransitionPoints();
         this.setupCollisions();
         this.setupCameras();
-        this.setupEnemySpawnPoints();
         this.inputManager = new InputManager(this);
         this.enemyManager = new EnemyManager(this);
+        this.enemySpawner = new EnemySpawner(this);
         this.animationManager = new AnimationManager(this);
         this.setupAnimations();
         this.playerProgressionSystem = new PlayerProgressionSystem(this.player);
@@ -76,9 +76,9 @@ export class BaseScene extends Scene implements IBaseScene {
     }
 
     update(time: number, delta: number): void {
-        if(time > 2000) {
-            const point = Phaser.Utils.Array.GetRandom(this.enemySpawnPoints);
-            if(point) this.enemyManager.spawnEnemy(point.name, { x: point.position.x, y: point.position.y } as Phaser.Math.Vector2);
+        const point = this.enemySpawner.chooseSpawn();
+        if(point) {
+            this.enemyManager.spawnEnemy(point.name, point.position);
         }
 
         this.handleInput();
@@ -106,17 +106,6 @@ export class BaseScene extends Scene implements IBaseScene {
                 this.layers.push(gameLayer);
             }
         });
-    }
-
-    setupEnemySpawnPoints(): void {
-        const layer = this.map.getObjectLayer('enemySpawnPoints')
-        if(layer) {
-            layer.objects.forEach(
-                (obj) => { 
-                    this.enemySpawnPoints.push({ name: obj.name, position: new Phaser.Math.Vector2(obj.x! + obj.width!/2, obj.y! - obj.height!/2) });
-                }
-            )
-        }
     }
 
     setupPlayer(): void {

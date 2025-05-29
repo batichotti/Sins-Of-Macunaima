@@ -1,6 +1,6 @@
 import { DistanceMethod, Pathfinding, PathNode } from "../components/phaser-pathfinding";
 import { BaseScene } from "../core/BaseScene";
-import { IMelee, IEnemy, WeaponType } from "../types";
+import { IMelee, IEnemy, WeaponType, Directions } from "../types";
 import TweenManager from "./TweenManager";
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnemy {
@@ -38,7 +38,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         // Adiciona à cena e física
         scene.add.existing(this);
         scene.physics.add.existing(this);
-        
+        this.scene.animationManager.createStandardWalkAnimation(spriteKey);
+
         // Ajuste do corpo físico
         this.setBodySize(16, 32)
             .setOffset(0, 0)
@@ -169,6 +170,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         const dir = new Phaser.Math.Vector2(dest.x - this.x, dest.y - this.y).normalize();
         const speed = this.baseSpeed;
 
+        this.walkAnimation(dir);
+
         this.setVelocity(dir.x * speed, dir.y * speed);
 
         if (Phaser.Math.Distance.Between(this.x, this.y, dest.x, dest.y) < 32) {
@@ -184,6 +187,14 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
             this.timeStuck = 0;
             this.lastPos.set(this.x, this.y);
         }
+    }
+
+    private walkAnimation(direction: Phaser.Math.Vector2) {
+        if(direction.x > 0) this.play(`${this.spriteKey}_${Directions.RIGHT}`, true);
+        else if(direction.x < 0) this.play(`${this.spriteKey}_${Directions.LEFT}`, true);
+        else if(direction.y > 0) this.play(`${this.spriteKey}_${Directions.DOWN}`, true);
+        else if(direction.y < 0) this.play(`${this.spriteKey}_${Directions.UP}`, true);
+        else this.setFrame(0);
     }
 
     private getCacheKey(targetTile: Phaser.Math.Vector2): string {

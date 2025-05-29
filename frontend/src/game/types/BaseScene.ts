@@ -9,6 +9,7 @@ import EnemyManager from "../entities/EnemyManager";
 import GameUI from "../components/GameUI";
 import PlayerProgressionSystem from "../entities/PlayerProgressionSystem";
 import AnimationManager from "../entities/AnimationManager";
+import EnemySpawner from "../entities/EnemySpawner";
 
 /**
  * Cena básica do mundo.
@@ -37,6 +38,11 @@ export default interface IBaseScene {
     layers: Phaser.Tilemaps.TilemapLayer[];
 
     /**
+     * O spawner de inimigos.
+     */
+    enemySpawner: EnemySpawner;
+
+    /**
      * Um array com os tiles animados.
      */
     animatedTiles: AnimatedTileData[];
@@ -45,11 +51,6 @@ export default interface IBaseScene {
      * O gerenciador de animações da cena base.
      */
     animationManager: AnimationManager;
-
-    /**
-     * Spawn points dos inimigos.
-     */
-    enemySpawnPoints: EnemySpawnPoints[];
 
     /**
      * O gerenciador de inimigos.
@@ -100,11 +101,6 @@ export default interface IBaseScene {
      * Configura camadas.
      */
     setupLayers(): void;
-
-    /**
-     * Configura spawn points dos inimigos.
-     */
-    setupEnemySpawnPoints(): void;
 
     /**
      * Configura tiles animados.

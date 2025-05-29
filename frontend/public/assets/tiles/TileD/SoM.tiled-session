@@ -419,17 +419,17 @@
         },
         "cenarios/mapa.tmx": {
             "expandedGroupLayers": [
-                18,
-                17
+                17,
+                18
             ],
             "expandedObjectLayers": [
                 13
             ],
-            "scale": 1,
-            "selectedLayer": 22,
+            "scale": 0.5,
+            "selectedLayer": 21,
             "viewCenter": {
-                "x": 554,
-                "y": 1417
+                "x": 1652,
+                "y": 978
             }
         },
         "cenarios/mapa.tmx#10_dirt": {

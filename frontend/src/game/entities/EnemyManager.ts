@@ -46,7 +46,7 @@ export default class EnemyManager {
                 enemy.setPathFinder(this.pathFinder);
             }
         });
-        this.scene.physics.add.collider(blockers, this.enemyPool);
+        this.scene.physics.add.collider(blockers, this.enemyPool, this.unblockEnemy);
         this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
 
         this.loadWaypoints();
@@ -228,6 +228,20 @@ export default class EnemyManager {
             this.scene.time.delayedCall(750, () => { this.cooldownAttack = true; });
         }
     };
+
+    private unblockEnemy = (obj1: object) => {
+        if(obj1 instanceof Enemy) {
+            const vel = obj1.body?.velocity;
+            let coords = { x: 0, y: 0 };
+            if(vel!.x > 0) coords.x = -1;
+            if(vel!.x < 0) coords.x = 1;
+            if(vel!.y > 0) coords.y = -1;
+            if(vel!.y < 0) coords.y = 1;
+
+            obj1.setVelocity( vel!.x * coords.x * 0.8,  vel!.y * coords.y * 0.8);
+        }
+    };
+
 
     spawnEnemy(region: string, position: Phaser.Math.Vector2) {
         if(this.canSpawn) {

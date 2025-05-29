@@ -1,9 +1,7 @@
-import { devIndicatorServerState } from "next/dist/server/dev/dev-indicator-server-state";
 import { EventManager, GameEvents } from "../core/EventBus";
 import { Directions, ICharacter, IPlayer, WeaponSet } from "../types";
 import { Level } from "./Level";
 import TweenManager from "./TweenManager";
-import { BaseScene } from "../core/BaseScene";
 
 export class Player implements IPlayer {
     name!: string;
@@ -86,10 +84,10 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
     }
 
     private walkAnimation(direction: Phaser.Math.Vector2) {
-        if(direction.x > 0) this.play(`${this.spriteKey}_${Directions.RIGHT}`);
-        else if(direction.x < 0) this.play(`${this.spriteKey}_${Directions.LEFT}`);
-        else if(direction.y > 0) this.play(`${this.spriteKey}_${Directions.DOWN}`);
-        else if(direction.y < 0) this.play(`${this.spriteKey}_${Directions.UP}`);
+        if(direction.x > 0) this.play(`${this.spriteKey}_${Directions.RIGHT}`, true);
+        else if(direction.x < 0) this.play(`${this.spriteKey}_${Directions.LEFT}`, true);
+        else if(direction.y > 0) this.play(`${this.spriteKey}_${Directions.DOWN}`, true);
+        else if(direction.y < 0) this.play(`${this.spriteKey}_${Directions.UP}`, true);
         else this.setFrame(0);
     }
 }
