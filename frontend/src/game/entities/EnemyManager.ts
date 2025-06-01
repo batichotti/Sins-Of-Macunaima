@@ -269,7 +269,7 @@ export default class EnemyManager {
         this.scene.time.delayedCall(1250, () => this.canSpawn = true);
     }
 
-    findNearestEnemy(): number | null {
+    findNearestEnemy(): Phaser.Math.Vector2 | null {
         const children = this.enemyPool.getChildren();
         if(children.length <= 0) return null;
 
@@ -287,7 +287,7 @@ export default class EnemyManager {
             }
         }
 
-        return Phaser.Math.Angle.Between(playerPos.x, playerPos.y, res.x, res.y);
+        return nearest < 150 ? new Phaser.Math.Vector2(res.x - playerPos.x, res.y - playerPos.y) : null;
     }
 
     updatePathing() {
