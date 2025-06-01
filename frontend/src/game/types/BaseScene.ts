@@ -4,12 +4,10 @@ import { Player } from "../entities/Player";
 import { AnimatedTileData } from "./Tiles";
 import AttackManager from "../entities/Attack";
 import InputManager from "../components/Input";
-import { EnemySpawnPoints } from "./EnemySpawnPoints";
 import EnemyManager from "../entities/EnemyManager";
 import GameUI from "../components/GameUI";
 import PlayerProgressionSystem from "../entities/PlayerProgressionSystem";
 import AnimationManager from "../entities/AnimationManager";
-import EnemySpawner from "../entities/EnemySpawner";
 
 /**
  * Cena básica do mundo.

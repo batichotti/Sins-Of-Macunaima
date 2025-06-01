@@ -1,5 +1,4 @@
 import { TextBox } from "../components/GameUI";
-import { AttackMode } from "./Weapon";
 
 /**
  * Interface com os elementos da UI na partida:
@@ -9,6 +8,7 @@ import { AttackMode } from "./Weapon";
  * - Vida.
  * - Armas.
  * - Inimigos abatidos.
+ * - Informações dos Chefão atual.
  */
 export interface IGameUI {
     playerLabel: TextBox;
@@ -18,6 +18,7 @@ export interface IGameUI {
     weaponSetLabel: TextBox;
     attackModeLabel: TextBox;
     killsLabel: TextBox;
+    bossInfoLabel: TextBox;
 }
 
 /**
@@ -31,5 +32,6 @@ export const GameUIPlaceholders = {
     WEAPONSET: "Arma atual: ",
     POINTS: "PTS: ",
     KILLS: "Abates: ",
-    ATTACK_MODE: 'Modo de Ataque: '
+    ATTACK_MODE: 'Modo de Ataque: ',
+    BOSS_INFO: 'Chefão: '
 }

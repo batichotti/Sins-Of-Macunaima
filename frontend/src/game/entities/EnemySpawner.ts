@@ -1,13 +1,14 @@
 import { BaseScene } from "../core/BaseScene";
+import { EventManager, GameEvents } from "../core/EventBus";
 import { EnemySpawnPoints } from "../types";
 
 export default class EnemySpawner {
-    scene: BaseScene;
-    lastPlayerPos: Phaser.Math.Vector2;
-    spawnPoints: EnemySpawnPoints[] = [];
-    minDistance: number = 50;
-    maxDistance: number = 320;
-    canChoose: boolean = true;
+    private scene: BaseScene;
+    private lastPlayerPos: Phaser.Math.Vector2;
+    private spawnPoints: EnemySpawnPoints[] = [];
+    private minDistance: number = 50;
+    private maxDistance: number = 320;
+    private canChoose: boolean = true;
 
     constructor(scene: BaseScene) {
         this.scene = scene;
@@ -23,7 +24,7 @@ export default class EnemySpawner {
         if(this.canChoose) {
             this.canChoose = false;
 
-            const playerPos = this.scene.player.character.body?.position;
+            const playerPos = this.scene.player.character.body?.position ?? this.lastPlayerPos;
             if(playerPos) this.lastPlayerPos = playerPos;
 
             let nearest = Number.MAX_VALUE;

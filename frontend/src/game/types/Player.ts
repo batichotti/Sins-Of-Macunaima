@@ -77,6 +77,11 @@ export interface ILevel {
 }
 
 /**
+ * Define de quantos em quantos níveis um Chefão aparece.
+ */
+export const bossThreshold = 10;
+
+/**
  * Modificadores de níveis. Multiplique com o nível atual e a vida base do personagem para ter a vida total.
  */
 export const levelModifiers = {
@@ -85,15 +90,21 @@ export const levelModifiers = {
 };
 
 /**
- * Os personagens existentes no jogo.
- */
-export const CharacterTypes: ICharacter[] = [
-    { name: 'Macunaíma', spriteKey: 'Macunaima', maximumHealth: 200, health: 200, baseSpeed: 200 }
-];
-
-/**
  * Usado para localizar o personagem em 'characterTypes'.
  */
 export enum CharacterEnum {
     MACUNAIMA
 }
+
+/**
+ * Os personagens existentes no jogo.
+ */
+export const CharacterTypes: Record<CharacterEnum, ICharacter> = {
+    [CharacterEnum.MACUNAIMA]: { 
+        name: 'Macunaíma', 
+        spriteKey: 'Macunaima', 
+        maximumHealth: 200, 
+        health: 200, 
+        baseSpeed: 200 
+    }
+};

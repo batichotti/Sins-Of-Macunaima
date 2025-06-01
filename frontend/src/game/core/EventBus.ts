@@ -22,7 +22,8 @@ export enum GameEvents {
     TOGGLE_ATTACK_MODE = 'tooggleAttackMode',
     TOGGLE_ATTACK_MODE_SUCCEDED = 'toggleAttackModeSucceded',
     SHOULD_SPAWN_BOSS = 'shouldSpawnBoss',
-    BOSS_SPAWNED = 'bossSpawned'
+    BOSS_SPAWNED = 'bossSpawned',
+    BOSS_DEFEATED = 'bossDefeated'
 }
 
 /**

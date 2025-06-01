@@ -1,5 +1,5 @@
 import Enemy from "./Enemy";
-import { EnemyTypes } from "../types";
+import { BossTypes, EnemyTypes } from "../types";
 import { BaseScene } from "../core/BaseScene";
 import { Pathfinding } from "../components/phaser-pathfinding";
 import { Grid } from "../components/phaser-pathfinding";
@@ -26,13 +26,13 @@ export default class EnemyManager {
     maxEnemyDistance: number = 200;
     canPath: boolean = true;
     canSpawn: boolean = true;
-    shouldSpawnBoss: boolean = false;
     grid: Grid;
     playerPos = new Phaser.Math.Vector2();
     updateIndex = 0;
     waypoints: Phaser.Math.Vector2[] = [];
     maxDirectDistance: number = 300;
     cooldownAttack: boolean = true;
+    bossSpawned: boolean = false;
 
 
     constructor(scene: BaseScene) {
@@ -55,7 +55,7 @@ export default class EnemyManager {
         this.scene.physics.add.collider(blockers, this.enemyPool, this.unblockEnemy);
         this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
 
-        EventManager.getInstance().on(GameEvents.SHOULD_SPAWN_BOSS, () => {});
+        EventManager.getInstance().on(GameEvents.SHOULD_SPAWN_BOSS, () => { this.bossSpawned = true });
 
         this.loadWaypoints();
     }
@@ -253,21 +253,37 @@ export default class EnemyManager {
 
     spawnEnemy() {
         const spawn = this.enemySpawner.chooseSpawn();
-        if(this.canSpawn && spawn && !this.shouldSpawnBoss) {
+        if(spawn) {
+            if(this.canSpawn && !this.bossSpawned) {
 
-            const validEnemies = EnemyTypes.filter(e => e.spawnRegion === spawn.name);
-            if (validEnemies.length === 0) return;
+                const validEnemies = Object.values(EnemyTypes).filter(e => e.spawnRegion === spawn.name);
+                if (validEnemies.length === 0) return;
 
-            const enemyType = Phaser.Utils.Array.GetRandom(validEnemies);
-            const enemy = this.enemyPool.get(spawn.position.x, spawn.position.y, enemyType.spriteKey) as Enemy;
-            if(enemy) {
-                this.canSpawn = false;
-                enemy.configureEnemy(enemyType);
-                enemy.enableBody(true, spawn.position.x, spawn.position.y, true, true);
-                this.scene.gameCameras.ui.ignore(enemy);
+                const enemyType = Phaser.Utils.Array.GetRandom(validEnemies);
+                const enemy = this.enemyPool.get(spawn.position.x, spawn.position.y, enemyType.spriteKey) as Enemy;
+                if(enemy) {
+                    this.canSpawn = false;
+                    enemy.configureEnemy(enemyType);
+                    enemy.enableBody(true, spawn.position.x, spawn.position.y, true, true);
+                    this.scene.gameCameras.ui.ignore(enemy);
+                    this.scene.time.delayedCall(1250, () => this.canSpawn = true);
+                }
+            } else if(this.bossSpawned) {
+                const validBosses = Object.values(BossTypes).filter(e => e.spawnRegion === spawn.name);
+                if (validBosses.length === 0) return;
+
+                const bossType = Phaser.Utils.Array.GetRandom(validBosses);
+                const boss = this.enemyPool.get(spawn.position.x, spawn.position.y, bossType.spriteKey) as Enemy;
+                if(boss) {
+                    this.canSpawn = false;
+                    boss.configureEnemy(bossType);
+                    boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
+                    this.scene.gameCameras.ui.ignore(boss);
+
+                    EventManager.getInstance().emit(GameEvents.BOSS_SPAWNED, { boss: bossType });
+                }
             }
         }
-        this.scene.time.delayedCall(1250, () => this.canSpawn = true);
     }
 
     findNearestEnemy(): Phaser.Math.Vector2 | null {

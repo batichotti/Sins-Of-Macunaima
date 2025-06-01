@@ -1,5 +1,5 @@
 import { EventManager, GameEvents } from "../core/EventBus";
-import { Directions, ICharacter, IPlayer, WeaponSet } from "../types";
+import { bossThreshold, Directions, ICharacter, IPlayer, WeaponSet } from "../types";
 import { Level } from "./Level";
 import TweenManager from "./TweenManager";
 
@@ -35,6 +35,10 @@ export class Player implements IPlayer {
         TweenManager.Instance.healTween(this.character);
 
         EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.character.health });
+
+        if(this.level.level % bossThreshold) {
+            EventManager.getInstance().emit(GameEvents.SHOULD_SPAWN_BOSS);
+        }
     }
 }
 

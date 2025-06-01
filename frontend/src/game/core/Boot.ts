@@ -42,13 +42,14 @@ export class Boot extends Scene {
         this.load.setPath('assets');
 
         //  Jogador
-        CharacterTypes.forEach(
+        Object.values(CharacterTypes).forEach(
             (it: ICharacter) => {
                 this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
             }
         );
 
-        EnemyTypes.forEach(
+        // Inimigos
+        Object.values(EnemyTypes).forEach(
             (it: IEnemy) => {
                 this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
             }

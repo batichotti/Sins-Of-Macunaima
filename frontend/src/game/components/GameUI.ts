@@ -16,6 +16,7 @@ export default class GameUI implements IGameUI {
   pointsLabel: TextBox;
   killsLabel: TextBox;
   attackModeLabel: TextBox;
+  bossInfoLabel: TextBox;
 
 
   constructor(scene: BaseScene) {
@@ -32,15 +33,7 @@ export default class GameUI implements IGameUI {
     this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 390, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
 
     this.weaponCooldownBar = new CooldownBar(this.scene, 460, 45, 140, 5);
-
-    this.scene.gameCameras.main.ignore(this.playerLabel);
-    this.scene.gameCameras.main.ignore(this.characterLabel);
-    this.scene.gameCameras.main.ignore(this.levelLabel);
-    this.scene.gameCameras.main.ignore(this.healthLabel);
-    this.scene.gameCameras.main.ignore(this.weaponSetLabel);
-    this.scene.gameCameras.main.ignore(this.weaponCooldownBar);
-    this.scene.gameCameras.main.ignore(this.attackModeLabel);
-    this.scene.gameCameras.main.ignore(this.killsLabel);
+    this.scene.gameCameras.main.ignore([ this.bossInfoLabel, this.killsLabel, this.attackModeLabel, this.weaponCooldownBar, this.weaponSetLabel, this.healthLabel, this.levelLabel, this.playerLabel, this.characterLabel ]);
 
 
     this.playerLabel.setText(this.scene.player.name);

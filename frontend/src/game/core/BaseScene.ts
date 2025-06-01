@@ -185,8 +185,8 @@ export class BaseScene extends Scene implements IBaseScene {
     }
 
     setupAnimations(): void {
-        CharacterTypes.forEach((it) => this.animationManager.createStandardWalkAnimation(it.spriteKey));
-        EnemyTypes.forEach((it) => this.animationManager.createStandardWalkAnimation(it.spriteKey));
+        Object.values(CharacterTypes).forEach((it) => this.animationManager.createStandardWalkAnimation(it.spriteKey));
+        Object.values(EnemyTypes).forEach((it) => this.animationManager.createStandardWalkAnimation(it.spriteKey));
     }
 
     // Usados em update()

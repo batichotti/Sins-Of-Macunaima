@@ -1,5 +1,6 @@
 import { DistanceMethod, Pathfinding, PathNode } from "../components/phaser-pathfinding";
 import { BaseScene } from "../core/BaseScene";
+import { EventManager, GameEvents } from "../core/EventBus";
 import { IMelee, IEnemy, WeaponType, Directions } from "../types";
 import TweenManager from "./TweenManager";
 
@@ -206,6 +207,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
 
         if (this.baseHealth <= 0) {
             this.destroy();
+
+            if(this.scene.enemyManager.bossSpawned) EventManager.getInstance().emit(GameEvents.BOSS_DEFEATED);
+
             return true;
         }
         return false;
