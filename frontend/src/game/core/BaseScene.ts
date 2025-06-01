@@ -3,7 +3,7 @@ import { Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
 import { AnimatedTileData } from '../types/Tiles';
-import { CharacterTypes, EnemyTypes, SceneData } from '../types';
+import { AttackMode, CharacterTypes, EnemyTypes, SceneData } from '../types';
 import GameCameras from '../components/GameCameras';
 import { Level } from '../entities/Level';
 import IBaseScene from '../types/BaseScene';
@@ -194,14 +194,21 @@ export class BaseScene extends Scene implements IBaseScene {
     handleInput(): void {     
         this.inputManager.handleUtilKeys();
 
-        const angle = this.inputManager.handleAwsd();
-        this.player.character.playerMove(this.inputManager.handleArrows(), angle);
-        if(angle != null) {
-            this.attackManager.fire(this.player.character.x, this.player.character.y, Phaser.Math.Angle.Between(0, 0, angle.x, angle.y));
+        const movementDirection = this.inputManager.getMovementInput();
+        const keyboardAim = this.inputManager.getKeyboardAimInput();
+        const mouseAim = this.inputManager.getMouseAimInput(this.player.character.x, this.player.character.y);
+        
+        let aimDirection;
+        if(this.attackManager.attackMode === AttackMode.AUTO) {
+            aimDirection = this.enemyManager.findNearestEnemy();
+        } else aimDirection = mouseAim || keyboardAim;
+        if(mouseAim) console.log(mouseAim!.y);
+        this.player.character.playerMove(movementDirection, aimDirection);
+        
+        if (aimDirection) {
+            const angle = Phaser.Math.Angle.Between(0, 0, aimDirection.x, aimDirection.y);
+            this.attackManager.fire(this.player.character.x, this.player.character.y, angle);
         }
-
-        const anglePointer = this.inputManager.handlePointer(this.player.character.x, this.player.character.y);
-        if(anglePointer != null) this.attackManager.fire(this.player.character.x, this.player.character.y, anglePointer);
     }
 
     handleAnimatedTiles(delta: number): void {

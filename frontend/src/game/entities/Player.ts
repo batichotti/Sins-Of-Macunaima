@@ -84,10 +84,16 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
     }
 
     private walkAnimation(direction: Phaser.Math.Vector2) {
-        if(direction.x > 0) this.play(`${this.spriteKey}_${Directions.RIGHT}`, true);
-        else if(direction.x < 0) this.play(`${this.spriteKey}_${Directions.LEFT}`, true);
-        else if(direction.y > 0) this.play(`${this.spriteKey}_${Directions.DOWN}`, true);
-        else if(direction.y < 0) this.play(`${this.spriteKey}_${Directions.UP}`, true);
-        else this.setFrame(0);
+        const isMovingVertically = Math.abs(direction.y) > Math.abs(direction.x);
+        
+        if(direction.x === 0 && direction.y === 0) {
+            this.setFrame(0);
+        } else if (isMovingVertically) {
+            if(direction.y > 0) this.play(`${this.spriteKey}_${Directions.DOWN}`, true);
+            else this.play(`${this.spriteKey}_${Directions.UP}`, true);
+        } else {
+            if(direction.x > 0) this.play(`${this.spriteKey}_${Directions.RIGHT}`, true);
+            else this.play(`${this.spriteKey}_${Directions.LEFT}`, true);
+        }
     }
 }

@@ -9,13 +9,11 @@ export default class AttackManager {
     private melee: Melee;
     private scene: BaseScene;
     private canAttack: boolean = true;
-    private canSearch: boolean = true;
-    private enemyAngle: number = 0;
     private weaponSet: WeaponSet;
     private currentWeapon: IWeapon;
     private kills: number = 0;
     private playerProgressionSystem: PlayerProgressionSystem;
-    private attackMode: AttackMode = AttackMode.AUTO;
+    attackMode: AttackMode = AttackMode.AUTO;
 
     constructor(scene: BaseScene, playerProgessionSystem: PlayerProgressionSystem, weaponSet: WeaponSet) {
         this.scene = scene;
@@ -94,24 +92,13 @@ export default class AttackManager {
     fire(x: number, y: number, angle: number): void {
         if (!this.canAttack) return;
 
-        let ang = angle;
-
-        if(this.attackMode === AttackMode.AUTO) {
-            if(this.canSearch) {
-                ang = this.scene.enemyManager.findNearestEnemy() ?? angle;
-                
-                this.canSearch = false;
-                this.scene.time.delayedCall(250, () => { this.canSearch = true });
-            }
-        }
-
         switch (this.currentWeapon.weaponType) {
             case WeaponType.PROJECTILE:
-                this.fireProjectile(x, y, ang);
+                this.fireProjectile(x, y, angle);
                 break;
             
             case WeaponType.MELEE:
-                this.executeMeleeAttack(x, y, ang);
+                this.executeMeleeAttack(x, y, angle);
                 break;
         }
 

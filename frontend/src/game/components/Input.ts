@@ -41,14 +41,16 @@ export default class InputManager implements IInput {
 
     /**
      * Controla o movimento pelas setas do teclado.
-     * @returns Um vetor (x, y) com coordenadas de movimento.
+     * @returns Um vetor (x, y) com coordenadas de movimento já normalizados.
      */
-    handleArrows() {
-        let movement = new Phaser.Math.Vector2(0, 0);
-        if (this.awsd.left.isDown) movement.x = -1;
-        if (this.awsd.right.isDown) movement.x = 1;
-        if (this.awsd.up.isDown) movement.y = -1;
-        if (this.awsd.down.isDown) movement.y = 1;
+    getMovementInput(): Phaser.Math.Vector2 {
+        const movement = new Phaser.Math.Vector2(0, 0);
+        
+        // WASD para movimento
+        if (this.awsd.left.isDown) movement.x = -1;   // A
+        if (this.awsd.right.isDown) movement.x = 1;   // D
+        if (this.awsd.up.isDown) movement.y = -1;     // W
+        if (this.awsd.down.isDown) movement.y = 1;    // S
 
         return movement.normalize();
     }
@@ -67,36 +69,39 @@ export default class InputManager implements IInput {
             EventManager.getInstance().emit(GameEvents.TOGGLE_ATTACK_MODE);
         }
     }
-
+    
     /**
-     * Controla o movimento de AWSD do teclado para atirar.
-     * @returns Um vetor (x, y) com coordenadas caso haja um evento de teclado. Caso contrário `null`.
+     * Controla a direção de mira pelas setas do teclado.
+     * @returns Um vetor (x, y) com coordenadas de mira ou null se nenhuma tecla estiver pressionada.
      */
-    handleAwsd() : Phaser.Math.Vector2 | null {
-        let coords = new Phaser.Math.Vector2(0, 0);
+    getKeyboardAimInput(): Phaser.Math.Vector2 | null {
+        const aim = new Phaser.Math.Vector2(0, 0);
 
-        if (this.arrows.left.isDown) coords.x = -1;
-        if (this.arrows.right.isDown) coords.x = 1;
-        if (this.arrows.up.isDown) coords.y = -1;
-        if (this.arrows.down.isDown) coords.y = 1;
+        // Setas para mira
+        if (this.arrows.left.isDown) aim.x = -1;
+        if (this.arrows.right.isDown) aim.x = 1;
+        if (this.arrows.up.isDown) aim.y = -1;
+        if (this.arrows.down.isDown) aim.y = 1;
 
-        if(coords.x || coords.y) {
-            return new Phaser.Math.Vector2(coords.x, coords.y);
-        } else {
-            return null;
-        }
-        
+        return (aim.x !== 0 || aim.y !== 0) ? aim.normalize() : null;
     }
 
     /**
-     * Controla o movimento do mouse para atirar.
-     * @returns Um vetor (x, y) com coordenadas caso haja um evento do mouse. Caso contrário `null`.
+     * Controla a direção de mira pelo mouse.
+     * @param playerX Posição X do jogador
+     * @param playerY Posição Y do jogador
+     * @returns Um vetor (x, y) com direção de mira ou null se o mouse não estiver pressionado.
      */
-    handlePointer(x: number, y: number): number | null {
-        if(this.mouse.isDown) {
-            return Phaser.Math.Angle.Between(x, y, this.mouse.worldX, this.mouse.worldY);
-        } else {
-            return null;
-        }
+    getMouseAimInput(playerX: number, playerY: number): Phaser.Math.Vector2 | null {
+        if(this.mouse.isDown) return new Phaser.Math.Vector2(this.mouse.worldX - playerX, this.mouse.worldY - playerY).normalize();
+        return null;
+    }
+
+    /**
+     * Verifica se há input de ataque (mouse ou setas).
+     * @returns true se há input de ataque
+     */
+    hasAttackInput(): boolean {
+        return this.mouse.isDown || this.arrows.left.isDown || this.arrows.right.isDown || this.arrows.up.isDown || this.arrows.down.isDown;
     }
 }
