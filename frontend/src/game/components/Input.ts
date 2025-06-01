@@ -72,7 +72,7 @@ export default class InputManager implements IInput {
      * Controla o movimento de AWSD do teclado para atirar.
      * @returns Um vetor (x, y) com coordenadas caso haja um evento de teclado. Caso contrário `null`.
      */
-    handleAwsd() : number | null {
+    handleAwsd() : Phaser.Math.Vector2 | null {
         let coords = new Phaser.Math.Vector2(0, 0);
 
         if (this.arrows.left.isDown) coords.x = -1;
@@ -81,7 +81,7 @@ export default class InputManager implements IInput {
         if (this.arrows.down.isDown) coords.y = 1;
 
         if(coords.x || coords.y) {
-            return Phaser.Math.Angle.Between(0, 0, coords.x, coords.y);
+            return new Phaser.Math.Vector2(coords.x, coords.y);
         } else {
             return null;
         }

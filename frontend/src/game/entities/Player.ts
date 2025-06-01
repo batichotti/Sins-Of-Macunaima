@@ -78,9 +78,9 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
         EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.health })
     }
 
-    playerMove(direction: Phaser.Math.Vector2): void {
+    playerMove(direction: Phaser.Math.Vector2, attackCoords: Phaser.Math.Vector2 | null): void {
         this.setVelocity(direction.x * this.baseSpeed, direction.y * this.baseSpeed);
-        this.walkAnimation(direction);
+        this.walkAnimation(attackCoords ?? direction);
     }
 
     private walkAnimation(direction: Phaser.Math.Vector2) {

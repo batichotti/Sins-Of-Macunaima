@@ -191,14 +191,14 @@ export class BaseScene extends Scene implements IBaseScene {
 
     // Usados em update()
 
-    handleInput(): void {
-        // Movimento
-        this.player.character.playerMove(this.inputManager.handleArrows());
-
+    handleInput(): void {     
         this.inputManager.handleUtilKeys();
 
         const angle = this.inputManager.handleAwsd();
-        if(angle != null) this.attackManager.fire(this.player.character.x, this.player.character.y, angle);
+        this.player.character.playerMove(this.inputManager.handleArrows(), angle);
+        if(angle != null) {
+            this.attackManager.fire(this.player.character.x, this.player.character.y, Phaser.Math.Angle.Between(0, 0, angle.x, angle.y));
+        }
 
         const anglePointer = this.inputManager.handlePointer(this.player.character.x, this.player.character.y);
         if(anglePointer != null) this.attackManager.fire(this.player.character.x, this.player.character.y, anglePointer);
