@@ -23,6 +23,7 @@ export default class EnemyManager {
     pathFinder: Pathfinding;
     pathCache = new PathCache(7000);
     waypointGraph: Map<string, Phaser.Math.Vector2[]> = new Map();
+    maxEnemyDistance: number = 200;
     canPath: boolean = true;
     canSpawn: boolean = true;
     shouldSpawnBoss: boolean = false;
@@ -287,7 +288,7 @@ export default class EnemyManager {
             }
         }
 
-        return nearest < 150 ? new Phaser.Math.Vector2(res.x - playerPos.x, res.y - playerPos.y) : null;
+        return nearest < this.maxEnemyDistance ? new Phaser.Math.Vector2(res.x - playerPos.x, res.y - playerPos.y) : null;
     }
 
     updatePathing() {

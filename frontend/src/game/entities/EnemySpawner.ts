@@ -16,13 +16,7 @@ export default class EnemySpawner {
 
     private setupEnemySpawnPoints(): void {
         const layer = this.scene.map.getObjectLayer('enemySpawnPoints')
-        if(layer) {
-            layer.objects.forEach(
-                (obj) => { 
-                    this.spawnPoints.push({ name: obj.name, position: new Phaser.Math.Vector2(obj.x! + obj.width!/2, obj.y! - obj.height!/2) })
-                }
-            )
-        }
+        if(layer) layer.objects.forEach((obj) => { this.spawnPoints.push({ name: obj.name, position: new Phaser.Math.Vector2(obj.x! + obj.width!/2, obj.y! - obj.height!/2) }) })
     }
 
     chooseSpawn(): EnemySpawnPoints | null {
