@@ -56,6 +56,7 @@ export default class EnemyManager {
         this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
 
         EventManager.getInstance().on(GameEvents.SHOULD_SPAWN_BOSS, () => { this.bossSpawned = true });
+        EventManager.getInstance().on(GameEvents.BOSS_DEFEATED, () => { this.bossSpawned = false; this.canSpawn = true });
 
         this.loadWaypoints();
     }
@@ -277,6 +278,7 @@ export default class EnemyManager {
                 if(boss) {
                     this.canSpawn = false;
                     boss.configureEnemy(bossType);
+                    boss.isBoss = true;
                     boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
                     this.scene.gameCameras.ui.ignore(boss);
 

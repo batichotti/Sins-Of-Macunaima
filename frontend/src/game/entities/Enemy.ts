@@ -15,6 +15,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     damageMultiplier: number;
     baseSpeed: number;
     pointGain: number;
+    isBoss: boolean = false;
     
     // Sistema de pathfinding
     pathFinder!: Pathfinding;
@@ -208,7 +209,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         if (this.baseHealth <= 0) {
             this.destroy();
 
-            if(this.scene.enemyManager.bossSpawned) EventManager.getInstance().emit(GameEvents.BOSS_DEFEATED);
+            if(this.isBoss) EventManager.getInstance().emit(GameEvents.BOSS_DEFEATED);
 
             return true;
         }
