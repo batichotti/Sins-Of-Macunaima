@@ -1,5 +1,4 @@
 import { BaseScene } from "../core/BaseScene";
-import { EventManager, GameEvents } from "../core/EventBus";
 import { EnemySpawnPoints } from "../types";
 
 export default class EnemySpawner {
@@ -29,7 +28,7 @@ export default class EnemySpawner {
 
             let nearest = Number.MAX_VALUE;
             let nearestPos = null;
-            
+
             const spawnPoints = this.spawnPoints;
 
             for(let i = 0; i < spawnPoints.length; i++) {

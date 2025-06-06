@@ -80,9 +80,9 @@ export default class EnemyManager {
 
     public getTargetPosition(enemyPos: Phaser.Math.Vector2, playerPos: Phaser.Math.Vector2): Phaser.Math.Vector2 {
         const distanceToPlayer = Phaser.Math.Distance.Between(
-            enemyPos.x, 
-            enemyPos.y, 
-            playerPos.x, 
+            enemyPos.x,
+            enemyPos.y,
+            playerPos.x,
             playerPos.y
         );
 
@@ -91,14 +91,14 @@ export default class EnemyManager {
         }
 
         const nearestWaypoint = this.findNearestWaypoint(enemyPos);
-        
+
         return nearestWaypoint ? nearestWaypoint.clone() : playerPos.clone();
     }
 
     private getTilesAlongLine(start: Phaser.Math.Vector2, end: Phaser.Math.Vector2): Phaser.Tilemaps.Tile[] {
         const tiles: Phaser.Tilemaps.Tile[] = [];
         const tilemap = this.scene.map;
-        
+
         let x0 = tilemap.worldToTileX(start.x)!;
         let y0 = tilemap.worldToTileY(start.y)!;
         const x1 = tilemap.worldToTileX(end.x)!;
@@ -152,7 +152,7 @@ export default class EnemyManager {
 
         const openSet: WaypointNode[] = [];
         const allNodes = new Map<string, WaypointNode>();
-        
+
         // Inicializa A*
         const startNode: WaypointNode = {
             point: startWp,
@@ -208,7 +208,7 @@ export default class EnemyManager {
     private reconstructPath(node: WaypointNode): Phaser.Math.Vector2[] {
         const path: Phaser.Math.Vector2[] = [];
         let current: WaypointNode | null = node;
-        
+
         while (current) {
             path.unshift(current.point);
             current = current.parent;
@@ -219,8 +219,8 @@ export default class EnemyManager {
     public findNearestWaypoint(position: Phaser.Math.Vector2): Phaser.Math.Vector2 | null {
         if (this.waypoints.length === 0) return null;
 
-        return this.waypoints.reduce((prev, curr) => 
-            Phaser.Math.Distance.Between(position.x, position.y, curr.x, curr.y) < 
+        return this.waypoints.reduce((prev, curr) =>
+            Phaser.Math.Distance.Between(position.x, position.y, curr.x, curr.y) <
             Phaser.Math.Distance.Between(position.x, position.y, prev.x, prev.y) ? curr : prev
         );
     }
@@ -241,7 +241,7 @@ export default class EnemyManager {
     private unblockEnemy = (obj1: object) => {
         if(obj1 instanceof Enemy) {
             const vel = obj1.body?.velocity;
-            let coords = { x: 0, y: 0 };
+            const coords = { x: 0, y: 0 };
             if(vel!.x > 0) coords.x = -1;
             if(vel!.x < 0) coords.x = 1;
             if(vel!.y > 0) coords.y = -1;
@@ -281,7 +281,6 @@ export default class EnemyManager {
                     boss.isBoss = true;
                     boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
                     this.scene.gameCameras.ui.ignore(boss);
-
                     EventManager.getInstance().emit(GameEvents.BOSS_SPAWNED, { boss: bossType });
                 }
             }
@@ -311,7 +310,7 @@ export default class EnemyManager {
 
     updatePathing() {
         if (!this.canPath) return;
-        
+
         this.canPath = false;
         const enemies = this.enemyPool.getChildren() as Enemy[];
         this.playerPos.set(this.scene.player.character.x, this.scene.player.character.y);
@@ -322,7 +321,7 @@ export default class EnemyManager {
 
         while (processed < BATCH_SIZE && enemies.length > 0) {
             if (index >= enemies.length) index = 0;
-        
+
             const enemy = enemies[index];
             if (enemy?.active && enemy.body) {
                 enemy.updatePathing(this.playerPos);
@@ -331,7 +330,7 @@ export default class EnemyManager {
 
             index++;
             this.updateIndex = index % enemies.length;
-        
+
             if (index === this.updateIndex) break;
         }
         this.scene.time.delayedCall(100, () => this.canPath = true);

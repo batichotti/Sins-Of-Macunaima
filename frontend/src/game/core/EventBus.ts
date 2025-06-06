@@ -2,7 +2,7 @@ import { Events } from 'phaser';
 
 /**
  * Usado para emitir eventos entre componentes React e cenas Phaser.
- * 
+ *
  * Ps: Já estava no template do Phaser + NextJs. Logo melhor não mexer.
  */
 export const EventBus = new Events.EventEmitter();
@@ -23,12 +23,13 @@ export enum GameEvents {
     TOGGLE_ATTACK_MODE_SUCCEDED = 'toggleAttackModeSucceded',
     SHOULD_SPAWN_BOSS = 'shouldSpawnBoss',
     BOSS_SPAWNED = 'bossSpawned',
-    BOSS_DEFEATED = 'bossDefeated'
+    BOSS_DEFEATED = 'bossDefeated',
+    CHARACTER_CHANGE = 'characterChange'
 }
 
 /**
  * Classe singleton que coordena eventos entre classes.
- * 
+ *
  * Não me pergunte como isso funciona porque isso não importa :).
  */
 export class EventManager {

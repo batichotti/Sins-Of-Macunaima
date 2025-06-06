@@ -1,4 +1,4 @@
-import { Game, Scene } from 'phaser';
+import { Scene } from 'phaser';
 import { Text } from '@/game/components/Properties';
 import { AttackMode, ITextBox } from '../types';
 import { IGameUI, GameUIPlaceholders }from '../types/GameUI';
@@ -33,7 +33,7 @@ export default class GameUI implements IGameUI {
     this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 390, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
 
     this.weaponCooldownBar = new CooldownBar(this.scene, 460, 45, 140, 5);
-    this.scene.gameCameras.main.ignore([ this.bossInfoLabel, this.killsLabel, this.attackModeLabel, this.weaponCooldownBar, this.weaponSetLabel, this.healthLabel, this.levelLabel, this.playerLabel, this.characterLabel ]);
+    this.scene.gameCameras.main.ignore([ this.killsLabel, this.attackModeLabel, this.weaponCooldownBar, this.weaponSetLabel, this.healthLabel, this.levelLabel, this.playerLabel, this.characterLabel ]);
 
 
     this.playerLabel.setText(this.scene.player.name);
@@ -74,7 +74,7 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
 
     this.text = new Phaser.GameObjects.Text(this.scene, this.size.x * 0.5, this.size.y * 0.5, '', { ...Text.Dialog1 }).setOrigin(0.5).setDepth(100);
     this.setDepth(1010);
-    this.setScrollFactor(0); 
+    this.setScrollFactor(0);
     this.add([ this.background, this.text ]);
     this.setPosition(position.x, position.y);
     this.scene.add.existing(this);
@@ -90,6 +90,13 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
   hide(): void {
     this.setVisible(false);
   }
+}
+
+export class BossInformation extends Phaser.GameObjects.Container {
+  fill: Phaser.GameObjects.Graphics;
+  width: number;
+  height: number;
+  private currentTween: Phaser.Tweens.Tween;
 }
 
 export class CooldownBar extends Phaser.GameObjects.Container {

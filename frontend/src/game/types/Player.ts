@@ -36,8 +36,8 @@ export interface ICharacter {
      */
     name: string;
     /**
-     * A chave do asset utilizado pelo personagem do jogador. 
-     * 
+     * A chave do asset utilizado pelo personagem do jogador.
+     *
      * Deve corresponder exatamente ao nome usado no arquivo de assets.
      */
     spriteKey: string;
@@ -77,9 +77,9 @@ export interface ILevel {
 }
 
 /**
- * Define de quantos em quantos níveis um Chefão aparece.
+ * Define de quantos em quantos abates um Chefão aparece.
  */
-export const bossThreshold = 10;
+export const bossThreshold = 50;
 
 /**
  * Modificadores de níveis. Multiplique com o nível atual e a vida base do personagem para ter a vida total.
@@ -100,11 +100,11 @@ export enum CharacterEnum {
  * Os personagens existentes no jogo.
  */
 export const CharacterTypes: Record<CharacterEnum, ICharacter> = {
-    [CharacterEnum.MACUNAIMA]: { 
-        name: 'Macunaíma', 
-        spriteKey: 'Macunaima', 
-        maximumHealth: 200, 
-        health: 200, 
-        baseSpeed: 200 
+    [CharacterEnum.MACUNAIMA]: {
+        name: 'Macunaíma',
+        spriteKey: 'Macunaima',
+        maximumHealth: 200,
+        health: 200,
+        baseSpeed: 200
     }
 };

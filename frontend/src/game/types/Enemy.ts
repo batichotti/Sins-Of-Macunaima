@@ -1,4 +1,4 @@
-import { IMelee, MeleeEnum, MeleeTypes, WeaponType } from "./Weapon";
+import { IMelee, MeleeEnum, MeleeTypes } from "./Weapon";
 
 /**
  * Contém informações base dos inimigos.
@@ -37,7 +37,7 @@ export interface IEnemy {
     /**
      * Multiplicador de dano do inimigo. Escala com o nível do jogador.
      */
-    damageMultiplier: number; 
+    damageMultiplier: number;
 
     /**
      * Pontuação ganha por matar o inimigo.
@@ -54,9 +54,9 @@ export enum EnemyEnum {
  * Array com os inimigos. Necessário para o 'EnemyManager' gerar um aleatoriamente.
  */
 export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
-    [EnemyEnum.CHUPACU]: { 
-        name: 'Chupa-cú', 
-        spriteKey: 'Macunaima', 
+    [EnemyEnum.CHUPACU]: {
+        name: 'Chupa-cú',
+        spriteKey: 'Macunaima',
         spawnRegion: 'Floresta',
         weapon: MeleeTypes[MeleeEnum.BENGALA],
         baseHealth: 200,
@@ -64,12 +64,12 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
         damageMultiplier: 1.2,
         pointGain: 20
     },
-    [EnemyEnum.COLONIZADOR]: { 
-        name: 'Colonizador', 
-        spriteKey: 'Colonizador', 
+    [EnemyEnum.COLONIZADOR]: {
+        name: 'Colonizador',
+        spriteKey: 'Colonizador',
         spawnRegion: 'Praia',
         weapon: MeleeTypes[MeleeEnum.ESPADA],
-        baseHealth: 200, 
+        baseHealth: 200,
         baseSpeed: 200,
         damageMultiplier: 1.2,
         pointGain: 20
@@ -81,9 +81,9 @@ export enum BossEnum {
 }
 
 export const BossTypes: Record<BossEnum, IEnemy> = {
-    [BossEnum.CURURE]: { 
-        name: 'Curu-Ré', 
-        spriteKey: 'TODO', 
+    [BossEnum.CURURE]: {
+        name: 'Curu-Ré',
+        spriteKey: 'TODO',
         spawnRegion: 'PlanicieClaraSuperior',
         weapon: MeleeTypes[MeleeEnum.PAULADA],
         baseHealth: 1500,

@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { TilePaths, TileSets } from '@/game/components/PathAssets';
 import { WindowResolution } from '@/game/components/Properties';
-import { CharacterEnum, CharacterTypes, EnemyTypes, ICharacter, IEnemy, ILevel, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, SceneData, WeaponSet, WeaponType } from '../types';
+import { CharacterEnum, CharacterTypes, EnemyTypes, ICharacter, IEnemy, ILevel, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, SceneData, WeaponSet } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets globais.
@@ -68,8 +68,8 @@ export class Boot extends Scene {
         this.level = { level: 1 } as ILevel;
         this.character = CharacterTypes[CharacterEnum.MACUNAIMA];
         this.weaponSet = {
-            projectile: ProjectileTypes[ProjectileEnum.FLECHA],
-            melee: MeleeTypes[MeleeEnum.BANANEIRA]
+          projectile: ProjectileTypes[ProjectileEnum.FLECHA],
+          melee: MeleeTypes[MeleeEnum.BANANEIRA]
         }
         this.player = { name: 'Irineu' } as IPlayer;
     }
@@ -80,7 +80,7 @@ export class Boot extends Scene {
         const outlineWidth = WindowResolution.width * 0.65;
         const outlineHeight = WindowResolution.height * 0.04;
         const maxBarWidth = outlineWidth - 2;
-    
+
         // Moldura centralizada
         this.add.rectangle(
             WindowResolution.width / 2,
@@ -96,7 +96,7 @@ export class Boot extends Scene {
             outlineHeight - 2,
             0xffffff
         ).setOrigin(0, 0.5);
-    
+
         // Atualização de progresso
         this.load.on('progress', (progress: number) => {
             bar.width = maxBarWidth * progress;

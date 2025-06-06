@@ -1,5 +1,5 @@
 import { EventManager, GameEvents } from "../core/EventBus";
-import { bossThreshold, Directions, ICharacter, IPlayer, WeaponSet } from "../types";
+import { Directions, ICharacter, IPlayer, WeaponSet } from "../types";
 import { Level } from "./Level";
 import TweenManager from "./TweenManager";
 
@@ -31,14 +31,10 @@ export class Player implements IPlayer {
         this.character.health = this.character.maximumHealth;
         this.weaponSet.melee.baseDamage *= (this.level.damageIncrease / previousDamage);
         this.weaponSet.projectile.baseDamage *= (this.level.damageIncrease / previousDamage);
-    
+
         TweenManager.Instance.healTween(this.character);
 
         EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.character.health });
-
-        if(this.level.level % bossThreshold) {
-            EventManager.getInstance().emit(GameEvents.SHOULD_SPAWN_BOSS);
-        }
     }
 }
 
@@ -59,6 +55,19 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
         this.health = config.health;
         this.maximumHealth = config.health;
         this.setScale(1.5).setCollideWorldBounds(true).setDepth(100);
+    }
+
+    changeCharacter(config: ICharacter) {
+      this.name = config.name;
+      this.setTexture(config.spriteKey);
+      this.baseSpeed = config.baseSpeed;
+      this.health = config.health;
+      this.maximumHealth = config.health;
+      this.setScale(1.5).setCollideWorldBounds(true).setDepth(100);
+    }
+
+    resetToSpawnPoint(position: Phaser.Math.Vector2 | { x: number, y: number }) {
+      this.setPosition(position.x, position.y);
     }
 
     takeDamage(damage: number) {
@@ -89,7 +98,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
 
     private walkAnimation(direction: Phaser.Math.Vector2) {
         const isMovingVertically = Math.abs(direction.y) > Math.abs(direction.x);
-        
+
         if(direction.x === 0 && direction.y === 0) {
             this.setFrame(0);
         } else if (isMovingVertically) {

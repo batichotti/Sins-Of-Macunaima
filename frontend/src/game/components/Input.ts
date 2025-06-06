@@ -13,7 +13,7 @@ export default class InputManager implements IInput {
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
         if(this.scene.input.keyboard) {
-            this.keyboard = this.scene.input.keyboard;    
+            this.keyboard = this.scene.input.keyboard;
             this.arrows = this.keyboard.createCursorKeys();
 
             this.awsd = this.keyboard.addKeys(
@@ -26,7 +26,7 @@ export default class InputManager implements IInput {
                 }
             ) as Phaser.Types.Input.Keyboard.CursorKeys;
 
-            this.toggleKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+            this.toggleKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.V);
             this.attackModeKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         } else {
             console.error("Teclado não disponível.\n");
@@ -45,7 +45,7 @@ export default class InputManager implements IInput {
      */
     getMovementInput(): Phaser.Math.Vector2 {
         const movement = new Phaser.Math.Vector2(0, 0);
-        
+
         // WASD para movimento
         if (this.awsd.left.isDown) movement.x = -1;   // A
         if (this.awsd.right.isDown) movement.x = 1;   // D
@@ -57,7 +57,7 @@ export default class InputManager implements IInput {
 
     /**
      * Controla as teclas de modo de ataque e trocar de arma.
-     * 
+     *
      * Usa-se o sistema de eventos do Phaser para atualizar a UI.
      */
     handleUtilKeys() {
@@ -69,7 +69,7 @@ export default class InputManager implements IInput {
             EventManager.getInstance().emit(GameEvents.TOGGLE_ATTACK_MODE);
         }
     }
-    
+
     /**
      * Controla a direção de mira pelas setas do teclado.
      * @returns Um vetor (x, y) com coordenadas de mira ou null se nenhuma tecla estiver pressionada.

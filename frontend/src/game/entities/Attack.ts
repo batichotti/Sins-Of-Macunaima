@@ -1,4 +1,4 @@
-import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet, IMelee, AttackMode } from "../types";
+import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet, IMelee, AttackMode, bossThreshold } from "../types";
 import { BaseScene } from "../core/BaseScene";
 import Enemy from "./Enemy";
 import PlayerProgressionSystem from "./PlayerProgressionSystem";
@@ -26,7 +26,7 @@ export default class AttackManager {
 
         this.scene.physics.add.overlap(this.projectiles, this.scene.enemyManager.enemyPool, this.handleHit);
         this.scene.physics.add.overlap(this.melee, this.scene.enemyManager.enemyPool, this.handleHit);
-        
+
         const blockers = this.scene.map.getLayer('colisao')?.tilemapLayer;
         if(blockers) this.scene.physics.add.collider(this.projectiles, blockers, this.eraseProjectile);
 
@@ -41,7 +41,7 @@ export default class AttackManager {
         const enemy = obj2 as Enemy;
 
         const weaponDamage = attacker instanceof Melee ? this.weaponSet.melee.baseDamage : this.weaponSet.projectile.baseDamage;
-        
+
         const damage = weaponDamage * this.scene.player.level.damageIncrease;
 
         if (enemy.takeDamage(damage)) {
@@ -51,11 +51,15 @@ export default class AttackManager {
                 EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.scene.player.character.health });
             }
 
+            if(this.kills % bossThreshold == 0) {
+              EventManager.getInstance().emit(GameEvents.SHOULD_SPAWN_BOSS);
+            }
+
             this.playerProgressionSystem.increasePoints(enemy.pointGain);
             this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.25);
             EventManager.getInstance().emit(GameEvents.ENEMY_DIED, { points: this.playerProgressionSystem.pointsGained, kills: this.kills });
         }
-        
+
         if (attacker instanceof Projectile) {
             attacker.disableBody(true, true);
         }
@@ -93,7 +97,7 @@ export default class AttackManager {
             case WeaponType.PROJECTILE:
                 this.fireProjectile(x, y, angle);
                 break;
-            
+
             case WeaponType.MELEE:
                 this.executeMeleeAttack(x, y, angle);
                 break;
@@ -174,10 +178,10 @@ class Melee extends Phaser.GameObjects.Zone {
             Math.cos(angle) * (this.config.range * 0.5),
             Math.sin(angle) * (this.config.range * 0.75)
         );
-        
+
         this.setPosition(origin.x + offset.x, origin.y + offset.y);
         this.setActive(true);
-        
+
         this.scene.time.delayedCall(this.attackDuration, () => { this.setActive(false) });
     }
 }

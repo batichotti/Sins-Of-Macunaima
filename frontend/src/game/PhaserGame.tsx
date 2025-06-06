@@ -13,6 +13,9 @@ interface IProps
     currentActiveScene?: (scene_instance: Phaser.Scene) => void
 }
 
+/**
+* Div do jogo.
+*/
 export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame({ currentActiveScene }, ref)
 {
     const game = useRef<Phaser.Game | null>(null!);
@@ -62,20 +65,20 @@ export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame
             {
 
                 ref({ game: game.current, scene: scene_instance });
-            
+
             } else if (ref)
             {
 
                 ref.current = { game: game.current, scene: scene_instance };
 
             }
-            
+
         });
         return () =>
         {
 
             EventBus.removeListener('current-scene-ready');
-        
+
         }
     }, [currentActiveScene, ref]);
 

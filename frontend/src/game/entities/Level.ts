@@ -1,5 +1,5 @@
 import { EventManager, GameEvents } from "../core/EventBus";
-import { ILevel, levelModifiers } from "../types";
+import { ILevel } from "../types";
 
 export class Level implements ILevel {
     level!: number;
