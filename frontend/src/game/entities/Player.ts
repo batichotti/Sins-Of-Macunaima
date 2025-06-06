@@ -6,20 +6,32 @@ import TweenManager from "./TweenManager";
 export class Player implements IPlayer {
     name!: string;
     character!: Character;
+    playableCharacters: ICharacter[] = [];
+    private currentCharacterIndex = 0;
     level!: Level;
     weaponSet!: WeaponSet;
 
-    constructor(name: string, character: Character, level: Level, weaponSet: WeaponSet) {
-        this.name = name;
-        this.character = character;
-        this.level = level;
-        this.weaponSet = weaponSet;
-
+    constructor(data: IPlayer, mainCharacter: Character) {
+        this.name = data.name;
+        this.character = mainCharacter;
+        this.playableCharacters = data.playableCharacters;
+        this.level = new Level(data.level.level);
+        this.weaponSet = data.weaponSet;
         this.character.maximumHealth *= this.level.healthIncrease;
         this.character.health = this.character.maximumHealth;
         this.weaponSet.melee.baseDamage *= this.level.damageIncrease;
         this.weaponSet.projectile.baseDamage *= this.level.damageIncrease;
+
+      EventManager.getInstance().on(GameEvents.TOGGLE_CHARACTER, this.changeCharacter);
     }
+
+    private changeCharacter = () => {
+      this.currentCharacterIndex++;
+      if (this.currentCharacterIndex >= this.playableCharacters.length) {
+        this.currentCharacterIndex = 0;
+      }
+      this.character.changeCharacter(this.playableCharacters[this.currentCharacterIndex]);
+    };
 
     levelUp(): void {
         const previousHealth = this.level.healthIncrease;
@@ -59,11 +71,12 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
 
     changeCharacter(config: ICharacter) {
       this.name = config.name;
+      this.spriteKey = config.spriteKey;
       this.setTexture(config.spriteKey);
       this.baseSpeed = config.baseSpeed;
       this.health = config.health;
       this.maximumHealth = config.health;
-      this.setScale(1.5).setCollideWorldBounds(true).setDepth(100);
+      EventManager.getInstance().emit(GameEvents.TOGGLE_CHARACTER_SUCCEDED, this.name);
     }
 
     resetToSpawnPoint(position: Phaser.Math.Vector2 | { x: number, y: number }) {

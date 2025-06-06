@@ -12,19 +12,62 @@ export const EventBus = new Events.EventEmitter();
  * Usado para coordenar eventos do jogo.
  */
 export enum GameEvents {
-    ENEMY_DIED = 'enemyDied',
-    LEVEL_UP = 'levelUp',
-    HEALTH_CHANGE = 'healthChange',
-    TOGGLE_WEAPON = 'toggleWeapon',
-    WEAPON_COOLDOWN = 'weaponCooldown',
-    PLAYER_DIED = 'playerDied',
-    POINT_CHANGE = 'pointChange',
-    TOGGLE_ATTACK_MODE = 'tooggleAttackMode',
-    TOGGLE_ATTACK_MODE_SUCCEDED = 'toggleAttackModeSucceded',
-    SHOULD_SPAWN_BOSS = 'shouldSpawnBoss',
-    BOSS_SPAWNED = 'bossSpawned',
-    BOSS_DEFEATED = 'bossDefeated',
-    CHARACTER_CHANGE = 'characterChange'
+  /**
+  * Inimigo morreu.
+  */
+  ENEMY_DIED = 'enemyDied',
+  /**
+  * Jogador subiu de nível.
+  */
+  LEVEL_UP = 'levelUp',
+  /**
+  * Jogador ganhou ou perdeu vida.
+  */
+  HEALTH_CHANGE = 'healthChange',
+  /**
+  * Jogador trocou de arma.
+  */
+  TOGGLE_WEAPON = 'toggleWeapon',
+  /**
+  * Cooldown da arma.
+  */
+  WEAPON_COOLDOWN = 'weaponCooldown',
+  /**
+  * Jogador morreu.
+  */
+  PLAYER_DIED = 'playerDied',
+  /**
+  * Jogador ganhou ou perdeu pontos.
+  */
+  POINT_CHANGE = 'pointChange',
+  /**
+  * Jogador trocou de modo de ataque.
+  */
+  TOGGLE_ATTACK_MODE = 'tooggleAttackMode',
+  /**
+  * O sistema conseguiu mudar o modo de ataque.
+  */
+  TOGGLE_ATTACK_MODE_SUCCEDED = 'toggleAttackModeSucceded',
+  /**
+  * O jogo deve spawnar um boss.
+  */
+  SHOULD_SPAWN_BOSS = 'shouldSpawnBoss',
+  /**
+  * Boss foi spawnado.
+  */
+  BOSS_SPAWNED = 'bossSpawned',
+  /**
+  * Boss foi derrotado.
+  */
+  BOSS_DEFEATED = 'bossDefeated',
+  /**
+  * Jogador trocou de personagem.
+  */
+  TOGGLE_CHARACTER = 'toggleCharacter',
+  /**
+  * Jogador trocou de personagem.
+  */
+  TOGGLE_CHARACTER_SUCCEDED = 'toggleCharacterSucceded'
 }
 
 /**

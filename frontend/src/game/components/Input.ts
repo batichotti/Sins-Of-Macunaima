@@ -7,7 +7,8 @@ export default class InputManager implements IInput {
     arrows!: Phaser.Types.Input.Keyboard.CursorKeys;
     awsd!: Phaser.Types.Input.Keyboard.CursorKeys;
     scene: Phaser.Scene;
-    toggleKey!: Phaser.Input.Keyboard.Key;
+    toggleWeaponKey!: Phaser.Input.Keyboard.Key;
+    toggleCharacterKey: Phaser.Input.Keyboard.Key;
     attackModeKey!: Phaser.Input.Keyboard.Key;
 
     constructor(scene: Phaser.Scene) {
@@ -26,7 +27,8 @@ export default class InputManager implements IInput {
                 }
             ) as Phaser.Types.Input.Keyboard.CursorKeys;
 
-            this.toggleKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.V);
+            this.toggleWeaponKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.V);
+            this.toggleCharacterKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
             this.attackModeKey = this.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         } else {
             console.error("Teclado não disponível.\n");
@@ -61,12 +63,16 @@ export default class InputManager implements IInput {
      * Usa-se o sistema de eventos do Phaser para atualizar a UI.
      */
     handleUtilKeys() {
-        if(Phaser.Input.Keyboard.JustDown(this.toggleKey)) {
+        if(Phaser.Input.Keyboard.JustDown(this.toggleWeaponKey)) {
             EventManager.getInstance().emit(GameEvents.TOGGLE_WEAPON);
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.attackModeKey)) {
             EventManager.getInstance().emit(GameEvents.TOGGLE_ATTACK_MODE);
+        }
+
+        if(Phaser.Input.Keyboard.JustDown(this.toggleCharacterKey)) {
+            EventManager.getInstance().emit(GameEvents.TOGGLE_CHARACTER);
         }
     }
 

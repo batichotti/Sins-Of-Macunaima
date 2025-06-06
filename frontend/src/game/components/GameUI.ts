@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { Text } from '@/game/components/Properties';
-import { AttackMode, ITextBox } from '../types';
+import { AttackMode, ICharacter, ITextBox } from '../types';
 import { IGameUI, GameUIPlaceholders }from '../types/GameUI';
 import { BaseScene } from '../core/BaseScene';
 import { EventManager, GameEvents } from '../core/EventBus';
@@ -53,6 +53,7 @@ export default class GameUI implements IGameUI {
     eventManager.on(GameEvents.LEVEL_UP, (level: { level: number }) => { this.levelLabel.setText(level.level.toString()) });
     eventManager.on(GameEvents.WEAPON_COOLDOWN, (cooldown: number) => { this.weaponCooldownBar.startCooldown(cooldown) });
     eventManager.on(GameEvents.TOGGLE_ATTACK_MODE_SUCCEDED, (obj: AttackMode) => { this.attackModeLabel.setText(obj === AttackMode.AUTO ? "Auto" : "Manual") });
+    eventManager.on(GameEvents.TOGGLE_CHARACTER_SUCCEDED, (name: string) => { this.characterLabel.setText(name) });
   }
 }
 

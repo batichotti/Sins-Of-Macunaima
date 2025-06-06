@@ -66,12 +66,13 @@ export class Boot extends Scene {
 
         // Aqui seria o lugar ideal para pegar tudo do backend. Mas enquanto isso construímos o personagem do zero.
         this.level = { level: 1 } as ILevel;
-        this.character = CharacterTypes[CharacterEnum.MACUNAIMA];
+        const playableCharacters = [ CharacterTypes[CharacterEnum.MACUNAIMA], CharacterTypes[CharacterEnum.PERI] ];
+        this.character = playableCharacters[0];
         this.weaponSet = {
           projectile: ProjectileTypes[ProjectileEnum.FLECHA],
           melee: MeleeTypes[MeleeEnum.BANANEIRA]
         }
-        this.player = { name: 'Irineu' } as IPlayer;
+        this.player = { name: 'Irineu', level: this.level, playableCharacters: playableCharacters, weaponSet: this.weaponSet } as IPlayer;
     }
 
 

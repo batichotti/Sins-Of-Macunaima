@@ -12,9 +12,11 @@ export interface IPlayer {
     name: string;
 
     /**
-     * O personagem usado pelo jogador.
+     * Os personagens que o jogador pode usar.
+     *
+     * O primeiro personagem é o que o jogo usará no início da partida.
      */
-    character: Character;
+    playableCharacters: ICharacter[];
 
     /**
      * O nível do jogador. Define modificadores de dano, vida, etc.
@@ -93,7 +95,8 @@ export const levelModifiers = {
  * Usado para localizar o personagem em 'characterTypes'.
  */
 export enum CharacterEnum {
-    MACUNAIMA
+    MACUNAIMA,
+    PERI
 }
 
 /**
@@ -106,5 +109,12 @@ export const CharacterTypes: Record<CharacterEnum, ICharacter> = {
         maximumHealth: 200,
         health: 200,
         baseSpeed: 200
+    },
+    [CharacterEnum.PERI]: {
+        name: 'Peri',
+        spriteKey: 'Peri',
+        maximumHealth: 150,
+        health: 150,
+        baseSpeed: 150
     }
 };

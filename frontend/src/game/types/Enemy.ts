@@ -77,7 +77,7 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
 };
 
 export enum BossEnum {
-    CURURE
+  CURURE
 }
 
 export const BossTypes: Record<BossEnum, IEnemy> = {
