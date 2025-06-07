@@ -1,11 +1,10 @@
-import { EventBus } from '@/game/core/EventBus';
+import { EventBus, EventManager, GameEvents } from '@/game/core/EventBus';
 import { Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
 import { AnimatedTileData } from '../types/Tiles';
 import { AttackMode, CharacterTypes, EnemyTypes, SceneData } from '../types';
 import GameCameras from '../components/GameCameras';
-import { Level } from '../entities/Level';
 import IBaseScene from '../types/BaseScene';
 import AttackManager from '../entities/Attack';
 import InputManager from '../components/Input';
@@ -37,6 +36,7 @@ export class BaseScene extends Scene implements IBaseScene {
 
     constructor(config: Phaser.Types.Scenes.SettingsConfig) {
       super(config);
+      EventManager.getInstance().on(GameEvents.PLAYER_DIED, this.runGameOver);
     }
 
     protected preload(){
@@ -250,5 +250,14 @@ export class BaseScene extends Scene implements IBaseScene {
         this.player.character?.destroy();
         this.layers?.forEach(layer => layer.destroy());
         EventBus.off('current-scene-ready');
+    }
+
+    runGameOver = () => {
+      this.time.delayedCall(2000, () => {
+        this.scene.start('GameOver', {
+          previousScene: this.constructor.name,
+          player: this.player
+        });
+      });
     }
 }
