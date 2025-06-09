@@ -128,13 +128,6 @@ export const BaseProjectileStats = {
 }
 
 /**
- * Contém os projéteis disponíveis.
- */
-export const ProjectileTypes: IProjectile[] = [
-    { name: 'Flecha', weaponType: WeaponType.PROJECTILE, spriteKey: 'arrow_sprite', baseDamage: 40, baseCooldown: 150, baseSpeed: 500 }
-];
-
-/**
  * Usado para escolher os projéteis.
  */
 export enum ProjectileEnum {
@@ -144,13 +137,58 @@ export enum ProjectileEnum {
 /**
  * Contém os projéteis disponíveis.
  */
-export const MeleeTypes: IMelee[] = [
-    { name: 'Bananeira', weaponType: WeaponType.MELEE, baseDamage: 75, baseCooldown: 350, range: 32, duration: 50 }
-];
+export const ProjectileTypes: Record<ProjectileEnum, IProjectile> = {
+    [ProjectileEnum.FLECHA]: { 
+        name: 'Flecha', 
+        weaponType: WeaponType.PROJECTILE, 
+        spriteKey: 'arrow_sprite', 
+        baseDamage: 40, 
+        baseCooldown: 150, 
+        baseSpeed: 500 
+    }
+};
 
 /**
- * Usado para escolher os projéteis.
+ * Usado para escolher as armas corpo-a-corpo.
  */
 export enum MeleeEnum {
-    BANANEIRA
+    BANANEIRA,
+    BENGALA,
+    ESPADA,
+    PAULADA
 }
+
+export const MeleeTypes: Record<MeleeEnum, IMelee> = {
+    [MeleeEnum.BANANEIRA]: { 
+        name: 'Bananeira', 
+        weaponType: WeaponType.MELEE, 
+        baseDamage: 75, 
+        baseCooldown: 350, 
+        range: 32, 
+        duration: 50 
+    },
+    [MeleeEnum.BENGALA]: { 
+        name: 'Bengala', 
+        weaponType: WeaponType.MELEE, 
+        baseDamage: 15, 
+        baseCooldown: 500, 
+        range: 20, 
+        duration: 200 
+    },
+    [MeleeEnum.ESPADA]: { 
+        name: 'Espada', 
+        weaponType: WeaponType.MELEE, 
+        baseDamage: 75, 
+        baseCooldown: 350, 
+        range: 32, 
+        duration: 200 
+    },
+    [MeleeEnum.PAULADA]: { 
+        name: 'Paulada', 
+        weaponType: WeaponType.MELEE, 
+        baseDamage: 50, 
+        baseCooldown: 1250, 
+        range: 64, 
+        duration: 200 
+    }
+};

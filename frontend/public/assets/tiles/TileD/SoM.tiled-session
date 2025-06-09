@@ -323,6 +323,53 @@
         "cenarios/aldeia.tmx#9_beach": {
             "scaleInDock": 1
         },
+        "cenarios/easterEggDino.tmx": {
+            "scale": 1.2466,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 95.45965024867644,
+                "y": 202.95202952029518
+            }
+        },
+        "cenarios/easterEggDino.tmx#10_dirt": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#11_roofs": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#12_extra1": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#13_extra2": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#1_terrain": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#2_indoors": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#3_plants": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#4_buildings": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#5_waterfall": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#6_floors": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#7_grass_cliff": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#8_cave": {
+            "scaleInDock": 1
+        },
+        "cenarios/easterEggDino.tmx#9_beach": {
+            "scaleInDock": 1
+        },
         "cenarios/floresta.tmx": {
             "scale": 1,
             "selectedLayer": 0,
