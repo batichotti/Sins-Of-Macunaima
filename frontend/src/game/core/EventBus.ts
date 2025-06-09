@@ -1,5 +1,5 @@
 import { Events } from 'phaser';
-import { GameEvents } from '../types';
+import { GameEvents, GameEventsPayloads } from '../types';
 
 /**
  * Usado para emitir eventos entre componentes React e cenas Phaser.
@@ -16,6 +16,7 @@ export const EventBus = new Events.EventEmitter();
 export class EventManager {
     private static instance: EventManager;
     private emitter: Phaser.Events.EventEmitter;
+    private listeners: Map<GameEvents, Set<EventListener<object>>> = new Map();
 
     private constructor() {
       this.emitter = new Phaser.Events.EventEmitter();
@@ -28,16 +29,31 @@ export class EventManager {
       return EventManager.instance;
     }
 
-    // Métodos para emitir/ouvir eventos
-    public emit(event: GameEvents, ...args: any[]): void {
-      this.emitter.emit(event, ...args);
+    public emit<T extends keyof GameEventsPayloads>(event: T, payload: GameEventsPayloads[T]): void {
+      this.emitter.emit(event, payload);
     }
 
-    public on(event: GameEvents, callback: (...args: any[]) => void, context?: any): void {
-        this.emitter.on(event, callback, context);
+    public on<T extends keyof GameEventsPayloads>(event: T, callback: (payload: GameEventsPayloads[T]) => void, context?: object): void {
+      const listener: EventListener<T> = { event: event, callback: callback, context: context }
+      if (!this.listeners.has(event as GameEvents)) {
+        this.listeners.set(event as GameEvents, new Set());
+      }
+      this.listeners.get(event as GameEvents)!.add(listener);
+
+      this.emitter.on(event as string, callback, context);
     }
 
-    public off(event: GameEvents, callback?: (...args: any[]) => void, context?: any): void {
-        this.emitter.off(event, callback, context);
+    public off<T extends keyof GameEventsPayloads>(event: T, callback?: (data: GameEventsPayloads[T]) => void,context?: object): void {
+      if (callback) {
+        this.emitter.off(event as string, callback, context);
+
+        const listeners = this.listeners.get(event as GameEvents);
+        if (listeners) {
+          listeners.forEach(listener => { if (listener.callback === callback && listener.context === context) listeners.delete(listener) });
+        }
+      } else {
+        this.emitter.removeAllListeners(event as string);
+        this.listeners.delete(event as GameEvents);
+      }
     }
 }

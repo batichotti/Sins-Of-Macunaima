@@ -1,4 +1,6 @@
-import { AttackMode } from "./Weapon";
+import { IEnemy } from "./Enemy";
+import { ICharacter } from "./Player";
+import { AttackMode, IWeapon } from "./Weapon";
 
 /**
  * Usado para coordenar eventos do jogo.
@@ -21,6 +23,10 @@ export enum GameEvents {
   */
   TOGGLE_WEAPON = 'toggleWeapon',
   /**
+  * Foi possível trocar de arma.
+  */
+  TOGGLE_WEAPON_SUCCESS = 'toggleWeaponSuccess',
+  /**
   * Cooldown da arma.
   */
   WEAPON_COOLDOWN = 'weaponCooldown',
@@ -39,7 +45,7 @@ export enum GameEvents {
   /**
   * O sistema conseguiu mudar o modo de ataque.
   */
-  TOGGLE_ATTACK_MODE_SUCCEDED = 'toggleAttackModeSucceded',
+  TOGGLE_ATTACK_MODE_SUCCESS = 'toggleAttackModeSucceded',
   /**
   * O jogo deve spawnar um boss.
   */
@@ -59,13 +65,13 @@ export enum GameEvents {
   /**
   * Jogador trocou de personagem.
   */
-  TOGGLE_CHARACTER_SUCCEDED = 'toggleCharacterSucceded'
+  TOGGLE_CHARACTER_SUCCESS = 'toggleCharacterSucceded'
 }
 
 /**
 * Os payloads que são dados aos callbacks.
 */
-export interface GameEventsPayloads {
+export type GameEventsPayloads = {
   /**
   * Points: Pontos ganhos até agora.
   *
@@ -86,7 +92,12 @@ export interface GameEventsPayloads {
   /**
   * Para trocar de arma.
   */
-  [GameEvents.TOGGLE_WEAPON]: void;
+  [GameEvents.TOGGLE_WEAPON]: null;
+
+  /**
+  * Para trocar de arma.
+  */
+  [GameEvents.TOGGLE_WEAPON_SUCCESS]: IWeapon;
 
   /**
   * Retorna o cooldown da arma.
@@ -96,17 +107,48 @@ export interface GameEventsPayloads {
   /**
   * O jogador morreu.
   */
-  [GameEvents.PLAYER_DIED]: void;
+  [GameEvents.PLAYER_DIED]: null;
+
+  /**
+  * Sinal para trocar de modo
+  */
+  [GameEvents.TOGGLE_ATTACK_MODE]: null;
 
   /**
   * Foi possível alterar o modo de ataque.
   *
   * Retorna o modo atual.
   */
-  [GameEvents.TOGGLE_ATTACK_MODE_SUCCEDED]: AttackMode;
+  [GameEvents.TOGGLE_ATTACK_MODE_SUCCESS]: AttackMode;
 
   /**
-  * Retorna o nome do personagem atual após a troca.
-  */
-  [GameEvents.TOGGLE_CHARACTER_SUCCEDED]: string;
+   * Deve spawnar um boss.
+   */
+  [GameEvents.SHOULD_SPAWN_BOSS]: null;
+
+  /**
+   * Boss foi spawnado.
+   */
+  [GameEvents.BOSS_SPAWNED]: IEnemy;
+
+  /**
+   * Boss foi derrotado.
+   */
+  [GameEvents.BOSS_DEFEATED]: null;
+
+  /**
+   * Jogador trocou de personagem.
+   */
+  [GameEvents.TOGGLE_CHARACTER]: null;
+
+  /**
+   * Jogador trocou de personagem.
+   */
+  [GameEvents.TOGGLE_CHARACTER_SUCCESS]: ICharacter;
+}
+
+export interface EventListener<T extends keyof GameEventsPayloads> {
+  event: T;
+  callback: (data: GameEventsPayloads[T]) => void;
+  context?: object;
 }

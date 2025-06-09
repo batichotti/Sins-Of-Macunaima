@@ -86,15 +86,15 @@ export default class InputManager implements IInput {
         if (!this.isInitialized) return;
 
         if (Phaser.Input.Keyboard.JustDown(this.toggleWeaponKey)) {
-          EventManager.Instance.emit(GameEvents.TOGGLE_WEAPON);
+          EventManager.Instance.emit(GameEvents.TOGGLE_WEAPON, null);
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.attackModeKey)) {
-          EventManager.Instance.emit(GameEvents.TOGGLE_ATTACK_MODE);
+          EventManager.Instance.emit(GameEvents.TOGGLE_ATTACK_MODE, null);
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.toggleCharacterKey)) {
-          EventManager.Instance.emit(GameEvents.TOGGLE_CHARACTER);
+          EventManager.Instance.emit(GameEvents.TOGGLE_CHARACTER, null);
         }
     }
 
@@ -175,24 +175,24 @@ export default class InputManager implements IInput {
       this.isInitialized = false;
 
 
-      this.arrows.up.destroy();
-      this.arrows.down.destroy();
-      this.arrows.left.destroy();
-      this.arrows.right.destroy();
-      this.arrows.space.destroy();
-      this.arrows.shift.destroy();
+      this.arrows.up?.destroy();
+      this.arrows.down?.destroy();
+      this.arrows.left?.destroy();
+      this.arrows.right?.destroy();
+      this.arrows.space?.destroy();
+      this.arrows.shift?.destroy();
 
-      this.awsd.up.destroy();
-      this.awsd.down.destroy();
-      this.awsd.left.destroy();
-      this.awsd.right.destroy();
-      this.awsd.space.destroy();
-      this.awsd.shift.destroy();
+      this.awsd.up?.destroy();
+      this.awsd.down?.destroy();
+      this.awsd.left?.destroy();
+      this.awsd.right?.destroy();
+      this.awsd.space?.destroy();
+      this.awsd.shift?.destroy();
 
-      this.toggleWeaponKey.destroy();
-      this.toggleCharacterKey.destroy();
+      this.toggleWeaponKey?.destroy();
+      this.toggleCharacterKey?.destroy();
 
-      this.keyboard.destroy();
-      this.mouse.destroy();
+      this.keyboard?.destroy();
+      this.mouse?.destroy();
     }
 }

@@ -274,7 +274,7 @@ export default class EnemyManager {
                     boss.isBoss = true;
                     boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
                     this.scene.gameCameras.ui.ignore(boss);
-                    EventManager.Instance.emit(GameEvents.BOSS_SPAWNED, { boss: bossType });
+                    EventManager.Instance.emit(GameEvents.BOSS_SPAWNED, bossType);
                 }
             }
         }

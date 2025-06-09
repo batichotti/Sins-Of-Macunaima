@@ -37,15 +37,16 @@ export class BaseScene extends Scene implements IBaseScene {
 
     constructor(config: Phaser.Types.Scenes.SettingsConfig) {
       super(config);
-      EventManager.Instance.on(GameEvents.PLAYER_DIED, this.runGameOver);
     }
 
     protected preload(){
-      this.textures.generate('bullet', {
-          data: ['1'],
-          pixelWidth: 1,
-          pixelHeight: 1
-      });
+      if(!this.textures.exists('bullet')) {
+        this.textures.generate('bullet', {
+            data: ['1'],
+            pixelWidth: 1,
+            pixelHeight: 1
+        });
+      }
     }
 
     protected init(data: SceneData): void {
@@ -57,21 +58,23 @@ export class BaseScene extends Scene implements IBaseScene {
     }
 
     protected create(): void {
-        this.setupLayers();
-        this.setupAnimatedTiles();
-        this.setupPlayer();
-        this.setupTransitionPoints();
-        this.setupCollisions();
-        this.setupCameras();
-        this.inputManager = new InputManager(this);
-        this.enemyManager = new EnemyManager(this);
-        this.animationManager = new AnimationManager(this);
-        this.setupAnimations();
-        this.playerProgressionSystem = new PlayerProgressionSystem(this.player);
-        this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
-        this.gameUI = new GameUI(this);
+      EventManager.Instance.on(GameEvents.PLAYER_DIED, this.runGameOver, this);
+      this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown, this);
+      this.setupLayers();
+      this.setupAnimatedTiles();
+      this.setupPlayer();
+      this.setupTransitionPoints();
+      this.setupCollisions();
+      this.setupCameras();
+      this.inputManager = new InputManager(this);
+      this.enemyManager = new EnemyManager(this);
+      this.animationManager = new AnimationManager(this);
+      this.setupAnimations();
+      this.playerProgressionSystem = new PlayerProgressionSystem(this.player);
+      this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
+      this.gameUI = new GameUI(this);
 
-        EventBus.emit('current-scene-ready', this);
+      EventBus.emit('current-scene-ready', this);
     }
 
     update(time: number, delta: number): void {
@@ -244,19 +247,23 @@ export class BaseScene extends Scene implements IBaseScene {
         }
     }
 
-    shutdown(): void {
-      this.player.character?.destroy();
-      this.layers?.forEach(layer => layer.destroy());
+    private shutdown = (): void => {
+      this.children.removeAll(true);
+      this.gameUI.destroy();
+      this.player.destroy();
+      this.animationManager.destroy();
+      this.attackManager.destroy();
+      this.enemyManager.destroy();
       EventBus.off('current-scene-ready');
+      EventManager.Instance.off(GameEvents.PLAYER_DIED, this.runGameOver, this);
     }
 
     runGameOver = () => {
       this.time.delayedCall(500, () => {
-        const matchData = {
+        const matchData: MatchData = {
           scene: this.constructor.name,
           data: this.playerProgressionSystem.export()
-        } as MatchData;
-        this.shutdown();
+        };
         this.scene.start('GameOver', matchData);
       });
     }

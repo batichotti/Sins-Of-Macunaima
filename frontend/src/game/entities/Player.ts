@@ -65,7 +65,7 @@ export class Player implements IPlayer {
         this.weaponSet.projectile.baseDamage *= damageMultiplier;
 
         TweenManager.Instance.healTween(this.character);
-        EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, { health: this.character.health });
+        EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.character.health);
     }
 
     // Método para limpeza de recursos
@@ -113,7 +113,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
     changeCharacter(config: ICharacter): void {
         this.initializeCharacter(config);
         this.setTexture(config.spriteKey);
-        EventManager.Instance.emit(GameEvents.TOGGLE_CHARACTER_SUCCEDED, this.name);
+        EventManager.Instance.emit(GameEvents.TOGGLE_CHARACTER_SUCCESS, config);
     }
 
     resetToSpawnPoint(position: Phaser.Math.Vector2 | { x: number, y: number }): void {
@@ -127,9 +127,9 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
         TweenManager.Instance.damageTween(this);
 
         if (this.health === 0) {
-            EventManager.Instance.emit(GameEvents.PLAYER_DIED);
+            EventManager.Instance.emit(GameEvents.PLAYER_DIED, null);
         } else {
-            EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, { health: this.health });
+            EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.health);
         }
     }
 
@@ -140,7 +140,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
         this.health = Math.min(this.maximumHealth, this.health + healAmount); // Clamp ao máximo
 
         TweenManager.Instance.healTween(this);
-        EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, { health: this.health });
+        EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.health);
     }
 
     playerMove(direction: Phaser.Math.Vector2, attackCoords: Phaser.Math.Vector2 | null): void {

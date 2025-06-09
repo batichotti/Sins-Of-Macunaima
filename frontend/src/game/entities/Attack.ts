@@ -31,8 +31,8 @@ export default class AttackManager {
         const blockers = this.scene.map.getLayer('colisao')?.tilemapLayer;
         if(blockers) this.scene.physics.add.collider(this.projectiles, blockers, this.eraseProjectile);
 
-        EventManager.Instance.on(GameEvents.TOGGLE_WEAPON, () => { this.toggleWeapon() });
-        EventManager.Instance.on(GameEvents.TOGGLE_ATTACK_MODE, () => { this.toggleAttackMode() });
+        EventManager.Instance.on(GameEvents.TOGGLE_WEAPON, this.toggleWeapon, this);
+        EventManager.Instance.on(GameEvents.TOGGLE_ATTACK_MODE, this.toggleAttackMode, this);
     }
 
     private handleHit = (obj1: object, obj2: object) => {
@@ -49,11 +49,11 @@ export default class AttackManager {
             this.kills += 1;
             if(this.kills % 10 == 0) {
                 this.scene.player.character.heal();
-                EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, { health: this.scene.player.character.health });
+                EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.scene.player.character.health);
             }
 
             if(this.kills % bossThreshold == 0) {
-              EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS);
+              EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS, null);
             }
 
             this.playerProgressionSystem.increasePoints(enemy.pointGain);
@@ -70,7 +70,7 @@ export default class AttackManager {
         (obj1 as Projectile).disableBody(true, true);
     };
 
-    private toggleWeapon(): void {
+    private toggleWeapon = () => {
         if(this.currentWeapon.weaponType === WeaponType.PROJECTILE) {
             this.currentWeapon = this.weaponSet.melee;
         } else {
@@ -78,13 +78,13 @@ export default class AttackManager {
         }
     }
 
-    private toggleAttackMode() {
+    private toggleAttackMode = () => {
         if(this.attackMode === AttackMode.AUTO) {
             this.attackMode = AttackMode.MANUAL;
         } else {
             this.attackMode = AttackMode.AUTO;
         }
-        EventManager.Instance.emit(GameEvents.TOGGLE_ATTACK_MODE_SUCCEDED, this.attackMode);
+        EventManager.Instance.emit(GameEvents.TOGGLE_ATTACK_MODE_SUCCESS, this.attackMode);
     }
 
     get weapon(): IWeapon {
