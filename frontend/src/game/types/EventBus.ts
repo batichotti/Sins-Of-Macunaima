@@ -65,7 +65,7 @@ export enum GameEvents {
 /**
 * Os payloads que são dados aos callbacks.
 */
-export interface GameEventPayloads {
+export interface GameEventsPayloads {
   /**
   * Points: Pontos ganhos até agora.
   *

@@ -18,14 +18,14 @@ export class EventManager {
     private emitter: Phaser.Events.EventEmitter;
 
     private constructor() {
-        this.emitter = new Phaser.Events.EventEmitter();
+      this.emitter = new Phaser.Events.EventEmitter();
     }
 
     public static get Instance(): EventManager {
-        if (!EventManager.instance) {
-            EventManager.instance = new EventManager();
-        }
-        return EventManager.instance;
+      if (!EventManager.instance) {
+        EventManager.instance = new EventManager();
+      }
+      return EventManager.instance;
     }
 
     // Métodos para emitir/ouvir eventos
