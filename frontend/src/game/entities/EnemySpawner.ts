@@ -5,8 +5,8 @@ export default class EnemySpawner {
     private scene: BaseScene;
     private lastPlayerPos: Phaser.Math.Vector2;
     private spawnPoints: EnemySpawnPoints[] = [];
-    private minDistance: number = 50;
-    private maxDistance: number = 320;
+    private minDistance: number = 20;
+    private maxDistance: number = 640;
     private canChoose: boolean = true;
 
     constructor(scene: BaseScene) {
@@ -39,7 +39,7 @@ export default class EnemySpawner {
                 }
             }
 
-            this.scene.time.delayedCall(2000, () => { this.canChoose = true });
+            this.scene.time.delayedCall(1250, () => { this.canChoose = true });
             return Phaser.Math.Distance.Between(nearestPos!.position.x, nearestPos!.position.y, playerPos!.x, playerPos!.y) < this.maxDistance ? nearestPos: null ;
         }
         return null;

@@ -236,7 +236,6 @@ export class BaseScene extends Scene implements IBaseScene {
             this.transitionRects.forEach((transitionRect) => {
                 if (Phaser.Geom.Rectangle.Overlaps(playerBounds, transitionRect)) {
                     this.shutdown();
-                    this.scene.stop(this.constructor.name);
                     this.scene.start('Loader', {
                         targetScene: this.transitionPoints?.[0].properties?.find((prop: Phaser.Types.Tilemaps.TiledObject) => prop.name === 'destination')?.value ?? 'MainMenu',
                         previousScene: this.constructor.name,

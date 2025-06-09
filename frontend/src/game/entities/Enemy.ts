@@ -161,7 +161,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         if (this.nextNode >= this.path.length) {
             this.setVelocity(0, 0);
 
-            if (this.currentWaypointPath.length > 0 && Phaser.Math.Distance.Between(this.x, this.y, this.currentWaypointPath.slice(-1)[0].x, this.currentWaypointPath.slice(-1)[0].y) < 50) {
+            if (this.currentWaypointPath.length > 0 && Phaser.Math.Distance.Between(this.x, this.y, this.currentWaypointPath.slice(-1)[0].x, this.currentWaypointPath.slice(-1)[0].y) < 64) {
                 this.currentWaypointPath = [];
             }
             return;
@@ -175,11 +175,11 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
 
         this.setVelocity(dir.x * speed, dir.y * speed);
 
-        if (Phaser.Math.Distance.Between(this.x, this.y, dest.x, dest.y) < 32) {
+        if (Phaser.Math.Distance.Between(this.x, this.y, dest.x, dest.y) < 16) {
             this.nextNode++;
         }
 
-        if (Phaser.Math.Distance.Between(this.lastPos.x, this.lastPos.y, this.x, this.y) < 5) {
+        if (Phaser.Math.Distance.Between(this.lastPos.x, this.lastPos.y, this.x, this.y) < 24) {
             this.timeStuck += delta;
             if (this.timeStuck >= 3000) {
                 this.destroy();
