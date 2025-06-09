@@ -27,8 +27,8 @@ export class Player implements IPlayer {
     }
 
     private applyLevelModifiers(): void {
-        this.character.maximumHealth *= this.level.healthIncrease;
-        this.character.health = this.character.maximumHealth;
+        Math.trunc(this.character.maximumHealth *= this.level.healthIncrease);
+        this.character.health = Math.trunc(this.character.maximumHealth);
         this.weaponSet.melee.baseDamage *= this.level.damageIncrease;
         this.weaponSet.projectile.baseDamage *= this.level.damageIncrease;
     }
@@ -117,20 +117,20 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
     }
 
     resetToSpawnPoint(position: Phaser.Math.Vector2 | { x: number, y: number }): void {
-        this.setPosition(position.x, position.y);
+      this.setPosition(position.x, position.y);
     }
 
     takeDamage(damage: number): void {
-        if (this.health <= 0) return; // Já está morto
+      if (this.health <= 0) return; // Já está morto
 
-        this.health = Math.max(0, this.health - damage); // Garante que não fique negativo
-        TweenManager.Instance.damageTween(this);
+      this.health = Math.max(0, this.health - damage); // Garante que não fique negativo
+      TweenManager.Instance.damageTween(this);
 
-        if (this.health === 0) {
-            EventManager.Instance.emit(GameEvents.PLAYER_DIED, null);
-        } else {
-            EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.health);
-        }
+      if (this.health === 0) {
+          EventManager.Instance.emit(GameEvents.PLAYER_DIED, null);
+      } else {
+          EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.health);
+      }
     }
 
     heal(amount?: number): void {

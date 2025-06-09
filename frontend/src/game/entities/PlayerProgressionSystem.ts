@@ -5,7 +5,7 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
     player: Player;
     xpGained: number = 0;
     pointsGained: number = 0;
-    xpLevelUpNeeded: number = 500;
+    xpLevelUpNeeded: number = 200;
     timeElapsed: number = 0;
 
     constructor(player: Player) {
@@ -16,7 +16,10 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
 
     increaseXP(xp: number) {
       this.xpGained += xp;
-      if(this.xpGained >= this.player.level.level * this.xpLevelUpNeeded * 0.25) {
+      const needed = this.xpLevelUpNeeded;
+      if (this.xpGained >= needed) {
+        this.xpGained -= needed;
+        this.xpLevelUpNeeded = this.player.level.level * 10 + 200;
         this.levelUp();
       }
     }

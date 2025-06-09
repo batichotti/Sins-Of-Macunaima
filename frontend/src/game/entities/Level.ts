@@ -22,7 +22,7 @@ export class Level implements ILevel {
     levelUp() {
       this.level += 1;
       this.calculateModifiers();
-      EventManager.Instance.emit(GameEvents.LEVEL_UP, { level: this.level });
+      EventManager.Instance.emit(GameEvents.LEVEL_UP, this.level);
     }
 
     /**
