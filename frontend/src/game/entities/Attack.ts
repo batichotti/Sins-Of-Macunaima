@@ -2,7 +2,8 @@ import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet, IMelee, AttackMode
 import { BaseScene } from "../core/BaseScene";
 import Enemy from "./Enemy";
 import PlayerProgressionSystem from "./PlayerProgressionSystem";
-import { EventManager, GameEvents } from "../core/EventBus";
+import { EventManager } from "../core/EventBus";
+import { GameEvents } from "../types";
 
 export default class AttackManager {
     private projectiles: Phaser.Physics.Arcade.Group;
@@ -30,8 +31,8 @@ export default class AttackManager {
         const blockers = this.scene.map.getLayer('colisao')?.tilemapLayer;
         if(blockers) this.scene.physics.add.collider(this.projectiles, blockers, this.eraseProjectile);
 
-        EventManager.getInstance().on(GameEvents.TOGGLE_WEAPON, () => { this.toggleWeapon() });
-        EventManager.getInstance().on(GameEvents.TOGGLE_ATTACK_MODE, () => { this.toggleAttackMode() });
+        EventManager.Instance.on(GameEvents.TOGGLE_WEAPON, () => { this.toggleWeapon() });
+        EventManager.Instance.on(GameEvents.TOGGLE_ATTACK_MODE, () => { this.toggleAttackMode() });
     }
 
     private handleHit = (obj1: object, obj2: object) => {
@@ -48,16 +49,16 @@ export default class AttackManager {
             this.kills += 1;
             if(this.kills % 10 == 0) {
                 this.scene.player.character.heal();
-                EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.scene.player.character.health });
+                EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, { health: this.scene.player.character.health });
             }
 
             if(this.kills % bossThreshold == 0) {
-              EventManager.getInstance().emit(GameEvents.SHOULD_SPAWN_BOSS);
+              EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS);
             }
 
             this.playerProgressionSystem.increasePoints(enemy.pointGain);
             this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.25);
-            EventManager.getInstance().emit(GameEvents.ENEMY_DIED, { points: this.playerProgressionSystem.pointsGained, kills: this.kills });
+            EventManager.Instance.emit(GameEvents.ENEMY_DIED, { points: this.playerProgressionSystem.pointsGained, kills: this.kills });
         }
 
         if (attacker instanceof Projectile) {
@@ -83,7 +84,7 @@ export default class AttackManager {
         } else {
             this.attackMode = AttackMode.AUTO;
         }
-        EventManager.getInstance().emit(GameEvents.TOGGLE_ATTACK_MODE_SUCCEDED, this.attackMode);
+        EventManager.Instance.emit(GameEvents.TOGGLE_ATTACK_MODE_SUCCEDED, this.attackMode);
     }
 
     get weapon(): IWeapon {
@@ -103,7 +104,7 @@ export default class AttackManager {
                 break;
         }
 
-        EventManager.getInstance().emit(GameEvents.WEAPON_COOLDOWN, this.currentWeapon.baseCooldown);
+        EventManager.Instance.emit(GameEvents.WEAPON_COOLDOWN, this.currentWeapon.baseCooldown);
 
         this.startCooldown();
     }
@@ -124,6 +125,11 @@ export default class AttackManager {
     private startCooldown(): void {
         this.canAttack = false;
         this.scene.time.delayedCall(this.currentWeapon.baseCooldown, () => { this.canAttack = true });
+    }
+
+    destroy(): void {
+      this.projectiles.destroy();
+      this.melee.destroy();
     }
 }
 
@@ -154,6 +160,11 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
         this.setVelocity(velocity.x, velocity.y);
 
         this.lifespanTimer = this.scene.time.delayedCall(2000, () => { if(this.active) this.disableBody(true, true) });
+    }
+
+    override destroy(): void {
+      this.lifespanTimer?.destroy();
+      super.destroy();
     }
 }
 

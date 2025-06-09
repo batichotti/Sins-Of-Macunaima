@@ -1,11 +1,11 @@
 export default class TweenManager {
     private static instance: TweenManager;
 
-    static get Instance() {
-        if(!TweenManager.instance) {
-            TweenManager.instance = new TweenManager();
-        }
-        return TweenManager.instance;
+    public static get Instance() {
+      if(!TweenManager.instance) {
+        TweenManager.instance = new TweenManager();
+      }
+      return TweenManager.instance;
     }
 
     damageTween(sprite: Phaser.Physics.Arcade.Sprite) {

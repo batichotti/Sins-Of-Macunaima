@@ -1,7 +1,8 @@
-import { EventManager, GameEvents } from "../core/EventBus";
+import { EventManager } from "../core/EventBus";
 import { Directions, ICharacter, IPlayer, WeaponSet } from "../types";
 import { Level } from "./Level";
 import TweenManager from "./TweenManager";
+import { GameEvents } from "../types";
 
 export class Player implements IPlayer {
     name!: string;
@@ -10,7 +11,6 @@ export class Player implements IPlayer {
     private currentCharacterIndex = 0;
     level!: Level;
     weaponSet!: WeaponSet;
-    private eventManager: EventManager;
 
     constructor(data: IPlayer, mainCharacter: Character) {
         this.name = data.name;
@@ -18,13 +18,12 @@ export class Player implements IPlayer {
         this.playableCharacters = data.playableCharacters;
         this.level = new Level(data.level.level);
         this.weaponSet = data.weaponSet;
-        this.eventManager = EventManager.getInstance();
 
         // Aplica modificadores de nível no personagem inicial
         this.applyLevelModifiers();
 
         // Registra o listener de eventos
-        this.eventManager.on(GameEvents.TOGGLE_CHARACTER, this.changeCharacter);
+        EventManager.Instance.on(GameEvents.TOGGLE_CHARACTER, this.changeCharacter);
     }
 
     private applyLevelModifiers(): void {
@@ -66,12 +65,24 @@ export class Player implements IPlayer {
         this.weaponSet.projectile.baseDamage *= damageMultiplier;
 
         TweenManager.Instance.healTween(this.character);
-        this.eventManager.emit(GameEvents.HEALTH_CHANGE, { health: this.character.health });
+        EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, { health: this.character.health });
     }
 
     // Método para limpeza de recursos
     destroy(): void {
-        this.eventManager.off(GameEvents.TOGGLE_CHARACTER, this.changeCharacter);
+      EventManager.Instance.off(GameEvents.TOGGLE_CHARACTER, this.changeCharacter);
+    }
+
+    /**
+     * Exporta informações do jogador.
+    */
+    export(): IPlayer {
+      return {
+        name: this.name,
+        playableCharacters: this.playableCharacters,
+        level: this.level.export(),
+        weaponSet: this.weaponSet
+      };
     }
 }
 
@@ -88,7 +99,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.eventManager = EventManager.getInstance();
+        this.eventManager = EventManager.Instance;
         this.initializeCharacter(config);
         this.setScale(1.5).setCollideWorldBounds(true).setDepth(100);
     }

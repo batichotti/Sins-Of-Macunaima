@@ -1,8 +1,9 @@
 import { DistanceMethod, Pathfinding } from "../components/phaser-pathfinding";
 import { BaseScene } from "../core/BaseScene";
-import { EventManager, GameEvents } from "../core/EventBus";
+import { EventManager } from "../core/EventBus";
 import { IMelee, IEnemy, Directions } from "../types";
 import TweenManager from "./TweenManager";
+import { GameEvents } from "../types";
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnemy {
     // Propriedades básicas
@@ -209,14 +210,14 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         if (this.baseHealth <= 0) {
             this.destroy();
 
-            if(this.isBoss) EventManager.getInstance().emit(GameEvents.BOSS_DEFEATED);
+            if(this.isBoss) EventManager.Instance.emit(GameEvents.BOSS_DEFEATED);
 
             return true;
         }
         return false;
     }
 
-    destroy(): void {
-        super.destroy();
+    override destroy(): void {
+      super.destroy();
     }
 }

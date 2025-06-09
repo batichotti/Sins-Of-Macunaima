@@ -1,5 +1,13 @@
 import { IMelee, MeleeEnum, MeleeTypes } from "./Weapon";
 
+export interface WaypointNode {
+    point: Phaser.Math.Vector2;
+    g: number;
+    h: number;
+    f: number;
+    parent: WaypointNode | null;
+}
+
 /**
  * Contém informações base dos inimigos.
  */

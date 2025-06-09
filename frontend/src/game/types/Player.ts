@@ -1,6 +1,4 @@
-import { Level } from "../entities/Level";
 import { WeaponSet } from "./Weapon";
-import { Character } from "../entities/Player";
 
 /**
  * Jogador que joga o jogo.
@@ -21,7 +19,7 @@ export interface IPlayer {
     /**
      * O nível do jogador. Define modificadores de dano, vida, etc.
      */
-    level: Level;
+    level: ILevel;
 
     /**
      * Set de armas que o jogador usará na partida.

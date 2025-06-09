@@ -6,15 +6,9 @@ import { Grid } from "../components/phaser-pathfinding";
 import PathCache from "../core/PathCache";
 import { Character } from "./Player";
 import EnemySpawner from "./EnemySpawner";
-import { EventManager, GameEvents } from "../core/EventBus";
-
-interface WaypointNode {
-    point: Phaser.Math.Vector2;
-    g: number;
-    h: number;
-    f: number;
-    parent: WaypointNode | null;
-}
+import { EventManager } from "../core/EventBus";
+import { GameEvents } from "../types";
+import { WaypointNode } from "../types";
 
 export default class EnemyManager {
     enemySpawner: EnemySpawner;
@@ -33,7 +27,6 @@ export default class EnemyManager {
     maxDirectDistance: number = 300;
     cooldownAttack: boolean = true;
     bossSpawned: boolean = false;
-
 
     constructor(scene: BaseScene) {
         this.scene = scene;
@@ -55,8 +48,8 @@ export default class EnemyManager {
         this.scene.physics.add.collider(blockers, this.enemyPool, this.unblockEnemy);
         this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
 
-        EventManager.getInstance().on(GameEvents.SHOULD_SPAWN_BOSS, () => { this.bossSpawned = true });
-        EventManager.getInstance().on(GameEvents.BOSS_DEFEATED, () => { this.bossSpawned = false; this.canSpawn = true });
+        EventManager.Instance.on(GameEvents.SHOULD_SPAWN_BOSS, () => { this.bossSpawned = true });
+        EventManager.Instance.on(GameEvents.BOSS_DEFEATED, () => { this.bossSpawned = false; this.canSpawn = true });
 
         this.loadWaypoints();
     }
@@ -281,7 +274,7 @@ export default class EnemyManager {
                     boss.isBoss = true;
                     boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
                     this.scene.gameCameras.ui.ignore(boss);
-                    EventManager.getInstance().emit(GameEvents.BOSS_SPAWNED, { boss: bossType });
+                    EventManager.Instance.emit(GameEvents.BOSS_SPAWNED, { boss: bossType });
                 }
             }
         }
@@ -346,5 +339,9 @@ export default class EnemyManager {
 
     resetAllEnemies(): void {
         this.enemyPool.clear(true, true);
+    }
+
+    destroy(): void {
+      this.enemyPool.destroy();
     }
 }

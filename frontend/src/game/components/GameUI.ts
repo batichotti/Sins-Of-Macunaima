@@ -1,9 +1,10 @@
 import { Scene } from 'phaser';
 import { Text } from '@/game/components/Properties';
-import { AttackMode, ICharacter, ITextBox } from '../types';
+import { AttackMode, ITextBox } from '../types';
 import { IGameUI, GameUIPlaceholders }from '../types/GameUI';
 import { BaseScene } from '../core/BaseScene';
-import { EventManager, GameEvents } from '../core/EventBus';
+import { EventManager } from '../core/EventBus';
+import { GameEvents } from '../types';
 
 export default class GameUI implements IGameUI {
   scene: BaseScene;
@@ -46,14 +47,27 @@ export default class GameUI implements IGameUI {
     this.killsLabel.setText("0");
     this.attackModeLabel.setText("Auto");
 
-    const eventManager = EventManager.getInstance();
+    const eventManager = EventManager.Instance;
     eventManager.on(GameEvents.HEALTH_CHANGE, (health: { health: number }) => { this.healthLabel.setText(health.health.toString()) });
     eventManager.on(GameEvents.TOGGLE_WEAPON, () => { this.weaponSetLabel.setText( this.scene.attackManager.weapon.name ) });
     eventManager.on(GameEvents.ENEMY_DIED, (info: { points: number, kills: number }) => { this.pointsLabel.setText(info.points.toString()); this.killsLabel.setText(info.kills.toString()) });
-    eventManager.on(GameEvents.LEVEL_UP, (level: { level: number }) => { this.levelLabel.setText(level.level.toString()) });
+    eventManager.on(GameEvents.  LEVEL_UP, (level: { level: number }) => { this.levelLabel.setText(level.level.toString()) });
     eventManager.on(GameEvents.WEAPON_COOLDOWN, (cooldown: number) => { this.weaponCooldownBar.startCooldown(cooldown) });
     eventManager.on(GameEvents.TOGGLE_ATTACK_MODE_SUCCEDED, (obj: AttackMode) => { this.attackModeLabel.setText(obj === AttackMode.AUTO ? "Auto" : "Manual") });
     eventManager.on(GameEvents.TOGGLE_CHARACTER_SUCCEDED, (name: string) => { this.characterLabel.setText(name) });
+  }
+
+  destroy(): void {
+    this.playerLabel.destroy();
+    this.characterLabel.destroy();
+    this.levelLabel.destroy();
+    this.healthLabel.destroy();
+    this.weaponSetLabel.destroy();
+    this.weaponCooldownBar.destroy();
+    this.pointsLabel.destroy();
+    this.killsLabel.destroy();
+    this.attackModeLabel.destroy();
+    this.bossInfoLabel.destroy();
   }
 }
 
@@ -88,8 +102,14 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
   show(): void {
     this.setVisible(true);
   }
+
   hide(): void {
     this.setVisible(false);
+  }
+
+  destroy(): void {
+    this.text.destroy();
+    this.background.destroy();
   }
 }
 
@@ -119,9 +139,7 @@ export class CooldownBar extends Phaser.GameObjects.Container {
   }
 
   startCooldown(duration: number) {
-    if (this.currentTween) {
-      this.currentTween.destroy();
-    }
+    this.currentTween?.destroy();
 
     const animationObject = { progress: 1 };
 
@@ -137,7 +155,7 @@ export class CooldownBar extends Phaser.GameObjects.Container {
       },
       onComplete: () => {
         this.updateFillBar(0);
-        this.currentTween = undefined;
+        this.currentTween?.destroy();
       }
     });
   }
@@ -151,10 +169,8 @@ export class CooldownBar extends Phaser.GameObjects.Container {
   }
 
   destroy() {
-    if (this.currentTween) {
-      this.currentTween.destroy();
-      this.currentTween = undefined;
-    }
+    this.currentTween?.destroy();
+    this.fill.destroy();
     super.destroy();
   }
 }

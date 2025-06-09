@@ -1,4 +1,4 @@
-import { EventBus, EventManager, GameEvents } from '@/game/core/EventBus';
+import { EventBus, EventManager } from '@/game/core/EventBus';
 import { Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
@@ -12,6 +12,7 @@ import EnemyManager from '../entities/EnemyManager';
 import GameUI from '../components/GameUI';
 import PlayerProgressionSystem from '../entities/PlayerProgressionSystem';
 import AnimationManager from '../entities/AnimationManager';
+import { GameEvents } from '../types';
 
 /**
  * Cena básica de jogo.
@@ -36,15 +37,15 @@ export class BaseScene extends Scene implements IBaseScene {
 
     constructor(config: Phaser.Types.Scenes.SettingsConfig) {
       super(config);
-      EventManager.getInstance().on(GameEvents.PLAYER_DIED, this.runGameOver);
+      EventManager.Instance.on(GameEvents.PLAYER_DIED, this.runGameOver);
     }
 
     protected preload(){
-        this.textures.generate('bullet', {
-            data: ['1'],
-            pixelWidth: 1,
-            pixelHeight: 1
-        });
+      this.textures.generate('bullet', {
+          data: ['1'],
+          pixelWidth: 1,
+          pixelHeight: 1
+      });
     }
 
     protected init(data: SceneData): void {

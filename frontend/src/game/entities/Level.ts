@@ -1,5 +1,6 @@
-import { EventManager, GameEvents } from "../core/EventBus";
+import { EventManager } from "../core/EventBus";
 import { ILevel } from "../types";
+import { GameEvents } from "../types";
 
 export class Level implements ILevel {
     level!: number;
@@ -19,8 +20,19 @@ export class Level implements ILevel {
     }
 
     levelUp() {
-        this.level += 1;
-        this.calculateModifiers();
-        EventManager.getInstance().emit(GameEvents.LEVEL_UP, { level: this.level });
+      this.level += 1;
+      this.calculateModifiers();
+      EventManager.Instance.emit(GameEvents.LEVEL_UP, { level: this.level });
+    }
+
+    /**
+     * Método para exportar as informações do nível.
+     */
+    export(): ILevel {
+      return {
+        level: this.level,
+        healthIncrease: this.healthIncrease,
+        damageIncrease: this.damageIncrease
+      };
     }
 };

@@ -1,6 +1,7 @@
 import { IInput } from "../types";
-import { EventManager, GameEvents } from "../core/EventBus";
+import { EventManager } from "../core/EventBus";
 import { BaseScene } from "../core/BaseScene";
+import { GameEvents } from "../types";
 
 export default class InputManager implements IInput {
     keyboard: Phaser.Input.Keyboard.KeyboardPlugin;
@@ -11,12 +12,10 @@ export default class InputManager implements IInput {
     toggleWeaponKey!: Phaser.Input.Keyboard.Key;
     toggleCharacterKey: Phaser.Input.Keyboard.Key;
     attackModeKey!: Phaser.Input.Keyboard.Key;
-    eventManager: EventManager;
     isInitialized = false;
 
     constructor(scene: BaseScene) {
         this.scene = scene;
-        this.eventManager = EventManager.getInstance();
         this.initializeInput();
     }
 
@@ -87,15 +86,15 @@ export default class InputManager implements IInput {
         if (!this.isInitialized) return;
 
         if (Phaser.Input.Keyboard.JustDown(this.toggleWeaponKey)) {
-            this.eventManager.emit(GameEvents.TOGGLE_WEAPON);
+          EventManager.Instance.emit(GameEvents.TOGGLE_WEAPON);
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.attackModeKey)) {
-            this.eventManager.emit(GameEvents.TOGGLE_ATTACK_MODE);
+          EventManager.Instance.emit(GameEvents.TOGGLE_ATTACK_MODE);
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.toggleCharacterKey)) {
-            this.eventManager.emit(GameEvents.TOGGLE_CHARACTER);
+          EventManager.Instance.emit(GameEvents.TOGGLE_CHARACTER);
         }
     }
 
@@ -169,33 +168,31 @@ export default class InputManager implements IInput {
     }
 
     /**
-     * Verifica se uma tecla específica está sendo pressionada.
-     * @param keyCode O código da tecla Phaser para verificar
-     * @returns true se a tecla estiver pressionada
-     */
-    isKeyPressed(keyCode: number): boolean {
-        if (!this.isInitialized || !this.keyboard) {
-            return false;
-        }
-
-        const key = this.keyboard.addKey(keyCode);
-        return key.isDown;
-    }
-
-    /**
      * Método de limpeza para remover event listeners e liberar recursos.
      */
     destroy(): void {
-        // Reinicia estado
-        this.isInitialized = false;
+      // Reinicia estado
+      this.isInitialized = false;
 
-        // Limpa referências
-        this.keyboard = null as any;
-        this.mouse = null as any;
-        this.arrows = null as any;
-        this.awsd = null as any;
-        this.toggleWeaponKey = null as any;
-        this.toggleCharacterKey = null as any;
-        this.attackModeKey = null as any;
+
+      this.arrows.up.destroy();
+      this.arrows.down.destroy();
+      this.arrows.left.destroy();
+      this.arrows.right.destroy();
+      this.arrows.space.destroy();
+      this.arrows.shift.destroy();
+
+      this.awsd.up.destroy();
+      this.awsd.down.destroy();
+      this.awsd.left.destroy();
+      this.awsd.right.destroy();
+      this.awsd.space.destroy();
+      this.awsd.shift.destroy();
+
+      this.toggleWeaponKey.destroy();
+      this.toggleCharacterKey.destroy();
+
+      this.keyboard.destroy();
+      this.mouse.destroy();
     }
 }
