@@ -1,10 +1,17 @@
+import { Player } from "../entities/Player";
+
 export default class GameOver extends Phaser.Scene {
-    constructor() {
-        super('GameOver');
+  private prevSceneData: { previousScene: string, player: Player };
+
+  constructor() {
+    super('GameOver');
+    }
+
+    init(data: { previousScene: string, player: Player }) {
+      this.prevSceneData = data;
     }
 
     create() {
-      console.log("Game Over")
         const { width, height } = this.scale;
         const gameOverText = this.add.text(width / 2, height / 2, 'Game Over', {
             fontSize: '32px',
@@ -19,7 +26,7 @@ export default class GameOver extends Phaser.Scene {
         }).setOrigin(0.5).setInteractive();
 
         restartButton.on('pointerdown', () => {
-            this.scene.start('Game');
+            this.scene.start(this.prevSceneData.previousScene);
         });
     }
 }

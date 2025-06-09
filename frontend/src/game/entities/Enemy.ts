@@ -9,7 +9,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     name: string;
     scene: BaseScene;
     spriteKey: string;
-    spawnRegion = 'Não importa aqui. Apenas para EnemyManager';
+    spawnRegion: string = 'Não importa aqui. Apenas para EnemyManager';
     weapon: IMelee;
     baseHealth: number;
     damageMultiplier: number;

@@ -76,9 +76,7 @@ export default class InputManager implements IInput {
         if (this.awsd.down.isDown) movement.y = 1;    // S
 
         // Retorna vetor normalizado apenas se há movimento real
-        return movement.x !== 0 || movement.y !== 0
-            ? movement.normalize()
-            : movement;
+        return movement.x !== 0 || movement.y !== 0 ? movement.normalize(): movement;
     }
 
     /**

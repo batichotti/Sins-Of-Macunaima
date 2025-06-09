@@ -253,7 +253,7 @@ export class BaseScene extends Scene implements IBaseScene {
     }
 
     runGameOver = () => {
-      this.time.delayedCall(2000, () => {
+      this.time.delayedCall(500, () => {
         this.scene.start('GameOver', {
           previousScene: this.constructor.name,
           player: this.player
