@@ -92,14 +92,12 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
     maximumHealth!: number;
     baseSpeed!: number;
     spriteKey!: string;
-    private eventManager: EventManager;
 
     constructor(scene: Phaser.Scene, position: Phaser.Math.Vector2, config: ICharacter) {
         super(scene, position.x, position.y, config.spriteKey);
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.eventManager = EventManager.Instance;
         this.initializeCharacter(config);
         this.setScale(1.5).setCollideWorldBounds(true).setDepth(100);
     }
@@ -115,7 +113,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
     changeCharacter(config: ICharacter): void {
         this.initializeCharacter(config);
         this.setTexture(config.spriteKey);
-        this.eventManager.emit(GameEvents.TOGGLE_CHARACTER_SUCCEDED, this.name);
+        EventManager.Instance.emit(GameEvents.TOGGLE_CHARACTER_SUCCEDED, this.name);
     }
 
     resetToSpawnPoint(position: Phaser.Math.Vector2 | { x: number, y: number }): void {
@@ -129,9 +127,9 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
         TweenManager.Instance.damageTween(this);
 
         if (this.health === 0) {
-            this.eventManager.emit(GameEvents.PLAYER_DIED);
+            EventManager.Instance.emit(GameEvents.PLAYER_DIED);
         } else {
-            this.eventManager.emit(GameEvents.HEALTH_CHANGE, { health: this.health });
+            EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, { health: this.health });
         }
     }
 
@@ -142,7 +140,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
         this.health = Math.min(this.maximumHealth, this.health + healAmount); // Clamp ao máximo
 
         TweenManager.Instance.healTween(this);
-        this.eventManager.emit(GameEvents.HEALTH_CHANGE, { health: this.health });
+        EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, { health: this.health });
     }
 
     playerMove(direction: Phaser.Math.Vector2, attackCoords: Phaser.Math.Vector2 | null): void {

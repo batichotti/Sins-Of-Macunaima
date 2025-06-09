@@ -30,7 +30,7 @@ export class EventManager {
 
     // Métodos para emitir/ouvir eventos
     public emit(event: GameEvents, ...args: any[]): void {
-        this.emitter.emit(event, ...args);
+      this.emitter.emit(event, ...args);
     }
 
     public on(event: GameEvents, callback: (...args: any[]) => void, context?: any): void {

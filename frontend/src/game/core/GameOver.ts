@@ -1,13 +1,13 @@
-import { Player } from "../entities/Player";
+import { MatchData } from "../types";
 
 export default class GameOver extends Phaser.Scene {
-  private prevSceneData: { previousScene: string, player: Player };
+  private prevSceneData: MatchData;
 
   constructor() {
     super('GameOver');
     }
 
-    init(data: { previousScene: string, player: Player }) {
+    init(data: MatchData) {
       this.prevSceneData = data;
     }
 
@@ -26,7 +26,7 @@ export default class GameOver extends Phaser.Scene {
         }).setOrigin(0.5).setInteractive();
 
         restartButton.on('pointerdown', () => {
-            this.scene.start(this.prevSceneData.previousScene);
+            this.scene.start(this.prevSceneData.scene);
         });
     }
 }

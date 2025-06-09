@@ -3,7 +3,7 @@ import { Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
 import { AnimatedTileData } from '../types/Tiles';
-import { AttackMode, CharacterTypes, EnemyTypes, SceneData } from '../types';
+import { AttackMode, CharacterTypes, EnemyTypes, MatchData, SceneData } from '../types';
 import GameCameras from '../components/GameCameras';
 import IBaseScene from '../types/BaseScene';
 import AttackManager from '../entities/Attack';
@@ -227,9 +227,6 @@ export class BaseScene extends Scene implements IBaseScene {
         });
     }
 
-    resetPlayer(): void {
-    }
-
     changeScenario(): void {
         if(this.transitionRects) {
             const playerBounds = this.player.character!.getBounds();
@@ -248,17 +245,19 @@ export class BaseScene extends Scene implements IBaseScene {
     }
 
     shutdown(): void {
-        this.player.character?.destroy();
-        this.layers?.forEach(layer => layer.destroy());
-        EventBus.off('current-scene-ready');
+      this.player.character?.destroy();
+      this.layers?.forEach(layer => layer.destroy());
+      EventBus.off('current-scene-ready');
     }
 
     runGameOver = () => {
       this.time.delayedCall(500, () => {
-        this.scene.start('GameOver', {
-          previousScene: this.constructor.name,
-          player: this.player
-        });
+        const matchData = {
+          scene: this.constructor.name,
+          data: this.playerProgressionSystem.export()
+        } as MatchData;
+        this.shutdown();
+        this.scene.start('GameOver', matchData);
       });
     }
 }

@@ -1,3 +1,5 @@
+import { AttackMode } from "./Weapon";
+
 /**
  * Usado para coordenar eventos do jogo.
  */
@@ -58,4 +60,53 @@ export enum GameEvents {
   * Jogador trocou de personagem.
   */
   TOGGLE_CHARACTER_SUCCEDED = 'toggleCharacterSucceded'
+}
+
+/**
+* Os payloads que são dados aos callbacks.
+*/
+export interface GameEventPayloads {
+  /**
+  * Points: Pontos ganhos até agora.
+  *
+  * Kills: Mortes causadas até agora.
+  */
+  [GameEvents.ENEMY_DIED]: { points: number; kills: number };
+
+  /**
+  * Retorna o nível atual.
+  */
+  [GameEvents.LEVEL_UP]: number;
+
+  /**
+  * Retorna a vida atual.
+  */
+  [GameEvents.HEALTH_CHANGE]: number;
+
+  /**
+  * Para trocar de arma.
+  */
+  [GameEvents.TOGGLE_WEAPON]: void;
+
+  /**
+  * Retorna o cooldown da arma.
+  */
+  [GameEvents.WEAPON_COOLDOWN]: number;
+
+  /**
+  * O jogador morreu.
+  */
+  [GameEvents.PLAYER_DIED]: void;
+
+  /**
+  * Foi possível alterar o modo de ataque.
+  *
+  * Retorna o modo atual.
+  */
+  [GameEvents.TOGGLE_ATTACK_MODE_SUCCEDED]: AttackMode;
+
+  /**
+  * Retorna o nome do personagem atual após a troca.
+  */
+  [GameEvents.TOGGLE_CHARACTER_SUCCEDED]: string;
 }
