@@ -43,16 +43,16 @@ export class Boot extends Scene {
 
         //  Jogador
         Object.values(CharacterTypes).forEach(
-            (it: ICharacter) => {
-                this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
-            }
+          (it: ICharacter) => {
+            this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
+          }
         );
 
         // Inimigos
         Object.values(EnemyTypes).forEach(
-            (it: IEnemy) => {
-                this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
-            }
+          (it: IEnemy) => {
+            this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
+          }
         );
 
         // Tiles

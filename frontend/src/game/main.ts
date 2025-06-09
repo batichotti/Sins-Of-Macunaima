@@ -22,9 +22,9 @@ const config: Phaser.Types.Core.GameConfig = {
     },
     scene: [
         Boot,
-        GameOver,
         Loader,
-        Mapa
+        Mapa,
+        GameOver
     ]
 };
 
