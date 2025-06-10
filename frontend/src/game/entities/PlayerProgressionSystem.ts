@@ -5,12 +5,12 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
     player: Player;
     xpGained: number = 0;
     pointsGained: number = 0;
-    xpLevelUpNeeded: number = 200;
+    xpLevelUpNeeded: number = 20;
     timeElapsed: number = 0;
 
     constructor(player: Player) {
       this.player = player;
-      this.xpLevelUpNeeded += this.player.level.level * 10;
+      this.xpLevelUpNeeded += this.player.level.level * 2;
       this.timeElapsed = Date.now();
     }
 
@@ -19,7 +19,7 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
       const needed = this.xpLevelUpNeeded;
       if (this.xpGained >= needed) {
         this.xpGained -= needed;
-        this.xpLevelUpNeeded = this.player.level.level * 10 + 200;
+        this.xpLevelUpNeeded = this.player.level.level + 20;
         this.levelUp();
       }
     }

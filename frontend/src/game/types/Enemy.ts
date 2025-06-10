@@ -67,17 +67,17 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
         spriteKey: 'Macunaima',
         spawnRegion: 'Floresta',
         weapon: MeleeTypes[MeleeEnum.BENGALA],
-        baseHealth: 200,
+        baseHealth: 20,
         baseSpeed: 200,
         damageMultiplier: 1.2,
-        pointGain: 20
+        pointGain: 5
     },
     [EnemyEnum.COLONIZADOR]: {
         name: 'Colonizador',
         spriteKey: 'Colonizador',
         spawnRegion: 'Praia',
         weapon: MeleeTypes[MeleeEnum.ESPADA],
-        baseHealth: 200,
+        baseHealth: 20,
         baseSpeed: 200,
         damageMultiplier: 1.2,
         pointGain: 20
@@ -91,12 +91,12 @@ export enum BossEnum {
 export const BossTypes: Record<BossEnum, IEnemy> = {
     [BossEnum.CURURE]: {
         name: 'Curu-Ré',
-        spriteKey: 'TODO',
-        spawnRegion: 'PlanicieClaraSuperior',
+        spriteKey: 'Peri',
+        spawnRegion: 'Floresta',
         weapon: MeleeTypes[MeleeEnum.PAULADA],
-        baseHealth: 1500,
+        baseHealth: 150,
         baseSpeed: 150,
-        damageMultiplier: 1.2,
+        damageMultiplier: 1.5,
         pointGain: 500
     }
 };

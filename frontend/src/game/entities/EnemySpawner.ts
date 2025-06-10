@@ -3,7 +3,7 @@ import { EnemySpawnPoints } from "../types";
 
 export default class EnemySpawner {
     private scene: BaseScene;
-    private lastPlayerPos: Phaser.Math.Vector2;
+    private lastPlayerPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 0); // Inicializar
     private spawnPoints: EnemySpawnPoints[] = [];
     private minDistance: number = 20;
     private maxDistance: number = 640;
@@ -15,33 +15,55 @@ export default class EnemySpawner {
     }
 
     private setupEnemySpawnPoints(): void {
-        const layer = this.scene.map.getObjectLayer('enemySpawnPoints')
-        if(layer) layer.objects.forEach((obj) => { this.spawnPoints.push({ name: obj.name, position: new Phaser.Math.Vector2(obj.x! + obj.width!/2, obj.y! - obj.height!/2) }) })
+        const layer = this.scene.map.getObjectLayer('enemySpawnPoints');
+        if (layer) {
+            layer.objects.forEach((obj) => {
+                if (obj.x !== undefined && obj.y !== undefined && obj.width !== undefined && obj.height !== undefined) {
+                    this.spawnPoints.push({
+                        name: obj.name || 'unnamed',
+                        position: new Phaser.Math.Vector2(
+                            obj.x + obj.width / 2,
+                            obj.y - obj.height / 2
+                        )
+                    });
+                }
+            });
+        }
     }
 
     chooseSpawn(): EnemySpawnPoints | null {
-        if(this.canChoose) {
-            this.canChoose = false;
-
-            const playerPos = this.scene.player.character.body?.position ?? this.lastPlayerPos;
-            if(playerPos) this.lastPlayerPos = playerPos;
-
-            let nearest = Number.MAX_VALUE;
-            let nearestPos = null;
-
-            const spawnPoints = this.spawnPoints;
-
-            for(let i = 0; i < spawnPoints.length; i++) {
-                const temp = Phaser.Math.Distance.Between(playerPos!.x, playerPos!.y, spawnPoints[i].position.x, spawnPoints[i].position.y);
-                if(nearest > temp && temp > this.minDistance) {
-                    nearest = temp;
-                    nearestPos = spawnPoints[i];
-                }
-            }
-
-            this.scene.time.delayedCall(1250, () => { this.canChoose = true });
-            return Phaser.Math.Distance.Between(nearestPos!.position.x, nearestPos!.position.y, playerPos!.x, playerPos!.y) < this.maxDistance ? nearestPos: null ;
+        if (!this.canChoose || this.spawnPoints.length === 0) {
+            return null;
         }
-        return null;
+
+        this.canChoose = false;
+        const playerPos = this.scene.player.character.body?.position;
+
+        if (playerPos) {
+            this.lastPlayerPos.copy(playerPos);
+        }
+
+        let nearest = Number.MAX_VALUE;
+        let nearestPos: EnemySpawnPoints | null = null;
+
+        for (const spawnPoint of this.spawnPoints) {
+            const distance = Phaser.Math.Distance.Between(
+                this.lastPlayerPos.x,
+                this.lastPlayerPos.y,
+                spawnPoint.position.x,
+                spawnPoint.position.y
+            );
+
+            if (distance > this.minDistance && distance < nearest) {
+                nearest = distance;
+                nearestPos = spawnPoint;
+            }
+        }
+
+        this.scene.time.delayedCall(1250, () => {
+            this.canChoose = true;
+        });
+
+        return nearestPos && nearest < this.maxDistance ? nearestPos : null;
     }
 }

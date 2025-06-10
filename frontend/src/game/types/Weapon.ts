@@ -73,7 +73,7 @@ export interface IProjectile extends IWeapon {
 
     /**
      * Chave do sprite usado.
-     * 
+     *
      * Deve corresponder exatamente ao nome do asset.
      */
     spriteKey: string;
@@ -124,7 +124,7 @@ export const BaseProjectileStats = {
     /**
      * Dano base.
      */
-    damage: 50
+    damage: 5
 }
 
 /**
@@ -138,13 +138,13 @@ export enum ProjectileEnum {
  * Contém os projéteis disponíveis.
  */
 export const ProjectileTypes: Record<ProjectileEnum, IProjectile> = {
-    [ProjectileEnum.FLECHA]: { 
-        name: 'Flecha', 
-        weaponType: WeaponType.PROJECTILE, 
-        spriteKey: 'arrow_sprite', 
-        baseDamage: 40, 
-        baseCooldown: 150, 
-        baseSpeed: 500 
+    [ProjectileEnum.FLECHA]: {
+        name: 'Flecha',
+        weaponType: WeaponType.PROJECTILE,
+        spriteKey: 'arrow_sprite',
+        baseDamage: 2,
+        baseCooldown: 150,
+        baseSpeed: 500
     }
 };
 
@@ -159,36 +159,36 @@ export enum MeleeEnum {
 }
 
 export const MeleeTypes: Record<MeleeEnum, IMelee> = {
-    [MeleeEnum.BANANEIRA]: { 
-        name: 'Bananeira', 
-        weaponType: WeaponType.MELEE, 
-        baseDamage: 75, 
-        baseCooldown: 350, 
-        range: 32, 
-        duration: 50 
+    [MeleeEnum.BANANEIRA]: {
+        name: 'Bananeira',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 2,
+        baseCooldown: 350,
+        range: 32,
+        duration: 50
     },
-    [MeleeEnum.BENGALA]: { 
-        name: 'Bengala', 
-        weaponType: WeaponType.MELEE, 
-        baseDamage: 15, 
-        baseCooldown: 500, 
-        range: 20, 
-        duration: 200 
+    [MeleeEnum.BENGALA]: {
+        name: 'Bengala',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 2,
+        baseCooldown: 500,
+        range: 32,
+        duration: 200
     },
-    [MeleeEnum.ESPADA]: { 
-        name: 'Espada', 
-        weaponType: WeaponType.MELEE, 
-        baseDamage: 75, 
-        baseCooldown: 350, 
-        range: 32, 
-        duration: 200 
+    [MeleeEnum.ESPADA]: {
+        name: 'Espada',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 3,
+        baseCooldown: 350,
+        range: 32,
+        duration: 200
     },
-    [MeleeEnum.PAULADA]: { 
-        name: 'Paulada', 
-        weaponType: WeaponType.MELEE, 
-        baseDamage: 50, 
-        baseCooldown: 1250, 
-        range: 64, 
-        duration: 200 
+    [MeleeEnum.PAULADA]: {
+        name: 'Paulada',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 4,
+        baseCooldown: 1250,
+        range: 64,
+        duration: 200
     }
 };
