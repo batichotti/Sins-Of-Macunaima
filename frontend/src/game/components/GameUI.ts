@@ -18,6 +18,7 @@ export default class GameUI implements IGameUI {
   killsLabel: TextBox;
   attackModeLabel: TextBox;
   bossInfoLabel: TextBox;
+  timeLabel: TimeCounter;
   handlers: IGameUIHandlers;
 
 
@@ -37,6 +38,7 @@ export default class GameUI implements IGameUI {
     this.weaponCooldownBar = new CooldownBar(this.scene, 460, 45, 140, 5);
     this.scene.gameCameras.main.ignore([ this.killsLabel, this.attackModeLabel, this.weaponCooldownBar, this.weaponSetLabel, this.healthLabel, this.levelLabel, this.playerLabel, this.characterLabel ]);
 
+    this.timeLabel = new TimeCounter(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 600, y: 70 } as Phaser.Math.Vector2);
 
     this.playerLabel.setText(this.scene.player.name);
     this.characterLabel.setText(this.scene.player.character.name);
@@ -87,6 +89,7 @@ export default class GameUI implements IGameUI {
     this.pointsLabel.destroy();
     this.killsLabel.destroy();
     this.attackModeLabel.destroy();
+    this.timeLabel.destroy();
     //this.bossInfoLabel.destroy();
   }
 }
@@ -116,7 +119,7 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
   }
 
   setText(newText: string): void {
-    this.text.text = this.placeholder + newText;
+    this.text.setText(this.placeholder + newText);
   }
 
   show(): void {
@@ -192,6 +195,40 @@ export class CooldownBar extends Phaser.GameObjects.Container {
   destroy() {
     this.currentTween?.destroy();
     this.fill.destroy();
+    super.destroy();
+  }
+}
+
+
+export class TimeCounter extends TextBox {
+  private internalCounter: Phaser.Time.TimerEvent;
+  private timeElapsed: number = 0;
+
+  constructor(scene: Scene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
+    super(scene, size, position, GameUIPlaceholders.TIME);
+    this.setText(this.formatTime(0));
+    this.internalCounter = scene.time.addEvent(
+      {
+        delay: 1000,
+        callbackScope: this,
+        callback: () => {
+          this.timeElapsed += 1000;
+          this.setText(this.formatTime(this.timeElapsed))
+        },
+        loop: true
+      }
+    );
+  }
+
+  private formatTime(time: number): string {
+    const minutes = Math.floor(time / 60000);
+    const seconds = Math.floor((time % 60000) / 1000);
+    if (minutes === 0) return `${seconds}s`;
+    else return `${minutes}m:${seconds < 10 ? '0' : ''}${seconds}s`;
+  }
+
+  override destroy(): void {
+    this.internalCounter.remove(false);
     super.destroy();
   }
 }

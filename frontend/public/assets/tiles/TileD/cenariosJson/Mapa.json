@@ -2522,6 +2522,77 @@
         }, 
         {
          "draworder":"topdown",
+         "id":41,
+         "name":"muiraquitaPoints",
+         "objects":[
+                {
+                 "gid":5791,
+                 "height":16,
+                 "id":383,
+                 "name":"point",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":2336,
+                 "y":992
+                }, 
+                {
+                 "gid":5791,
+                 "height":16,
+                 "id":384,
+                 "name":"point",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1152,
+                 "y":944
+                }, 
+                {
+                 "gid":5791,
+                 "height":16,
+                 "id":385,
+                 "name":"point",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1360,
+                 "y":128
+                }, 
+                {
+                 "gid":5791,
+                 "height":16,
+                 "id":386,
+                 "name":"point",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":112,
+                 "y":128
+                }, 
+                {
+                 "gid":5791,
+                 "height":16,
+                 "id":387,
+                 "name":"point",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":112,
+                 "y":1776
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":40,
          "locked":true,
          "name":"waypoints",
@@ -3732,8 +3803,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":41,
- "nextobjectid":383,
+ "nextlayerid":42,
+ "nextobjectid":388,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
