@@ -1,20 +1,14 @@
 import Enemy from "./Enemy";
-import { EnemyTypes } from "../types";
+import { BossTypes, EnemyTypes } from "../types";
 import { BaseScene } from "../core/BaseScene";
 import { Pathfinding } from "../components/phaser-pathfinding";
 import { Grid } from "../components/phaser-pathfinding";
 import PathCache from "../core/PathCache";
 import { Character } from "./Player";
 import EnemySpawner from "./EnemySpawner";
-import { EventManager, GameEvents } from "../core/EventBus";
-
-interface WaypointNode {
-    point: Phaser.Math.Vector2;
-    g: number;
-    h: number;
-    f: number;
-    parent: WaypointNode | null;
-}
+import { EventManager } from "../core/EventBus";
+import { GameEvents } from "../types";
+import { WaypointNode } from "../types";
 
 export default class EnemyManager {
     enemySpawner: EnemySpawner;
@@ -23,16 +17,16 @@ export default class EnemyManager {
     pathFinder: Pathfinding;
     pathCache = new PathCache(7000);
     waypointGraph: Map<string, Phaser.Math.Vector2[]> = new Map();
+    maxEnemyDistance: number = 200;
     canPath: boolean = true;
     canSpawn: boolean = true;
-    shouldSpawnBoss: boolean = false;
     grid: Grid;
     playerPos = new Phaser.Math.Vector2();
     updateIndex = 0;
     waypoints: Phaser.Math.Vector2[] = [];
     maxDirectDistance: number = 300;
     cooldownAttack: boolean = true;
-
+    bossSpawned: boolean = false;
 
     constructor(scene: BaseScene) {
         this.scene = scene;
@@ -54,7 +48,8 @@ export default class EnemyManager {
         this.scene.physics.add.collider(blockers, this.enemyPool, this.unblockEnemy);
         this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
 
-        EventManager.getInstance().on(GameEvents.SHOULD_SPAWN_BOSS, () => {});
+        EventManager.Instance.on(GameEvents.SHOULD_SPAWN_BOSS, () => { this.bossSpawned = true });
+        EventManager.Instance.on(GameEvents.BOSS_DEFEATED, () => { this.bossSpawned = false; this.canSpawn = true });
 
         this.loadWaypoints();
     }
@@ -78,9 +73,9 @@ export default class EnemyManager {
 
     public getTargetPosition(enemyPos: Phaser.Math.Vector2, playerPos: Phaser.Math.Vector2): Phaser.Math.Vector2 {
         const distanceToPlayer = Phaser.Math.Distance.Between(
-            enemyPos.x, 
-            enemyPos.y, 
-            playerPos.x, 
+            enemyPos.x,
+            enemyPos.y,
+            playerPos.x,
             playerPos.y
         );
 
@@ -89,14 +84,14 @@ export default class EnemyManager {
         }
 
         const nearestWaypoint = this.findNearestWaypoint(enemyPos);
-        
+
         return nearestWaypoint ? nearestWaypoint.clone() : playerPos.clone();
     }
 
     private getTilesAlongLine(start: Phaser.Math.Vector2, end: Phaser.Math.Vector2): Phaser.Tilemaps.Tile[] {
         const tiles: Phaser.Tilemaps.Tile[] = [];
         const tilemap = this.scene.map;
-        
+
         let x0 = tilemap.worldToTileX(start.x)!;
         let y0 = tilemap.worldToTileY(start.y)!;
         const x1 = tilemap.worldToTileX(end.x)!;
@@ -150,7 +145,7 @@ export default class EnemyManager {
 
         const openSet: WaypointNode[] = [];
         const allNodes = new Map<string, WaypointNode>();
-        
+
         // Inicializa A*
         const startNode: WaypointNode = {
             point: startWp,
@@ -206,7 +201,7 @@ export default class EnemyManager {
     private reconstructPath(node: WaypointNode): Phaser.Math.Vector2[] {
         const path: Phaser.Math.Vector2[] = [];
         let current: WaypointNode | null = node;
-        
+
         while (current) {
             path.unshift(current.point);
             current = current.parent;
@@ -217,8 +212,8 @@ export default class EnemyManager {
     public findNearestWaypoint(position: Phaser.Math.Vector2): Phaser.Math.Vector2 | null {
         if (this.waypoints.length === 0) return null;
 
-        return this.waypoints.reduce((prev, curr) => 
-            Phaser.Math.Distance.Between(position.x, position.y, curr.x, curr.y) < 
+        return this.waypoints.reduce((prev, curr) =>
+            Phaser.Math.Distance.Between(position.x, position.y, curr.x, curr.y) <
             Phaser.Math.Distance.Between(position.x, position.y, prev.x, prev.y) ? curr : prev
         );
     }
@@ -239,7 +234,7 @@ export default class EnemyManager {
     private unblockEnemy = (obj1: object) => {
         if(obj1 instanceof Enemy) {
             const vel = obj1.body?.velocity;
-            let coords = { x: 0, y: 0 };
+            const coords = { x: 0, y: 0 };
             if(vel!.x > 0) coords.x = -1;
             if(vel!.x < 0) coords.x = 1;
             if(vel!.y > 0) coords.y = -1;
@@ -252,24 +247,40 @@ export default class EnemyManager {
 
     spawnEnemy() {
         const spawn = this.enemySpawner.chooseSpawn();
-        if(this.canSpawn && spawn && !this.shouldSpawnBoss) {
+        if(spawn) {
+            if(this.canSpawn && !this.bossSpawned) {
 
-            const validEnemies = EnemyTypes.filter(e => e.spawnRegion === spawn.name);
-            if (validEnemies.length === 0) return;
+                const validEnemies = Object.values(EnemyTypes).filter(e => e.spawnRegion === spawn.name);
+                if (validEnemies.length === 0) return;
 
-            const enemyType = Phaser.Utils.Array.GetRandom(validEnemies);
-            const enemy = this.enemyPool.get(spawn.position.x, spawn.position.y, enemyType.spriteKey) as Enemy;
-            if(enemy) {
-                this.canSpawn = false;
-                enemy.configureEnemy(enemyType);
-                enemy.enableBody(true, spawn.position.x, spawn.position.y, true, true);
-                this.scene.gameCameras.ui.ignore(enemy);
+                const enemyType = Phaser.Utils.Array.GetRandom(validEnemies);
+                const enemy = this.enemyPool.get(spawn.position.x, spawn.position.y, enemyType.spriteKey) as Enemy;
+                if(enemy) {
+                    this.canSpawn = false;
+                    enemy.configureEnemy(enemyType);
+                    enemy.enableBody(true, spawn.position.x, spawn.position.y, true, true);
+                    this.scene.gameCameras.ui.ignore(enemy);
+                    this.scene.time.delayedCall(1250, () => this.canSpawn = true);
+                }
+            } else if(this.bossSpawned) {
+                const validBosses = Object.values(BossTypes).filter(e => e.spawnRegion === spawn.name);
+                if (validBosses.length === 0) return;
+
+                const bossType = Phaser.Utils.Array.GetRandom(validBosses);
+                const boss = this.enemyPool.get(spawn.position.x, spawn.position.y, bossType.spriteKey) as Enemy;
+                if(boss) {
+                    this.canSpawn = false;
+                    boss.configureEnemy(bossType);
+                    boss.isBoss = true;
+                    boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
+                    this.scene.gameCameras.ui.ignore(boss);
+                    EventManager.Instance.emit(GameEvents.BOSS_SPAWNED, bossType);
+                }
             }
         }
-        this.scene.time.delayedCall(1250, () => this.canSpawn = true);
     }
 
-    findNearestEnemy(): number | null {
+    findNearestEnemy(): Phaser.Math.Vector2 | null {
         const children = this.enemyPool.getChildren();
         if(children.length <= 0) return null;
 
@@ -287,12 +298,12 @@ export default class EnemyManager {
             }
         }
 
-        return Phaser.Math.Angle.Between(playerPos.x, playerPos.y, res.x, res.y);
+        return nearest < this.maxEnemyDistance ? new Phaser.Math.Vector2(res.x - playerPos.x, res.y - playerPos.y) : null;
     }
 
     updatePathing() {
         if (!this.canPath) return;
-        
+
         this.canPath = false;
         const enemies = this.enemyPool.getChildren() as Enemy[];
         this.playerPos.set(this.scene.player.character.x, this.scene.player.character.y);
@@ -303,7 +314,7 @@ export default class EnemyManager {
 
         while (processed < BATCH_SIZE && enemies.length > 0) {
             if (index >= enemies.length) index = 0;
-        
+
             const enemy = enemies[index];
             if (enemy?.active && enemy.body) {
                 enemy.updatePathing(this.playerPos);
@@ -312,7 +323,7 @@ export default class EnemyManager {
 
             index++;
             this.updateIndex = index % enemies.length;
-        
+
             if (index === this.updateIndex) break;
         }
         this.scene.time.delayedCall(100, () => this.canPath = true);
@@ -328,5 +339,9 @@ export default class EnemyManager {
 
     resetAllEnemies(): void {
         this.enemyPool.clear(true, true);
+    }
+
+    destroy(): void {
+      this.enemyPool.destroy();
     }
 }

@@ -2,11 +2,12 @@ import { BaseScene } from "../core/BaseScene";
 import { EnemySpawnPoints } from "../types";
 
 export default class EnemySpawner {
-    scene: BaseScene;
-    lastPlayerPos: Phaser.Math.Vector2;
-    spawnPoints: EnemySpawnPoints[] = [];
-    minDistance: number = 50;
-    canChoose: boolean = true;
+    private scene: BaseScene;
+    private lastPlayerPos: Phaser.Math.Vector2;
+    private spawnPoints: EnemySpawnPoints[] = [];
+    private minDistance: number = 20;
+    private maxDistance: number = 640;
+    private canChoose: boolean = true;
 
     constructor(scene: BaseScene) {
         this.scene = scene;
@@ -15,25 +16,19 @@ export default class EnemySpawner {
 
     private setupEnemySpawnPoints(): void {
         const layer = this.scene.map.getObjectLayer('enemySpawnPoints')
-        if(layer) {
-            layer.objects.forEach(
-                (obj) => { 
-                    this.spawnPoints.push({ name: obj.name, position: new Phaser.Math.Vector2(obj.x! + obj.width!/2, obj.y! - obj.height!/2) })
-                }
-            )
-        }
+        if(layer) layer.objects.forEach((obj) => { this.spawnPoints.push({ name: obj.name, position: new Phaser.Math.Vector2(obj.x! + obj.width!/2, obj.y! - obj.height!/2) }) })
     }
 
     chooseSpawn(): EnemySpawnPoints | null {
         if(this.canChoose) {
             this.canChoose = false;
 
-            const playerPos = this.scene.player.character.body?.position;
+            const playerPos = this.scene.player.character.body?.position ?? this.lastPlayerPos;
             if(playerPos) this.lastPlayerPos = playerPos;
 
             let nearest = Number.MAX_VALUE;
             let nearestPos = null;
-            
+
             const spawnPoints = this.spawnPoints;
 
             for(let i = 0; i < spawnPoints.length; i++) {
@@ -44,8 +39,8 @@ export default class EnemySpawner {
                 }
             }
 
-            this.scene.time.delayedCall(2000, () => { this.canChoose = true });
-            return nearestPos;
+            this.scene.time.delayedCall(1250, () => { this.canChoose = true });
+            return Phaser.Math.Distance.Between(nearestPos!.position.x, nearestPos!.position.y, playerPos!.x, playerPos!.y) < this.maxDistance ? nearestPos: null ;
         }
         return null;
     }

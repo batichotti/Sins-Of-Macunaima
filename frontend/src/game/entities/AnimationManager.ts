@@ -42,4 +42,15 @@ export default class AnimationManager {
             }
         );
     }
+
+    destroy(): void {
+      this.animKeys.forEach(
+        (it) => {
+          if(it instanceof Phaser.Animations.Animation) {
+            this.scene.anims.remove(it.key);
+          }
+        }
+      );
+      this.animKeys.clear();
+    }
 }

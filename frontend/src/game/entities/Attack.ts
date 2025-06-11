@@ -1,21 +1,20 @@
-import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet, IMelee, AttackMode } from "../types";
+import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet, IMelee, AttackMode, bossThreshold } from "../types";
 import { BaseScene } from "../core/BaseScene";
 import Enemy from "./Enemy";
 import PlayerProgressionSystem from "./PlayerProgressionSystem";
-import { EventManager, GameEvents } from "../core/EventBus";
+import { EventManager } from "../core/EventBus";
+import { GameEvents } from "../types";
 
 export default class AttackManager {
     private projectiles: Phaser.Physics.Arcade.Group;
     private melee: Melee;
     private scene: BaseScene;
     private canAttack: boolean = true;
-    private canSearch: boolean = true;
-    private enemyAngle: number = 0;
     private weaponSet: WeaponSet;
     private currentWeapon: IWeapon;
     private kills: number = 0;
     private playerProgressionSystem: PlayerProgressionSystem;
-    private attackMode: AttackMode = AttackMode.AUTO;
+    attackMode: AttackMode = AttackMode.AUTO;
 
     constructor(scene: BaseScene, playerProgessionSystem: PlayerProgressionSystem, weaponSet: WeaponSet) {
         this.scene = scene;
@@ -28,12 +27,12 @@ export default class AttackManager {
 
         this.scene.physics.add.overlap(this.projectiles, this.scene.enemyManager.enemyPool, this.handleHit);
         this.scene.physics.add.overlap(this.melee, this.scene.enemyManager.enemyPool, this.handleHit);
-        
+
         const blockers = this.scene.map.getLayer('colisao')?.tilemapLayer;
         if(blockers) this.scene.physics.add.collider(this.projectiles, blockers, this.eraseProjectile);
 
-        EventManager.getInstance().on(GameEvents.TOGGLE_WEAPON, () => { this.toggleWeapon() });
-        EventManager.getInstance().on(GameEvents.TOGGLE_ATTACK_MODE, () => { this.toggleAttackMode() });
+        EventManager.Instance.on(GameEvents.TOGGLE_WEAPON, this.toggleWeapon, this);
+        EventManager.Instance.on(GameEvents.TOGGLE_ATTACK_MODE, this.toggleAttackMode, this);
     }
 
     private handleHit = (obj1: object, obj2: object) => {
@@ -43,24 +42,25 @@ export default class AttackManager {
         const enemy = obj2 as Enemy;
 
         const weaponDamage = attacker instanceof Melee ? this.weaponSet.melee.baseDamage : this.weaponSet.projectile.baseDamage;
-        
+
         const damage = weaponDamage * this.scene.player.level.damageIncrease;
 
         if (enemy.takeDamage(damage)) {
             this.kills += 1;
             if(this.kills % 10 == 0) {
                 this.scene.player.character.heal();
-                EventManager.getInstance().emit(GameEvents.HEALTH_CHANGE, { health: this.scene.player.character.health });
+                EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.scene.player.character.health);
+            }
+
+            if(this.kills % bossThreshold == 0) {
+              EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS, null);
             }
 
             this.playerProgressionSystem.increasePoints(enemy.pointGain);
-            this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.25);
-            EventManager.getInstance().emit(GameEvents.ENEMY_DIED, { 
-                points: this.playerProgressionSystem.pointsGained,
-                kills: this.kills
-            });
+            this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.5);
+            EventManager.Instance.emit(GameEvents.ENEMY_DIED, { points: this.playerProgressionSystem.pointsGained, kills: this.kills });
         }
-        
+
         if (attacker instanceof Projectile) {
             attacker.disableBody(true, true);
         }
@@ -70,7 +70,7 @@ export default class AttackManager {
         (obj1 as Projectile).disableBody(true, true);
     };
 
-    private toggleWeapon(): void {
+    private toggleWeapon = () => {
         if(this.currentWeapon.weaponType === WeaponType.PROJECTILE) {
             this.currentWeapon = this.weaponSet.melee;
         } else {
@@ -78,13 +78,13 @@ export default class AttackManager {
         }
     }
 
-    private toggleAttackMode() {
+    private toggleAttackMode = () => {
         if(this.attackMode === AttackMode.AUTO) {
             this.attackMode = AttackMode.MANUAL;
         } else {
             this.attackMode = AttackMode.AUTO;
         }
-        EventManager.getInstance().emit(GameEvents.TOGGLE_ATTACK_MODE_SUCCEDED, this.attackMode);
+        EventManager.Instance.emit(GameEvents.TOGGLE_ATTACK_MODE_SUCCESS, this.attackMode);
     }
 
     get weapon(): IWeapon {
@@ -94,28 +94,17 @@ export default class AttackManager {
     fire(x: number, y: number, angle: number): void {
         if (!this.canAttack) return;
 
-        let ang = angle;
-
-        if(this.attackMode === AttackMode.AUTO) {
-            if(this.canSearch) {
-                ang = this.scene.enemyManager.findNearestEnemy() ?? angle;
-                
-                this.canSearch = false;
-                this.scene.time.delayedCall(250, () => { this.canSearch = true });
-            }
-        }
-
         switch (this.currentWeapon.weaponType) {
             case WeaponType.PROJECTILE:
-                this.fireProjectile(x, y, ang);
+                this.fireProjectile(x, y, angle);
                 break;
-            
+
             case WeaponType.MELEE:
-                this.executeMeleeAttack(x, y, ang);
+                this.executeMeleeAttack(x, y, angle);
                 break;
         }
 
-        EventManager.getInstance().emit(GameEvents.WEAPON_COOLDOWN, this.currentWeapon.baseCooldown);
+        EventManager.Instance.emit(GameEvents.WEAPON_COOLDOWN, this.currentWeapon.baseCooldown);
 
         this.startCooldown();
     }
@@ -136,6 +125,11 @@ export default class AttackManager {
     private startCooldown(): void {
         this.canAttack = false;
         this.scene.time.delayedCall(this.currentWeapon.baseCooldown, () => { this.canAttack = true });
+    }
+
+    destroy(): void {
+      this.projectiles.destroy();
+      this.melee.destroy();
     }
 }
 
@@ -167,6 +161,11 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
 
         this.lifespanTimer = this.scene.time.delayedCall(2000, () => { if(this.active) this.disableBody(true, true) });
     }
+
+    override destroy(): void {
+      this.lifespanTimer?.destroy();
+      super.destroy();
+    }
 }
 
 class Melee extends Phaser.GameObjects.Zone {
@@ -190,10 +189,10 @@ class Melee extends Phaser.GameObjects.Zone {
             Math.cos(angle) * (this.config.range * 0.5),
             Math.sin(angle) * (this.config.range * 0.75)
         );
-        
+
         this.setPosition(origin.x + offset.x, origin.y + offset.y);
         this.setActive(true);
-        
+
         this.scene.time.delayedCall(this.attackDuration, () => { this.setActive(false) });
     }
 }

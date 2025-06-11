@@ -38,20 +38,24 @@ export default class PathCache {
     public get(key: string): Phaser.Math.Vector2[] | null {
         const entry = this.cache.get(key);
         if (!entry) return null;
-        
+
         const age = Date.now() - entry.timestamp;
         return (age < entry.ttl!) ? entry.path : null;
     }
 
     private autoCleanup(): void {
         if (Date.now() - this.lastCleanup < 10000) return;
-        
+
         const now = Date.now();
         this.cache.forEach((value, key) => { if (now - value.timestamp > value.ttl!) this.cache.delete(key) });
         this.lastCleanup = now;
     }
 
     public clear(): void {
-        this.cache.clear();
+      this.cache.clear();
+    }
+
+    destroy(): void {
+      this.cache.clear();
     }
 }
