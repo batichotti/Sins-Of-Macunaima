@@ -1,4 +1,6 @@
 import { IMelee, MeleeEnum, MeleeTypes } from "./Weapon";
+import { CharacterEnum } from "./Player";
+import { AnimationTemplate, DefaultAnimationTemplate, DefaultAnimationTemplates } from "./Animations";
 
 export interface WaypointNode {
     point: Phaser.Math.Vector2;
@@ -55,7 +57,8 @@ export interface IEnemy {
 
 export enum EnemyEnum {
     CHUPACU,
-    COLONIZADOR
+    COLONIZADOR,
+    COBRA_CORAL
 }
 
 /**
@@ -81,6 +84,16 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
         baseSpeed: 200,
         damageMultiplier: 1.2,
         pointGain: 20
+    },
+    [EnemyEnum.COBRA_CORAL]: {
+      name: 'Cobra Coral',
+      spriteKey: 'Snake',
+      spawnRegion: 'Praia',
+      weapon: MeleeTypes[MeleeEnum.PICADA],
+      baseHealth: 15,
+      baseSpeed: 220,
+      damageMultiplier: 1.05,
+      pointGain: 20
     }
 };
 

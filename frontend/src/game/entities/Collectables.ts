@@ -24,7 +24,7 @@ export default class CollectableManager implements ICollectableManager {
       runChildUpdate: true,
       createCallback: (child: Phaser.GameObjects.GameObject) => {
         const collectable = child as Collectable;
-        collectable.setActive(false).setVisible(false);
+        collectable.setActive(false).setVisible(false).setSize(8, 8).setOffset(0);
       }
     });
     this.setupCollectablePoints();
@@ -134,6 +134,7 @@ export class Collectable extends Phaser.Physics.Arcade.Sprite implements ICollec
     this.name = config.name;
     this.spriteKey = config.spriteKey;
     this.typee = config.typee;
+    this.setScale(2);
     this.setDepth(100);
     scene.gameCameras.ui.ignore(this);
     scene.physics.add.existing(this);

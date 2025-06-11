@@ -3,7 +3,7 @@ import { Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
 import { AnimatedTileData } from '../types/Tiles';
-import { AttackMode, CharacterTypes, EnemyTypes, MatchData, SceneData } from '../types';
+import { AnimConfigs, AttackMode, BossTypes, CharacterTypes, EnemyTypes, MatchData, SceneData } from '../types';
 import GameCameras from '../components/GameCameras';
 import IBaseScene from '../types/BaseScene';
 import AttackManager from '../entities/Attack';
@@ -191,8 +191,20 @@ export class BaseScene extends Scene implements IBaseScene {
     }
 
     setupAnimations(): void {
-        Object.values(CharacterTypes).forEach((it) => this.animationManager.createStandardWalkAnimation(it.spriteKey));
-        Object.values(EnemyTypes).forEach((it) => this.animationManager.createStandardWalkAnimation(it.spriteKey));
+      Object.values(CharacterTypes).forEach(character => {
+        const config = AnimConfigs[character.spriteKey as keyof typeof AnimConfigs];
+        this.animationManager.createStandardWalkAnimation(character.spriteKey, config);
+      });
+
+      Object.values(EnemyTypes).forEach(enemy => {
+        const config = AnimConfigs[enemy.spriteKey as keyof typeof AnimConfigs];
+        this.animationManager.createStandardWalkAnimation(enemy.spriteKey, config);
+      });
+
+      Object.values(BossTypes).forEach(boss => {
+        const config = AnimConfigs[boss.spriteKey as keyof typeof AnimConfigs];
+        this.animationManager.createStandardWalkAnimation(boss.spriteKey, config);
+      });
     }
 
     // Usados em update()

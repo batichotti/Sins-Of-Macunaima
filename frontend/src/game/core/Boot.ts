@@ -58,7 +58,7 @@ export class Boot extends Scene {
         // Coletáveis
         Object.values(CollectableTypes).forEach(
           (it: ICollectable) => {
-            this.load.spritesheet(it.spriteKey, `Collectables/${it.spriteKey}/Sprite/${it.spriteKey}.png`, { frameWidth: 8, frameHeight: 8 });
+            this.load.spritesheet(it.spriteKey, `Itens/${it.spriteKey}.png`, { frameWidth: 8, frameHeight: 8 });
           }
         );
 
