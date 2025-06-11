@@ -43,6 +43,16 @@ export default class AttackManager {
         const attacker = obj1 instanceof Melee ? this.melee : obj1 as Projectile;
         const enemy = obj2 as Enemy;
 
+        if (attacker instanceof Melee) {
+          if (!attacker.active) return;
+
+          if (attacker.hasHitEnemy(enemy)) {
+            return;
+          }
+
+          attacker.markEnemyAsHit(enemy);
+        }
+
         const weaponDamage = attacker instanceof Melee ? this.weaponSet.melee.baseDamage : this.weaponSet.projectile.baseDamage;
 
         const damage = weaponDamage * this.scene.player.level.damageIncrease;
@@ -189,6 +199,7 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
   private currentAngle: number = 0;
   private player: Phaser.Physics.Arcade.Sprite;
   private baseAngle: number = 0;
+  private hitEnemiesInCurrentAttack: Set<Enemy> = new Set();
 
   constructor(scene: BaseScene, config: IMelee, player: Phaser.Physics.Arcade.Sprite) {
     super(scene, player.x, player.y, config.spriteKey || 'melee_weapon');
@@ -215,6 +226,18 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
     this.updatePosition();
   }
 
+  hasHitEnemy(enemy: Enemy): boolean {
+    return this.hitEnemiesInCurrentAttack.has(enemy);
+  }
+
+  markEnemyAsHit(enemy: Enemy): void {
+    this.hitEnemiesInCurrentAttack.add(enemy);
+  }
+
+  private clearHitEnemies(): void {
+    this.hitEnemiesInCurrentAttack.clear();
+  }
+
   private updatePosition(): void {
     if (!this.player.active) return;
 
@@ -239,7 +262,7 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
   attack(origin: Phaser.Math.Vector2, angle: number): void {
     if (this.isAttacking) return;
     this.isAttacking = true;
-
+    this.clearHitEnemies();
     this.baseAngle = angle;
     this.currentAngle = -this.halfArc;
 
@@ -266,6 +289,7 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
     this.isAttacking = false;
     this.setActive(false);
     this.setVisible(false);
+    this.clearHitEnemies();
   }
 
   override destroy(): void {

@@ -172,7 +172,7 @@ export const MeleeTypes: Record<MeleeEnum, IMelee> = {
         name: 'Bananeira',
         spriteKey: 'arrow_sprite',
         weaponType: WeaponType.MELEE,
-        baseDamage: 3,
+        baseDamage: 4,
         baseCooldown: 350,
         range: 32,
         duration: 500,

@@ -140,7 +140,7 @@ export class Collectable extends Phaser.Physics.Arcade.Sprite implements ICollec
       alpha: 0,
       duration: 200,
       onComplete: () => {
-        this.disableBody(true, true);
+        this.scene.collectableManager.children.killAndHide(this);
         effect.destroy();
       }
     });

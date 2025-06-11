@@ -54,15 +54,22 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     configureEnemy(config: IEnemy): void {
-        // Configura propriedades do inimigo
-        this.setTexture(config.spriteKey);
-        this.name = config.name;
-        this.spriteKey = config.spriteKey;
-        this.damageMultiplier = config.damageMultiplier;
-        this.weapon = config.weapon;
-        this.baseHealth = config.baseHealth;
-        this.baseSpeed = config.baseSpeed;
-        this.pointGain = config.pointGain;
+      // Configura propriedades do inimigo
+      this.path = [];
+      this.currentWaypointPath = [];
+      this.nextNode = 0;
+      this.timeStuck = 0;
+      this.lastPos.set(this.x, this.y);
+      this.lastTileTarget.set(this.x, this.y);
+
+      this.setTexture(config.spriteKey);
+      this.name = config.name;
+      this.spriteKey = config.spriteKey;
+      this.damageMultiplier = config.damageMultiplier;
+      this.weapon = config.weapon;
+      this.baseHealth = config.baseHealth;
+      this.baseSpeed = config.baseSpeed;
+      this.pointGain = config.pointGain;
     }
 
     updatePathing(targetPx: Phaser.Math.Vector2): void {
@@ -241,13 +248,21 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         TweenManager.Instance.damageTween(this);
 
         if (this.baseHealth <= 0) {
-            if (this.isBoss) {
-                EventManager.Instance.emit(GameEvents.BOSS_DEFEATED, null);
-            }
-            this.disableBody(true, true);
-            return true;
+          if (this.isBoss) {
+            EventManager.Instance.emit(GameEvents.BOSS_DEFEATED, null);
+          }
+          this.scene.enemyManager.enemyPool.killAndHide(this);
+          return true;
         }
         return false;
+    }
+
+    override disableBody(disableGameObject: boolean = false, hideGameObject: boolean = false): this {
+      this.path = [];
+      this.nextNode = 0
+      this.currentWaypointPath = [];
+      super.disableBody(disableGameObject, hideGameObject);
+      return this;
     }
 
     override destroy(): void {
