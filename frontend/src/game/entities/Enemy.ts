@@ -244,17 +244,18 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     takeDamage(damage: number): boolean {
-        this.baseHealth -= damage;
-        TweenManager.Instance.damageTween(this);
+      if (!this.active || !this.body) return false;
+      this.baseHealth -= damage;
+      TweenManager.Instance.damageTween(this);
 
-        if (this.baseHealth <= 0) {
-          if (this.isBoss) {
-            EventManager.Instance.emit(GameEvents.BOSS_DEFEATED, null);
-          }
-          this.scene.enemyManager.enemyPool.killAndHide(this);
-          return true;
+      if (this.baseHealth <= 0) {
+        if (this.isBoss) {
+          EventManager.Instance.emit(GameEvents.BOSS_DEFEATED, null);
         }
-        return false;
+        this.scene.enemyManager.enemyPool.killAndHide(this);
+        return true;
+      }
+      return false;
     }
 
     override disableBody(disableGameObject: boolean = false, hideGameObject: boolean = false): this {

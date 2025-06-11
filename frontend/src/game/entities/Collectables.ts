@@ -7,7 +7,7 @@ export default class CollectableManager implements ICollectableManager {
   points: CollectablePoints[] = [];
   player: Player;
   children: Phaser.GameObjects.Group;
-  maxAliveCollectables: number = 20;
+  maxAliveCollectables: number = 10;
   canSpawn: boolean = true;
   minDistance: number = 20;
   maxDistance: number = 500;
@@ -18,7 +18,6 @@ export default class CollectableManager implements ICollectableManager {
     this.scene = scene;
     this.player = scene.player;
     this.lastPlayerPos = scene.player.character.body?.position ?? new Phaser.Math.Vector2();
-    this.maxAliveCollectables = 10;
     this.children = scene.add.group({
       classType: Collectable,
       maxSize: this.maxAliveCollectables,
@@ -29,6 +28,7 @@ export default class CollectableManager implements ICollectableManager {
       }
     });
     this.setupCollectablePoints();
+
     EventManager.Instance.on(GameEvents.BOSS_DEFEATED, this.spawnEspecialCollectable, this);
   }
 
@@ -36,41 +36,61 @@ export default class CollectableManager implements ICollectableManager {
       if (this.points.length === 0) return null;
 
       const playerPos = this.player.character.body?.position;
-
       if (playerPos) {
         this.lastPlayerPos.copy(playerPos);
       }
 
-      let nearest = Number.MAX_VALUE;
-      let nearestPos: CollectablePoints | null = null;
-
-      for (const spawnPoint of this.points) {
+      const validPoints = this.points.filter(spawnPoint => {
           const distance = Phaser.Math.Distance.Between(
               this.lastPlayerPos.x,
               this.lastPlayerPos.y,
               spawnPoint.position.x,
               spawnPoint.position.y
           );
+          return distance > this.minDistance && distance < this.maxDistance;
+      });
 
-          if (distance > this.minDistance && distance < nearest) {
-              nearest = distance;
-              nearestPos = spawnPoint;
-          }
-      }
+      if (validPoints.length === 0) return null;
 
-      return nearestPos && nearest < this.maxDistance ? nearestPos : null;
+      return validPoints.reduce((nearest, current) => {
+          const nearestDist = Phaser.Math.Distance.Between(
+              this.lastPlayerPos.x, this.lastPlayerPos.y,
+              nearest.position.x, nearest.position.y
+          );
+          const currentDist = Phaser.Math.Distance.Between(
+              this.lastPlayerPos.x, this.lastPlayerPos.y,
+              current.position.x, current.position.y
+          );
+          return currentDist < nearestDist ? current : nearest;
+      });
   }
 
-  private spawnEspecialCollectable = () => {
+  private spawnEspecialCollectable() {
+    if (!this.canSpawn) return;
+
     const spawnPoint = this.chooseSpawn();
     if (!spawnPoint) return;
-    const validTypes = Object.values(CollectableTypes).filter(type => type.typee in EspecialCollectableEnum);
+
+    const validTypes = Object.values(CollectableTypes).filter(type =>
+      Object.values(EspecialCollectableEnum).includes(type.typee as EspecialCollectableEnum)
+    );
+
+    if (validTypes.length === 0) return;
+
     const collectableType = Phaser.Utils.Array.GetRandom(validTypes);
-    if(!collectableType) return;
     this.spawnCollectable(spawnPoint, collectableType);
   }
 
   private spawnCollectable(spawnPoint: CollectablePoints, config: ICollectable) {
+    const existingCollectable = this.children.getChildren().find(child => {
+      const collectable = child as Collectable;
+      return collectable.active &&
+             Math.abs(collectable.x - spawnPoint.position.x) < 5 &&
+             Math.abs(collectable.y - spawnPoint.position.y) < 5;
+    });
+
+    if (existingCollectable) return;
+
     const collectable = this.children.get(spawnPoint.position.x, spawnPoint.position.y, config.spriteKey) as Collectable;
     if (collectable) {
       collectable.changeConfig(config);
@@ -108,6 +128,7 @@ export class Collectable extends Phaser.Physics.Arcade.Sprite implements ICollec
   name: string;
   spriteKey: string;
   typee: RegularCollectableEnum | EspecialCollectableEnum;
+
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config.spriteKey);
     this.name = config.name;
@@ -120,6 +141,8 @@ export class Collectable extends Phaser.Physics.Arcade.Sprite implements ICollec
   }
 
   private collect = () => {
+    if (!this.active) return;
+
     const collectableData: ICollectable = {
       name: this.name,
       spriteKey: this.spriteKey,
@@ -131,6 +154,8 @@ export class Collectable extends Phaser.Physics.Arcade.Sprite implements ICollec
   }
 
   private playCollectEffect() {
+    this.setActive(false).setVisible(false);
+
     const effect = this.scene.add.circle(this.x, this.y, 10, 0xFFFF00, 0.8);
     this.scene.gameCameras.ui.ignore(effect);
     this.scene.tweens.add({
@@ -145,7 +170,6 @@ export class Collectable extends Phaser.Physics.Arcade.Sprite implements ICollec
       }
     });
   }
-
 
   changeConfig(config: ICollectable) {
     this.spriteKey = config.spriteKey;

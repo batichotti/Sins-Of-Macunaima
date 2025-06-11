@@ -28,6 +28,7 @@ export default class EnemyManager {
     cooldownAttack: boolean = true;
     bossSpawned: boolean = false;
     bossCurrentlyAlive: boolean = false;
+    bossDefeated: boolean = false;
 
     constructor(scene: BaseScene) {
       this.scene = scene;
@@ -49,8 +50,17 @@ export default class EnemyManager {
       this.scene.physics.add.collider(blockers, this.enemyPool, this.unblockEnemy);
       this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
 
-      EventManager.Instance.on(GameEvents.SHOULD_SPAWN_BOSS, () => { this.bossSpawned = true });
-      EventManager.Instance.on(GameEvents.BOSS_DEFEATED, () => { this.bossSpawned = false; this.bossCurrentlyAlive = false });
+      EventManager.Instance.on(GameEvents.SHOULD_SPAWN_BOSS, () => {
+          if (!this.bossCurrentlyAlive && !this.bossDefeated) {
+            this.bossSpawned = true;
+          }
+      }, this);
+
+      EventManager.Instance.on(GameEvents.BOSS_DEFEATED, () => {
+        this.bossCurrentlyAlive = false;
+        this.bossDefeated = true;
+      }, this);
+
       this.loadWaypoints();
     }
 
@@ -246,13 +256,36 @@ export default class EnemyManager {
 
     spawnEnemy() {
       const spawn = this.enemySpawner.chooseSpawn();
-      if (!spawn || !this.canSpawn || (this.bossSpawned && this.bossCurrentlyAlive)) return;
+      if (!spawn || !this.canSpawn || this.bossCurrentlyAlive || this.bossDefeated) return;
 
-      const poolKey = !this.bossSpawned ? EnemyTypes : BossTypes;
-      const valid = Object.values(poolKey).filter(e => e.spawnRegion === spawn.name);
-      if (valid.length === 0) return;
+      if (this.bossSpawned) {
+          const validBoss = Object.values(BossTypes).filter(e => e.spawnRegion === spawn.name);
+          if (validBoss.length === 0) return;
 
-      const type = Phaser.Utils.Array.GetRandom(valid);
+          const bossType = Phaser.Utils.Array.GetRandom(validBoss);
+          const boss = this.enemyPool.get(spawn.position.x, spawn.position.y, bossType.spriteKey) as Enemy;
+          if (!boss) return;
+
+          this.canSpawn = false;
+          boss.configureEnemy(bossType);
+          boss.setPathFinder(this.pathFinder);
+
+          boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
+          this.scene.gameCameras.ui.ignore(boss);
+
+          boss.isBoss = true;
+          this.bossCurrentlyAlive = true;
+          this.bossSpawned = false;
+
+          EventManager.Instance.emit(GameEvents.BOSS_SPAWNED, bossType);
+          this.scene.time.delayedCall(3000, () => this.canSpawn = true);
+          return;
+      }
+
+      const validEnemies = Object.values(EnemyTypes).filter(e => e.spawnRegion === spawn.name);
+      if (validEnemies.length === 0) return;
+
+      const type = Phaser.Utils.Array.GetRandom(validEnemies);
       const enemy = this.enemyPool.get(spawn.position.x, spawn.position.y, type.spriteKey) as Enemy;
       if (!enemy) return;
 
@@ -264,12 +297,7 @@ export default class EnemyManager {
       this.scene.gameCameras.ui.ignore(enemy);
 
       this.scene.time.delayedCall(3000, () => this.canSpawn = true);
-      if (this.bossSpawned) {
-        this.bossCurrentlyAlive = true;
-        EventManager.Instance.emit(GameEvents.BOSS_SPAWNED, type);
-      }
     }
-
 
     findNearestEnemy(): Phaser.Math.Vector2 | null {
         const children = this.enemyPool.getChildren();
@@ -358,8 +386,16 @@ export default class EnemyManager {
     }
 
     destroy(): void {
-      EventManager.Instance.off(GameEvents.SHOULD_SPAWN_BOSS, () => { this.bossSpawned = true });
-      EventManager.Instance.on(GameEvents.BOSS_DEFEATED, () => { this.bossSpawned = false; this.bossCurrentlyAlive = false });
+      EventManager.Instance.on(GameEvents.SHOULD_SPAWN_BOSS, () => {
+          if (!this.bossCurrentlyAlive && !this.bossDefeated) {
+            this.bossSpawned = true;
+          }
+      }, this);
+
+      EventManager.Instance.on(GameEvents.BOSS_DEFEATED, () => {
+        this.bossCurrentlyAlive = false;
+        this.bossDefeated = true;
+      }, this);
       this.enemyPool.destroy();
     }
 }

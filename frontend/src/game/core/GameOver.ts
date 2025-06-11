@@ -45,6 +45,6 @@ export default class GameOver extends Phaser.Scene {
     const minutes = Math.floor(time / 60000);
     const seconds = Math.floor((time % 60000) / 1000);
     if (minutes === 0) return `${seconds}s`;
-    else return `${minutes}m:${seconds < 10 ? '0' : ''}${seconds}s`;
+    else return `${minutes}m: ${seconds < 10 ? '0' : ''}${seconds}s`;
   }
 }
