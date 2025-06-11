@@ -14,3 +14,4 @@ export * from './GameUI';
 export * from './PlayerProgressionSystem';
 export * from './Animations';
 export * from './EventBus';
+export * from './Collectables';

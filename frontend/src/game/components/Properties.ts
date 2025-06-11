@@ -30,6 +30,14 @@ export const Text = {
     strokeThickness: WindowResolution.height * 0.01,
     align: 'center'
   },
+  Content: {
+    fontFamily: 'Arial',
+    fontSize: WindowResolution.height * 0.05,
+    color: '#ffffff',
+    stroke: '#000000',
+    strokeThickness: WindowResolution.height * 0.005,
+    align: 'center'
+  },
   Dialog1: {
     font: '16px Arial',
     color: '#FFFFFF',

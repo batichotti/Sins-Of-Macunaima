@@ -1,3 +1,4 @@
+import { ICollectable } from "./Collectables";
 import { IEnemy } from "./Enemy";
 import { ICharacter } from "./Player";
 import { AttackMode, IWeapon } from "./Weapon";
@@ -65,7 +66,15 @@ export enum GameEvents {
   /**
   * Jogador trocou de personagem.
   */
-  TOGGLE_CHARACTER_SUCCESS = 'toggleCharacterSucceded'
+  TOGGLE_CHARACTER_SUCCESS = 'toggleCharacterSucceded',
+  /**
+   * Um coletável foi spawnado.
+   */
+  COLLECTABLE_SPAWNED = 'collectableSpawned',
+  /**
+   * Um coletável foi coletado
+   */
+  COLLECTABLE_COLLECTED = 'collectableCollected'
 }
 
 /**
@@ -145,6 +154,15 @@ export type GameEventsPayloads = {
    * Jogador trocou de personagem.
    */
   [GameEvents.TOGGLE_CHARACTER_SUCCESS]: ICharacter;
+
+  /**
+   * Um coletável foi spawnado.
+   */
+  [GameEvents.COLLECTABLE_SPAWNED]: ICollectable;
+  /**
+   * Um coletável foi coletado
+   */
+  [GameEvents.COLLECTABLE_COLLECTED]: ICollectable;
 }
 
 export interface EventListener<T extends keyof GameEventsPayloads> {

@@ -79,7 +79,7 @@ export interface ILevel {
 /**
  * Define de quantos em quantos abates um Chefão aparece.
  */
-export const bossThreshold = 50;
+export const bossThreshold = 1;
 
 /**
  * Modificadores de níveis. Multiplique com o nível atual e a vida base do personagem para ter a vida total.
@@ -104,15 +104,15 @@ export const CharacterTypes: Record<CharacterEnum, ICharacter> = {
     [CharacterEnum.MACUNAIMA]: {
         name: 'Macunaíma',
         spriteKey: 'Macunaima',
-        maximumHealth: 200,
-        health: 200,
+        maximumHealth: 20,
+        health: 20,
         baseSpeed: 200
     },
     [CharacterEnum.PERI]: {
         name: 'Peri',
         spriteKey: 'Peri',
-        maximumHealth: 150,
-        health: 150,
+        maximumHealth: 25,
+        health: 25,
         baseSpeed: 150
     }
 };

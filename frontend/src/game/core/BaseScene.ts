@@ -13,12 +13,14 @@ import GameUI from '../components/GameUI';
 import PlayerProgressionSystem from '../entities/PlayerProgressionSystem';
 import AnimationManager from '../entities/AnimationManager';
 import { GameEvents } from '../types';
+import CollectableManager from '../entities/Collectables';
 
 /**
  * Cena básica de jogo.
  */
 export class BaseScene extends Scene implements IBaseScene {
     gameCameras: GameCameras;
+    collectableManager: CollectableManager;
     player: Player;
     tilesets: Phaser.Tilemaps.Tileset[];
     layers: Phaser.Tilemaps.TilemapLayer[];
@@ -71,6 +73,7 @@ export class BaseScene extends Scene implements IBaseScene {
       this.animationManager = new AnimationManager(this);
       this.setupAnimations();
       this.playerProgressionSystem = new PlayerProgressionSystem(this.player);
+      this.collectableManager = new CollectableManager(this);
       this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
       this.gameUI = new GameUI(this);
 
@@ -253,6 +256,7 @@ export class BaseScene extends Scene implements IBaseScene {
       this.animationManager.destroy();
       this.attackManager.destroy();
       this.enemyManager.destroy();
+      this.collectableManager.destroy();
       EventBus.off('current-scene-ready');
       EventManager.Instance.off(GameEvents.PLAYER_DIED, this.runGameOver, this);
     }

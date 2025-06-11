@@ -123,7 +123,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
     takeDamage(damage: number): void {
       if (this.health <= 0) return; // Já está morto
 
-      this.health = Math.max(0, this.health - damage); // Garante que não fique negativo
+      this.health = Math.max(0, Math.trunc(this.health - damage)); // Garante que não fique negativo
       TweenManager.Instance.damageTween(this);
 
       if (this.health === 0) {

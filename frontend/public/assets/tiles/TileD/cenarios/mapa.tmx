@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="200" height="120" tilewidth="16" tileheight="16" infinite="0" nextlayerid="41" nextobjectid="383">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="200" height="120" tilewidth="16" tileheight="16" infinite="0" nextlayerid="42" nextobjectid="393">
  <editorsettings>
   <export target="../cenariosJson/Mapa.json" format="json"/>
  </editorsettings>
@@ -2258,7 +2258,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="35" name="enemySpawnPoints" visible="0" locked="1">
+ <objectgroup id="35" name="enemySpawnPoints" locked="1">
   <object id="7" name="Floresta" gid="5800" x="768" y="1248" width="16" height="16"/>
   <object id="8" name="Floresta" gid="5800" x="384" y="1536" width="16" height="16"/>
   <object id="9" name="Floresta" gid="5800" x="192" y="1264" width="16" height="16"/>
@@ -2410,6 +2410,17 @@
 5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861,5861
 </data>
  </layer>
+ <objectgroup id="41" name="collectablePoints">
+  <object id="383" name="point" gid="5791" x="2336" y="992" width="16" height="16"/>
+  <object id="384" name="point" gid="5791" x="1152" y="944" width="16" height="16"/>
+  <object id="385" name="point" gid="5791" x="1376" y="304" width="16" height="16"/>
+  <object id="387" name="point" gid="5791" x="112" y="1776" width="16" height="16"/>
+  <object id="388" name="point" gid="5791" x="1760" y="1648" width="16" height="16"/>
+  <object id="389" name="point" gid="5791" x="464" y="1216" width="16" height="16"/>
+  <object id="390" name="point" gid="5791" x="432" y="352" width="16" height="16"/>
+  <object id="391" name="point" gid="5791" x="1712" y="912" width="16" height="16"/>
+  <object id="392" name="point" gid="5791" x="2240" y="384" width="16" height="16"/>
+ </objectgroup>
  <objectgroup id="40" name="waypoints" locked="1">
   <object id="274" name="waypoint" gid="5791" x="496" y="896" width="16" height="16"/>
   <object id="275" name="waypoint" gid="5791" x="496" y="768" width="16" height="16"/>
