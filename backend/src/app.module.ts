@@ -3,7 +3,7 @@ import { ConfigModule} from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './modules/users/users.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -20,8 +20,7 @@ import { UsersModule } from './modules/users/users.module';
         synchronize: true,
       }),
     }),
-
-    UsersModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService],

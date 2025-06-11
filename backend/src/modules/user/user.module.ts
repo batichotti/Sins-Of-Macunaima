@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AchievementsModule } from 'src/achievements/achievements.module';
-import { MatchModule } from 'src/match/match.module';
-import { BestiaryModule } from 'src/bestiary/bestiary.module';
-import { RankingModule } from 'src/ranking/ranking.module';
+import { MatchModule } from '../match/match.module';
+import { BestiaryModule } from '../bestiary/bestiary.module';
+import { RankingModule } from '../ranking/ranking.module';
+import { AchievementsModule } from '../achievements/achievements.module';
 import { UserController } from './user.controller';
 
 @Module({

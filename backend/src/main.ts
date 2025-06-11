@@ -3,8 +3,6 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  console.log("Envs: ", process.env);
-
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
