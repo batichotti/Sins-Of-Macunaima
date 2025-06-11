@@ -18,6 +18,7 @@ export default class GameUI implements IGameUI {
   killsLabel: TextBox;
   attackModeLabel: TextBox;
   bossInfoLabel: TextBox;
+  notificationsLabel: NotificationPopUp;
   timeLabel: TimeCounter;
   handlers: IGameUIHandlers;
 
@@ -29,11 +30,12 @@ export default class GameUI implements IGameUI {
     this.levelLabel = new TextBox(scene, { x: 80, y: 50 } as Phaser.Math.Vector2, { x: 240, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.LEVEL);
     this.healthLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 330, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.HEALTH);
     this.weaponSetLabel = new TextBox(scene, { x: 180, y: 50 } as Phaser.Math.Vector2, { x: 440, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
-    this.pointsLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 630, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.POINTS);
+    this.pointsLabel = new TextBox(scene, { x: 170, y: 50 } as Phaser.Math.Vector2, { x: 630, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.POINTS);
 
     this.playerLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
     this.attackModeLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 180, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.ATTACK_MODE);
     this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 390, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
+    this.notificationsLabel = new NotificationPopUp(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 810, y: 10 } as Phaser.Math.Vector2);
 
     this.weaponCooldownBar = new CooldownBar(this.scene, 460, 45, 140, 5);
     this.scene.gameCameras.main.ignore([ this.killsLabel, this.attackModeLabel, this.weaponCooldownBar, this.weaponSetLabel, this.healthLabel, this.levelLabel, this.playerLabel, this.characterLabel ]);
@@ -90,6 +92,7 @@ export default class GameUI implements IGameUI {
     this.killsLabel.destroy();
     this.attackModeLabel.destroy();
     this.timeLabel.destroy();
+    this.notificationsLabel.destroy();
     //this.bossInfoLabel.destroy();
   }
 }
@@ -229,6 +232,38 @@ export class TimeCounter extends TextBox {
 
   override destroy(): void {
     this.internalCounter.remove(false);
+    super.destroy();
+  }
+}
+
+export class NotificationPopUp extends TextBox {
+  private onSpawnedHandler: () => void;
+  private onCollectedHandler: () => void;
+  constructor(scene: Scene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
+    super(scene, size, position, '');
+    super.hide();
+
+
+    this.onSpawnedHandler = () => {
+      this.setText('Collectable Spawned!');
+      this.show();
+      this.scene.time.delayedCall(1250, () => this.hide());
+    }
+
+    this.onCollectedHandler = () => {
+      this.setText('Collectable Collected!');
+      this.show();
+      this.scene.time.delayedCall(1250, () => this.hide());
+    }
+
+    EventManager.Instance.on(GameEvents.COLLECTABLE_SPAWNED, this.onSpawnedHandler);
+
+    EventManager.Instance.on(GameEvents.COLLECTABLE_COLLECTED, this.onCollectedHandler);
+  }
+
+  override destroy(): void {
+    EventManager.Instance.off(GameEvents.COLLECTABLE_SPAWNED, this.onSpawnedHandler);
+    EventManager.Instance.off(GameEvents.COLLECTABLE_COLLECTED, this.onCollectedHandler);
     super.destroy();
   }
 }

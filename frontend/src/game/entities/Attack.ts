@@ -65,8 +65,6 @@ export default class AttackManager {
 
         if (attacker instanceof Projectile) {
           attacker.disableBody(true, true);
-        } else if(attacker instanceof Melee && !(attacker as Melee).isAutoMode) {
-          attacker.endAttack();
         }
     };
 
@@ -204,7 +202,7 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
     this.orbitRadius = config.range * 0.6;
     this.halfArc = Phaser.Math.DegToRad(45);
 
-    this.setDepth(99);
+    this.setDepth(101);
     this.setOrigin(0.5, 0.5);
     this.setSize(config.range * 0.8, config.range * 0.8);
 
@@ -230,8 +228,6 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
   setAutoMode(enabled: boolean): void {
     this.isAutoMode = enabled;
     this.tweenSweep?.stop();
-    this.setActive(enabled);
-    this.setVisible(enabled);
 
     if (enabled) {
       this.currentAngle = -this.halfArc;

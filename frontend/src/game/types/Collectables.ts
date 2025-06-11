@@ -36,9 +36,15 @@ export interface ICollectableManager {
 }
 
 /**
- * Coletáveis possíveis.
+ * Coletáveis regulares possíveis.
  */
-export enum CollectableEnum {
+export enum RegularCollectableEnum {
+}
+
+/**
+ * Coletáveis especiais.
+ */
+export enum EspecialCollectableEnum {
   MUIRAQUITA
 }
 
@@ -57,18 +63,18 @@ export enum CollectableEnum {
   spriteKey: string;
 
   /**
-  * Tipo de coletável.
-  */
-  type: CollectableEnum;
+   * Tipo de coletável.
+   */
+  typee: RegularCollectableEnum | EspecialCollectableEnum;
 }
 
 /**
  * Array com os coletáveis. Necessário para o 'CollectableManager' gerar um aleatoriamente.
  */
-export const CollectableTypes: Record<CollectableEnum, ICollectable> = {
-    [CollectableEnum.MUIRAQUITA]: {
-        name: 'Muiraquitã',
-        spriteKey: 'Muiraquita',
-        type: CollectableEnum.MUIRAQUITA,
-    }
+export const CollectableTypes: Record<RegularCollectableEnum | EspecialCollectableEnum, ICollectable> = {
+  [EspecialCollectableEnum.MUIRAQUITA]: {
+    name: 'Muiraquitã',
+    spriteKey: 'Muiraquita',
+    typee: EspecialCollectableEnum.MUIRAQUITA,
+  }
 };

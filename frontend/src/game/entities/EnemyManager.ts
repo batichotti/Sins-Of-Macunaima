@@ -349,10 +349,6 @@ export default class EnemyManager {
         }
     }
 
-    resetAllEnemies(): void {
-        this.enemyPool.clear(true, true);
-    }
-
     destroy(): void {
       this.enemyPool.destroy();
     }

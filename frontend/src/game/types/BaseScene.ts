@@ -8,6 +8,7 @@ import EnemyManager from "../entities/EnemyManager";
 import GameUI from "../components/GameUI";
 import PlayerProgressionSystem from "../entities/PlayerProgressionSystem";
 import AnimationManager from "../entities/AnimationManager";
+import CollectableManager from "../entities/Collectables";
 
 /**
  * Cena básica do mundo.
@@ -24,6 +25,11 @@ export default interface IBaseScene {
      * O jogador.
      */
     player: Player;
+
+    /**
+    * O sistema de coletáveis.
+    */
+    collectableManager: CollectableManager;
 
     /**
      * Um array de tilesets do Tiled.

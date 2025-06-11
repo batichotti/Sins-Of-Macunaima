@@ -152,7 +152,7 @@ export const ProjectileTypes: Record<ProjectileEnum, IProjectile> = {
         weaponType: WeaponType.PROJECTILE,
         spriteKey: 'arrow_sprite',
         baseDamage: 2,
-        baseCooldown: 150,
+        baseCooldown: 300,
         baseSpeed: 500
     }
 };
@@ -170,12 +170,12 @@ export enum MeleeEnum {
 export const MeleeTypes: Record<MeleeEnum, IMelee> = {
     [MeleeEnum.BANANEIRA]: {
         name: 'Bananeira',
-        spriteKey: 'bananeira',
+        spriteKey: 'arrow_sprite',
         weaponType: WeaponType.MELEE,
-        baseDamage: 2,
+        baseDamage: 3,
         baseCooldown: 350,
         range: 32,
-        duration: 750,
+        duration: 500,
         rotationSpeed: 5,
         orbitRadius: 100
     },
@@ -183,7 +183,7 @@ export const MeleeTypes: Record<MeleeEnum, IMelee> = {
         name: 'Bengala',
         spriteKey: 'bengala',
         weaponType: WeaponType.MELEE,
-        baseDamage: 2,
+        baseDamage: 3,
         baseCooldown: 500,
         range: 32,
         duration: 750,

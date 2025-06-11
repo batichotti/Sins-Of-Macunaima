@@ -1,11 +1,14 @@
 import { BaseScene } from "../core/BaseScene";
 import { EventManager } from "../core/EventBus";
-import { ICollectableManager, CollectablePoints, GameEvents, ICollectable } from "../types";
+import { ICollectableManager, CollectablePoints, GameEvents, ICollectable, RegularCollectableEnum, EspecialCollectableEnum, CollectableTypes } from "../types";
+import { Player } from "./Player";
 
 export default class CollectableManager implements ICollectableManager {
   points: CollectablePoints[] = [];
+  player: Player;
   children: Phaser.GameObjects.Group;
   maxAliveCollectables: number = 20;
+  canSpawn: boolean = true;
   minDistance: number = 20;
   maxDistance: number = 500;
   scene: BaseScene;
@@ -13,19 +16,28 @@ export default class CollectableManager implements ICollectableManager {
 
   constructor(scene: BaseScene) {
     this.scene = scene;
+    this.player = scene.player;
     this.maxAliveCollectables = 10;
-    this.children = scene.add.group();
+    this.children = scene.add.group({
+      classType: Collectable,
+      maxSize: this.maxAliveCollectables,
+      runChildUpdate: true,
+      createCallback: (child: Phaser.GameObjects.GameObject) => {
+        const collectable = child as Collectable;
+        collectable.setActive(false).setVisible(false);
+      }
+    });
     this.setupCollectablePoints();
-    EventManager.Instance.on(GameEvents.BOSS_DEFEATED, this.spawnCollectable, this);
+    EventManager.Instance.on(GameEvents.BOSS_DEFEATED, this.spawnEspecialCollectable, this);
   }
 
   private chooseSpawn(): CollectablePoints | null {
       if (this.points.length === 0) return null;
 
-      const playerPos = this.scene.player.character.body?.position;
+      const playerPos = this.player.character.body?.position;
 
       if (playerPos) {
-          this.lastPlayerPos.copy(playerPos);
+        this.lastPlayerPos.copy(playerPos);
       }
 
       let nearest = Number.MAX_VALUE;
@@ -48,12 +60,27 @@ export default class CollectableManager implements ICollectableManager {
       return nearestPos && nearest < this.maxDistance ? nearestPos : null;
   }
 
-  private spawnCollectable = () => {
+  private spawnEspecialCollectable = () => {
+    const spawnPoint = this.chooseSpawn();
+    if (!spawnPoint) return;
+    const validTypes = Object.values(CollectableTypes).filter(type => type.typee in EspecialCollectableEnum);
+    const collectableType = Phaser.Utils.Array.GetRandom(validTypes);
+    if(!collectableType) return;
+    this.spawnCollectable(spawnPoint, collectableType);
+  }
 
+  private spawnCollectable(spawnPoint: CollectablePoints, config: ICollectable) {
+    const collectable = this.children.get(spawnPoint.position.x, spawnPoint.position.y, config.spriteKey) as Collectable;
+    if (collectable) {
+      collectable.changeConfig(config);
+      collectable.setActive(true).setVisible(true);
+      this.scene.gameCameras.ui.ignore(collectable);
+      EventManager.Instance.emit(GameEvents.COLLECTABLE_SPAWNED, collectable);
+    }
   }
 
   private setupCollectablePoints() {
-    const layer = this.scene.map.getObjectLayer('point');
+    const layer = this.scene.map.getObjectLayer('collectablePoints');
     if (layer) {
         layer.objects.forEach((obj) => {
             if (obj.x !== undefined && obj.y !== undefined && obj.width !== undefined && obj.height !== undefined) {
@@ -70,14 +97,59 @@ export default class CollectableManager implements ICollectableManager {
   }
 
   destroy() {
-    EventManager.Instance.off(GameEvents.BOSS_DEFEATED, this.spawnCollectable, this);
+    EventManager.Instance.off(GameEvents.BOSS_DEFEATED, this.spawnEspecialCollectable, this);
     this.children.destroy();
   }
 }
 
 export class Collectable extends Phaser.GameObjects.Sprite implements ICollectable {
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, frame?: string | number) {
-      super(scene, x, y, texture, frame);
-      scene.add.existing(this);
+  override scene: BaseScene;
+  name: string;
+  spriteKey: string;
+  typee: RegularCollectableEnum | EspecialCollectableEnum;
+  constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
+    super(scene, x, y, config.spriteKey);
+    this.name = config.name;
+    this.spriteKey = config.spriteKey;
+    this.typee = config.typee;
+    this.setDepth(100);
+    scene.gameCameras.ui.ignore(this);
+    scene.physics.add.existing(this);
+    scene.physics.add.overlap(this, scene.player.character, this.collect);
+  }
+
+  private collect = () => {
+    const collectableData: ICollectable = {
+      name: this.name,
+      spriteKey: this.spriteKey,
+      typee: this.typee
+    };
+
+    EventManager.Instance.emit(GameEvents.COLLECTABLE_COLLECTED, collectableData);
+    this.playCollectEffect();
+  }
+
+  private playCollectEffect() {
+    const effect = this.scene.add.circle(this.x, this.y, 10, 0xFFFF00, 0.8);
+    this.scene.gameCameras.ui.ignore(effect);
+    this.scene.tweens.add({
+      targets: effect,
+      scaleX: 2,
+      scaleY: 2,
+      alpha: 0,
+      duration: 200,
+      onComplete: () => {
+        this.destroy();
+        effect.destroy();
+      }
+    });
+  }
+
+
+  changeConfig(config: ICollectable) {
+    this.spriteKey = config.spriteKey;
+    this.name = config.name;
+    this.typee = config.typee;
+    this.setTexture(config.spriteKey);
   }
 }

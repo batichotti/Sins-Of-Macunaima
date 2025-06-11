@@ -1,4 +1,4 @@
-import { TextBox, TimeCounter } from "../components/GameUI";
+import { NotificationPopUp, TextBox, TimeCounter } from "../components/GameUI";
 import { ICharacter } from "./Player";
 import { AttackMode, IWeapon } from "./Weapon";
 
@@ -11,6 +11,7 @@ import { AttackMode, IWeapon } from "./Weapon";
  * - Armas.
  * - Inimigos abatidos.
  * - Informações dos Chefão atual.
+ * - Notificações de coletáveis.
  * - Tempo de partida.
  * - Handlers para atualização de conteúdo.
  */
@@ -24,6 +25,7 @@ export interface IGameUI {
   killsLabel: TextBox;
   bossInfoLabel: TextBox;
   timeLabel: TimeCounter;
+  notificationsLabel: NotificationPopUp;
   handlers: IGameUIHandlers;
 }
 
@@ -53,5 +55,5 @@ export const GameUIPlaceholders = {
     KILLS: "Abates: ",
     TIME: "Tempo: ",
     ATTACK_MODE: 'Modo de Ataque: ',
-    BOSS_INFO: 'Chefão: '
+    BOSS_INFO: 'Chefão: ',
 }
