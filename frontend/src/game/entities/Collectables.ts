@@ -24,7 +24,7 @@ export default class CollectableManager implements ICollectableManager {
       runChildUpdate: true,
       createCallback: (child: Phaser.GameObjects.GameObject) => {
         const collectable = child as Collectable;
-        collectable.setActive(false).setVisible(false);
+        collectable.setActive(false).setVisible(false).setSize(8, 8).setOffset(0);
       }
     });
     this.setupCollectablePoints();
