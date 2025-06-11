@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { Text } from '@/game/components/Properties';
-import { AttackMode, ICharacter, ITextBox, IWeapon } from '../types';
+import { AttackMode, ICharacter, ICollectable, ITextBox, IWeapon } from '../types';
 import { IGameUI, GameUIPlaceholders, IGameUIHandlers }from '../types/GameUI';
 import { BaseScene } from '../core/BaseScene';
 import { EventManager } from '../core/EventBus';
@@ -237,33 +237,85 @@ export class TimeCounter extends TextBox {
 }
 
 export class NotificationPopUp extends TextBox {
-  private onSpawnedHandler: () => void;
-  private onCollectedHandler: () => void;
+  private onSpawnedHandler: (payload: ICollectable) => void;
+  private onCollectedHandler: (payload: ICollectable) => void;
+  private showTween?: Phaser.Tweens.Tween;
+  private hideTween?: Phaser.Tweens.Tween;
+  private padding = 10;
+
   constructor(scene: Scene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
     super(scene, size, position, '');
+    super.setAlpha(0);
     super.hide();
 
+    const display = (msg: string) => {
+      this.setText(msg);
+      this.resizeBackground();
+      this.showWithFade();
+    };
 
-    this.onSpawnedHandler = () => {
-      this.setText('Collectable Spawned!');
-      this.show();
-      this.scene.time.delayedCall(1250, () => this.hide());
-    }
+    this.onSpawnedHandler = (payload) => {
+      display(`Um(a) ${payload.name} foi dropado(a).`);
+    };
+    this.onCollectedHandler = (payload) => {
+      display(`Um(a) ${payload.name} foi coletado(a).`);
+    };
 
-    this.onCollectedHandler = () => {
-      this.setText('Collectable Collected!');
-      this.show();
-      this.scene.time.delayedCall(1250, () => this.hide());
-    }
+    EventManager.Instance.on(GameEvents.COLLECTABLE_SPAWNED, this.onSpawnedHandler, this);
+    EventManager.Instance.on(GameEvents.COLLECTABLE_COLLECTED, this.onCollectedHandler, this);
+  }
 
-    EventManager.Instance.on(GameEvents.COLLECTABLE_SPAWNED, this.onSpawnedHandler);
+  private resizeBackground() {
+    const maxWidth = 300;
+    const textWidth = Math.min(this.text.width, maxWidth);
+    const textHeight = this.text.height;
 
-    EventManager.Instance.on(GameEvents.COLLECTABLE_COLLECTED, this.onCollectedHandler);
+    this.text.setOrigin(0);
+    this.background.clear();
+    this.background.fillStyle(0x000000, 0.8);
+    this.background.lineStyle(2, 0xffff00, 1);
+    this.background.fillRoundedRect(0, 0, textWidth + this.padding * 2, textHeight + this.padding * 2);
+    this.text.setPosition(this.padding, this.padding);
+    this.text.setWordWrapWidth(textWidth);
+  }
+
+  private showWithFade() {
+    this.hideTween?.stop();
+    this.showTween?.stop();
+
+    this.show();
+    this.showTween = this.scene.tweens.add({
+      targets: this,
+      alpha: 1,
+      ease: 'Linear',
+      duration: 300,
+      onComplete: () => {
+        // espera 1s visível antes de sumir
+        this.scene.time.delayedCall(1000, () => this.hideWithFade());
+      }
+    });
+  }
+
+  private hideWithFade() {
+    this.showTween?.stop();
+    this.hideTween?.stop();
+
+    this.hideTween = this.scene.tweens.add({
+      targets: this,
+      alpha: 0,
+      ease: 'Linear',
+      duration: 300,
+      onComplete: () => {
+        super.hide();
+      }
+    });
   }
 
   override destroy(): void {
-    EventManager.Instance.off(GameEvents.COLLECTABLE_SPAWNED, this.onSpawnedHandler);
-    EventManager.Instance.off(GameEvents.COLLECTABLE_COLLECTED, this.onCollectedHandler);
+    this.showTween?.stop();
+    this.hideTween?.stop();
+    EventManager.Instance.off(GameEvents.COLLECTABLE_SPAWNED, this.onSpawnedHandler, this);
+    EventManager.Instance.off(GameEvents.COLLECTABLE_COLLECTED, this.onCollectedHandler, this);
     super.destroy();
   }
 }

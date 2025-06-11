@@ -244,7 +244,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
             if (this.isBoss) {
                 EventManager.Instance.emit(GameEvents.BOSS_DEFEATED, null);
             }
-            this.destroy();
+            this.disableBody(true, true);
             return true;
         }
         return false;

@@ -2558,20 +2558,8 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":1360,
-                 "y":128
-                }, 
-                {
-                 "gid":5791,
-                 "height":16,
-                 "id":386,
-                 "name":"point",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":112,
-                 "y":128
+                 "x":1376,
+                 "y":304
                 }, 
                 {
                  "gid":5791,
@@ -2584,6 +2572,66 @@
                  "width":16,
                  "x":112,
                  "y":1776
+                }, 
+                {
+                 "gid":5791,
+                 "height":16,
+                 "id":388,
+                 "name":"point",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1760,
+                 "y":1648
+                }, 
+                {
+                 "gid":5791,
+                 "height":16,
+                 "id":389,
+                 "name":"point",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":464,
+                 "y":1216
+                }, 
+                {
+                 "gid":5791,
+                 "height":16,
+                 "id":390,
+                 "name":"point",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":432,
+                 "y":352
+                }, 
+                {
+                 "gid":5791,
+                 "height":16,
+                 "id":391,
+                 "name":"point",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":1712,
+                 "y":912
+                }, 
+                {
+                 "gid":5791,
+                 "height":16,
+                 "id":392,
+                 "name":"point",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":2240,
+                 "y":384
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -3804,7 +3852,7 @@
          "y":0
         }],
  "nextlayerid":42,
- "nextobjectid":388,
+ "nextobjectid":393,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

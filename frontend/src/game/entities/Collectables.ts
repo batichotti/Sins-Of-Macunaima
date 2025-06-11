@@ -17,6 +17,7 @@ export default class CollectableManager implements ICollectableManager {
   constructor(scene: BaseScene) {
     this.scene = scene;
     this.player = scene.player;
+    this.lastPlayerPos = scene.player.character.body?.position ?? new Phaser.Math.Vector2();
     this.maxAliveCollectables = 10;
     this.children = scene.add.group({
       classType: Collectable,
@@ -102,7 +103,7 @@ export default class CollectableManager implements ICollectableManager {
   }
 }
 
-export class Collectable extends Phaser.GameObjects.Sprite implements ICollectable {
+export class Collectable extends Phaser.Physics.Arcade.Sprite implements ICollectable {
   override scene: BaseScene;
   name: string;
   spriteKey: string;
@@ -139,7 +140,7 @@ export class Collectable extends Phaser.GameObjects.Sprite implements ICollectab
       alpha: 0,
       duration: 200,
       onComplete: () => {
-        this.destroy();
+        this.disableBody(true, true);
         effect.destroy();
       }
     });
