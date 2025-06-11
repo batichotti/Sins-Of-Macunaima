@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { TilePaths, TileSets } from '@/game/components/PathAssets';
 import { WindowResolution } from '@/game/components/Properties';
-import { CharacterEnum, CharacterTypes, EnemyTypes, ICharacter, IEnemy, ILevel, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, SceneData, WeaponSet } from '../types';
+import { CharacterEnum, CharacterTypes, CollectableTypes, EnemyTypes, ICharacter, ICollectable, IEnemy, ILevel, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, SceneData, WeaponSet } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets globais.
@@ -52,6 +52,13 @@ export class Boot extends Scene {
         Object.values(EnemyTypes).forEach(
           (it: IEnemy) => {
             this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
+          }
+        );
+
+        // Coletáveis
+        Object.values(CollectableTypes).forEach(
+          (it: ICollectable) => {
+            this.load.spritesheet(it.spriteKey, `Collectables/${it.spriteKey}/Sprite/${it.spriteKey}.png`, { frameWidth: 16, frameHeight: 16 });
           }
         );
 

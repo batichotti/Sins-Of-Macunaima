@@ -17,22 +17,24 @@ export default class AttackManager {
     attackMode: AttackMode = AttackMode.AUTO;
 
     constructor(scene: BaseScene, playerProgessionSystem: PlayerProgressionSystem, weaponSet: WeaponSet) {
-        this.scene = scene;
-        this.playerProgressionSystem = playerProgessionSystem;
-        this.weaponSet = weaponSet;
-        this.currentWeapon = weaponSet.projectile;
+      this.scene = scene;
+      this.playerProgressionSystem = playerProgessionSystem;
+      this.weaponSet = weaponSet;
+      this.currentWeapon = weaponSet.projectile;
 
-        this.melee = new Melee(scene, weaponSet.melee);
-        this.projectiles = scene.physics.add.group({ classType: Projectile, maxSize: BaseProjectileStats.groupSize, runChildUpdate: true });
+      this.melee = new Melee(scene, weaponSet.melee, scene.player.character);
+      this.projectiles = scene.physics.add.group({ classType: Projectile, maxSize: BaseProjectileStats.groupSize, runChildUpdate: true });
 
-        this.scene.physics.add.overlap(this.projectiles, this.scene.enemyManager.enemyPool, this.handleHit);
-        this.scene.physics.add.overlap(this.melee, this.scene.enemyManager.enemyPool, this.handleHit);
+      this.scene.physics.add.overlap(this.projectiles, this.scene.enemyManager.enemyPool, this.handleHit);
+      this.scene.physics.add.overlap(this.melee, this.scene.enemyManager.enemyPool, this.handleHit);
 
-        const blockers = this.scene.map.getLayer('colisao')?.tilemapLayer;
-        if(blockers) this.scene.physics.add.collider(this.projectiles, blockers, this.eraseProjectile);
+      const blockers = this.scene.map.getLayer('colisao')?.tilemapLayer;
+      if(blockers) this.scene.physics.add.collider(this.projectiles, blockers, this.eraseProjectile);
 
-        EventManager.Instance.on(GameEvents.TOGGLE_WEAPON, this.toggleWeapon, this);
-        EventManager.Instance.on(GameEvents.TOGGLE_ATTACK_MODE, this.toggleAttackMode, this);
+      EventManager.Instance.on(GameEvents.TOGGLE_WEAPON, this.toggleWeapon, this);
+      EventManager.Instance.on(GameEvents.TOGGLE_ATTACK_MODE, this.toggleAttackMode, this);
+
+      this.updateMeleeMode();
     }
 
     private handleHit = (obj1: object, obj2: object) => {
@@ -46,23 +48,25 @@ export default class AttackManager {
         const damage = weaponDamage * this.scene.player.level.damageIncrease;
 
         if (enemy.takeDamage(damage)) {
-            this.kills += 1;
-            if(this.kills % 10 == 0) {
-                this.scene.player.character.heal();
-                EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.scene.player.character.health);
-            }
+          this.kills += 1;
+          if(this.kills % 10 == 0) {
+            this.scene.player.character.heal();
+            EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.scene.player.character.health);
+          }
 
-            if(this.kills % bossThreshold == 0) {
-              EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS, null);
-            }
+          if(this.kills % bossThreshold == 0) {
+            EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS, null);
+          }
 
-            this.playerProgressionSystem.increasePoints(enemy.pointGain);
-            this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.5);
-            EventManager.Instance.emit(GameEvents.ENEMY_DIED, { points: this.playerProgressionSystem.pointsGained, kills: this.kills });
+          this.playerProgressionSystem.increasePoints(enemy.pointGain);
+          this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.5);
+          EventManager.Instance.emit(GameEvents.ENEMY_DIED, { points: this.playerProgressionSystem.pointsGained, kills: this.kills });
         }
 
         if (attacker instanceof Projectile) {
-            attacker.disableBody(true, true);
+          attacker.disableBody(true, true);
+        } else if(attacker instanceof Melee && !(attacker as Melee).isAutoMode) {
+          attacker.endAttack();
         }
     };
 
@@ -70,21 +74,29 @@ export default class AttackManager {
         (obj1 as Projectile).disableBody(true, true);
     };
 
-    private toggleWeapon = () => {
-        if(this.currentWeapon.weaponType === WeaponType.PROJECTILE) {
-            this.currentWeapon = this.weaponSet.melee;
-        } else {
-            this.currentWeapon = this.weaponSet.projectile;
-        }
-    }
-
     private toggleAttackMode = () => {
         if(this.attackMode === AttackMode.AUTO) {
             this.attackMode = AttackMode.MANUAL;
         } else {
-            this.attackMode = AttackMode.AUTO;
+          this.attackMode = AttackMode.AUTO;
         }
+        this.updateMeleeMode();
         EventManager.Instance.emit(GameEvents.TOGGLE_ATTACK_MODE_SUCCESS, this.attackMode);
+    }
+
+    private updateMeleeMode(): void {
+      const shouldBeActive = this.attackMode === AttackMode.AUTO && this.currentWeapon.weaponType === WeaponType.MELEE;
+      this.melee.setAutoMode(shouldBeActive);
+    }
+
+    private toggleWeapon = () => {
+        if(this.currentWeapon.weaponType === WeaponType.PROJECTILE) {
+          this.currentWeapon = this.weaponSet.melee;
+        } else {
+          this.currentWeapon = this.weaponSet.projectile;
+        }
+        this.updateMeleeMode();
+        EventManager.Instance.emit(GameEvents.TOGGLE_WEAPON_SUCCESS, this.currentWeapon);
     }
 
     get weapon(): IWeapon {
@@ -95,13 +107,13 @@ export default class AttackManager {
         if (!this.canAttack) return;
 
         switch (this.currentWeapon.weaponType) {
-            case WeaponType.PROJECTILE:
-                this.fireProjectile(x, y, angle);
-                break;
+          case WeaponType.PROJECTILE:
+            this.fireProjectile(x, y, angle);
+            break;
 
-            case WeaponType.MELEE:
-                this.executeMeleeAttack(x, y, angle);
-                break;
+          case WeaponType.MELEE:
+            this.executeMeleeAttack(x, y, angle);
+            break;
         }
 
         EventManager.Instance.emit(GameEvents.WEAPON_COOLDOWN, this.currentWeapon.baseCooldown);
@@ -119,7 +131,7 @@ export default class AttackManager {
     }
 
     private executeMeleeAttack(x: number, y: number, angle: number): void {
-        this.melee.attack({ x: x, y: y } as Phaser.Math.Vector2, angle);
+      this.melee.attack({ x: x, y: y } as Phaser.Math.Vector2, angle);
     }
 
     private startCooldown(): void {
@@ -168,31 +180,100 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     }
 }
 
-class Melee extends Phaser.GameObjects.Zone {
-    private attackDuration: number;
-    private config: IMelee;
+class Melee extends Phaser.Physics.Arcade.Sprite {
+  private attackDuration: number;
+  private config: IMelee;
+  private isAttacking: boolean = false;
+  public  isAutoMode: boolean = false;
+  private halfArc: number;
+  private tweenSweep: Phaser.Tweens.Tween | null = null;
+  private orbitRadius: number;
+  private currentAngle: number = 0;
+  private player: Phaser.Physics.Arcade.Sprite;
+  private baseAngle: number = 0;
 
-    constructor(scene: BaseScene, config: IMelee) {
-        super(scene, 0, 0, config.range, config.range);
-        scene.add.existing(this);
-        scene.physics.add.existing(this);
-        this.setSize(config.range, config.range);
-        this.setActive(false);
-        this.body?.gameObject?.setActive(false);
+  constructor(scene: BaseScene, config: IMelee, player: Phaser.Physics.Arcade.Sprite) {
+    super(scene, player.x, player.y, config.spriteKey || 'melee_weapon');
+    scene.gameCameras.ui.ignore(this);
+    scene.add.existing(this);
+    scene.physics.add.existing(this);
 
-        this.config = config;
-        this.attackDuration = config.duration;
+    this.config = config;
+    this.attackDuration = config.duration;
+    this.player = player;
+    this.orbitRadius = config.range * 0.6;
+    this.halfArc = Phaser.Math.DegToRad(45);
+
+    this.setDepth(99);
+    this.setOrigin(0.5, 0.5);
+    this.setSize(config.range * 0.8, config.range * 0.8);
+
+    this.setActive(false);
+    this.setVisible(false);
+  }
+
+  preUpdate(time: number, delta: number): void {
+    super.preUpdate(time, delta);
+    this.updatePosition();
+  }
+
+  private updatePosition(): void {
+    if (!this.player.active) return;
+
+    const actual = this.baseAngle + this.currentAngle;
+    const x = this.player.x + Math.cos(actual) * this.orbitRadius;
+    const y = this.player.y + Math.sin(actual) * this.orbitRadius;
+    this.setPosition(x, y);
+    this.setRotation(this.currentAngle + Math.PI/2);
+  }
+
+  setAutoMode(enabled: boolean): void {
+    this.isAutoMode = enabled;
+    this.tweenSweep?.stop();
+    this.setActive(enabled);
+    this.setVisible(enabled);
+
+    if (enabled) {
+      this.currentAngle = -this.halfArc;
+    } else {
+      this.endAttack();
     }
+  }
 
-    attack(origin: Phaser.Math.Vector2, angle: number): void {
-        const offset = new Phaser.Math.Vector2(
-            Math.cos(angle) * (this.config.range * 0.5),
-            Math.sin(angle) * (this.config.range * 0.75)
-        );
+  attack(origin: Phaser.Math.Vector2, angle: number): void {
+    if (this.isAttacking) return;
+    this.isAttacking = true;
 
-        this.setPosition(origin.x + offset.x, origin.y + offset.y);
-        this.setActive(true);
+    this.baseAngle = angle;
+    this.currentAngle = -this.halfArc;
 
-        this.scene.time.delayedCall(this.attackDuration, () => { this.setActive(false) });
-    }
+    this.setActive(true);
+    this.setVisible(true);
+    this.updatePosition();
+
+    this.tweenSweep?.stop();
+    this.tweenSweep = this.scene.tweens.add({
+      targets: this,
+      currentAngle: { from: -this.halfArc, to: this.halfArc },
+      ease: 'Sine.InOut',
+      duration: this.attackDuration,
+      yoyo: false,
+      repeat: 0,
+      onUpdate: () => this.updatePosition(),
+      onComplete: () => this.endAttack()
+    });
+  }
+
+  public endAttack(): void {
+    this.tweenSweep?.stop();
+    this.setScale(1, 1);
+    this.isAttacking = false;
+    this.setActive(false);
+    this.setVisible(false);
+  }
+
+  override destroy(): void {
+    this.tweenSweep?.stop();
+    super.destroy();
+  }
 }

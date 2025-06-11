@@ -39,6 +39,13 @@ export interface IWeapon {
     name: string;
 
     /**
+     * Chave do sprite usado.
+     *
+     * Deve corresponder exatamente ao nome do asset.
+     */
+    spriteKey: string;
+
+    /**
      * Dano base causado.
      */
     baseDamage: number;
@@ -72,14 +79,6 @@ export interface IProjectile extends IWeapon {
     weaponType: WeaponType.PROJECTILE;
 
     /**
-     * Chave do sprite usado.
-     *
-     * Deve corresponder exatamente ao nome do asset.
-     */
-    spriteKey: string;
-
-
-    /**
      * Velocidade de disparo base do projétil.
      */
     baseSpeed: number;
@@ -100,6 +99,16 @@ export interface IMelee extends IWeapon {
      * Alcance do ataque.
      */
     range: number;
+
+    /**
+    * Velocidade de rotação da arma.
+    */
+    rotationSpeed?: number;
+
+    /**
+    * Raio de órbita.
+    */
+    orbitRadius?: number;
 }
 
 /**
@@ -161,34 +170,46 @@ export enum MeleeEnum {
 export const MeleeTypes: Record<MeleeEnum, IMelee> = {
     [MeleeEnum.BANANEIRA]: {
         name: 'Bananeira',
+        spriteKey: 'bananeira',
         weaponType: WeaponType.MELEE,
         baseDamage: 2,
         baseCooldown: 350,
         range: 32,
-        duration: 50
+        duration: 750,
+        rotationSpeed: 5,
+        orbitRadius: 100
     },
     [MeleeEnum.BENGALA]: {
         name: 'Bengala',
+        spriteKey: 'bengala',
         weaponType: WeaponType.MELEE,
         baseDamage: 2,
         baseCooldown: 500,
         range: 32,
-        duration: 200
+        duration: 750,
+        rotationSpeed: 5,
+        orbitRadius: 100
     },
     [MeleeEnum.ESPADA]: {
         name: 'Espada',
+        spriteKey: 'espada',
         weaponType: WeaponType.MELEE,
         baseDamage: 3,
         baseCooldown: 350,
         range: 32,
-        duration: 200
+        duration: 750,
+        rotationSpeed: 5,
+        orbitRadius: 100
     },
     [MeleeEnum.PAULADA]: {
         name: 'Paulada',
+        spriteKey: 'paulada',
         weaponType: WeaponType.MELEE,
         baseDamage: 4,
         baseCooldown: 1250,
         range: 64,
-        duration: 200
+        duration: 1000,
+        rotationSpeed: 5,
+        orbitRadius: 100
     }
 };
