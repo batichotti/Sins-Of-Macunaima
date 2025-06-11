@@ -134,6 +134,7 @@ export class Collectable extends Phaser.Physics.Arcade.Sprite implements ICollec
     this.name = config.name;
     this.spriteKey = config.spriteKey;
     this.typee = config.typee;
+    this.setScale(2);
     this.setDepth(100);
     scene.gameCameras.ui.ignore(this);
     scene.physics.add.existing(this);

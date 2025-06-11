@@ -1,3 +1,4 @@
+import { AnimationTemplate } from "./Animations";
 import { WeaponSet } from "./Weapon";
 
 /**
@@ -25,6 +26,11 @@ export interface IPlayer {
      * Set de armas que o jogador usará na partida.
      */
     weaponSet: WeaponSet;
+
+    /**
+     * Configurações de animação.
+     */
+    animConfig?: AnimationTemplate;
 }
 
 /**
@@ -79,7 +85,7 @@ export interface ILevel {
 /**
  * Define de quantos em quantos abates um Chefão aparece.
  */
-export const bossThreshold = 1;
+export const bossThreshold = 40;
 
 /**
  * Modificadores de níveis. Multiplique com o nível atual e a vida base do personagem para ter a vida total.
