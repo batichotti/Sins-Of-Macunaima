@@ -1,7 +1,7 @@
 import { DistanceMethod, Pathfinding } from "../components/phaser-pathfinding";
 import { BaseScene } from "../core/BaseScene";
 import { EventManager } from "../core/EventBus";
-import { IMelee, IEnemy, Directions } from "../types";
+import { IMelee, IEnemy, Directions, MeleeCollectableTypes, ProjectileCollectableTypes,  } from "../types";
 import TweenManager from "./TweenManager";
 import { GameEvents } from "../types";
 
@@ -252,7 +252,20 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         if (this.isBoss) {
           EventManager.Instance.emit(GameEvents.BOSS_DEFEATED, null);
         }
-        this.scene.enemyManager.enemyPool.killAndHide(this);
+
+        else if(Phaser.Math.Between(1, 10) > 0) {
+          let collectable = Object.values(MeleeCollectableTypes).find(it => it.name.toUpperCase() === this.weapon.name.toUpperCase());
+
+          if (!collectable) {
+            collectable = Object.values(ProjectileCollectableTypes).find(it => it.name.toUpperCase() === this.weapon.name.toUpperCase());
+          }
+
+          if (collectable && collectable.dropable) {
+            EventManager.Instance.emit(GameEvents.WEAPON_DROPPED, { weapon: { asIWeapon: this.weapon, asICollectable: collectable }, position: this.body.position });
+          }
+        }
+
+        this.disableBody(true, true);
         return true;
       }
       return false;

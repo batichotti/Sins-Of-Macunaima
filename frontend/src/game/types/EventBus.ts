@@ -32,6 +32,18 @@ export enum GameEvents {
   */
   WEAPON_COOLDOWN = 'weaponCooldown',
   /**
+   * Uma arma foi dropada.
+   */
+  WEAPON_DROPPED = 'weaponDropped',
+  /**
+   * Arma dropada com sucesso.
+   */
+  WEAPON_DROPPED_SUCCESS = 'weaponDroppedSuccess',
+  /**
+   * Uma arma foi equipada.
+   */
+  WEAPON_EQUIPPED = 'weaponEquipped',
+  /**
   * Jogador morreu.
   */
   PLAYER_DIED = 'playerDied',
@@ -109,9 +121,25 @@ export type GameEventsPayloads = {
   [GameEvents.TOGGLE_WEAPON_SUCCESS]: IWeapon;
 
   /**
+  * Para equipar uma arma.
+  */
+  [GameEvents.WEAPON_EQUIPPED]: IWeapon;
+
+  /**
+   * Uma arma foi dropada.
+  */
+  [GameEvents.WEAPON_DROPPED]: { weapon: { asIWeapon: IWeapon, asICollectable: ICollectable }, position: Phaser.Math.Vector2 | { x: number, y: number } };
+
+  /**
+   * Arma dropada com sucesso.
+   */
+  [GameEvents.WEAPON_DROPPED_SUCCESS]: IWeapon;
+
+  /**
   * Retorna o cooldown da arma.
   */
   [GameEvents.WEAPON_COOLDOWN]: number;
+
 
   /**
   * O jogador morreu.

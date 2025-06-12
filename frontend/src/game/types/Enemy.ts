@@ -67,7 +67,7 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
         name: 'Chupa-cú',
         spriteKey: 'Macunaima',
         spawnRegion: 'Floresta',
-        weapon: MeleeTypes[MeleeEnum.BENGALA],
+        weapon: MeleeTypes[MeleeEnum.BANANEIRA],
         baseHealth: 20,
         baseSpeed: 200,
         damageMultiplier: 1.2,

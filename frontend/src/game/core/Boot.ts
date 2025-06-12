@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { TilePaths, TileSets } from '@/game/components/PathAssets';
 import { WindowResolution } from '@/game/components/Properties';
-import { CharacterEnum, CharacterTypes, CollectableTypes, EnemyTypes, ICharacter, ICollectable, IEnemy, ILevel, IMelee, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, SceneData, WeaponSet } from '../types';
+import { CharacterEnum, CharacterTypes, EnemyTypes, EspecialCollectableTypes, ICharacter, ICollectable, IEnemy, ILevel, IMelee, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, RegularCollectableTypes, SceneData, WeaponSet } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets globais.
@@ -44,28 +44,44 @@ export class Boot extends Scene {
         //  Jogador
         Object.values(CharacterTypes).forEach(
           (it: ICharacter) => {
-            this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
+            }
           }
         );
 
         // Inimigos
         Object.values(EnemyTypes).forEach(
           (it: IEnemy) => {
-            this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
+            }
           }
         );
 
         // Coletáveis
-        Object.values(CollectableTypes).forEach(
+        Object.values(RegularCollectableTypes).forEach(
           (it: ICollectable) => {
-            this.load.spritesheet(it.spriteKey, `Itens/${it.spriteKey}.png`, { frameWidth: 8, frameHeight: 8 });
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Itens/${it.spriteKey}.png`, { frameWidth: 8, frameHeight: 8 });
+            }
+          }
+        );
+
+        Object.values(EspecialCollectableTypes).forEach(
+          (it: ICollectable) => {
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Itens/${it.spriteKey}.png`, { frameWidth: 8, frameHeight: 8 });
+            }
           }
         );
 
         // Corpo-a-Corpo
         Object.values(MeleeTypes).forEach(
           (it: IMelee) => {
-            this.load.spritesheet(it.spriteKey, `Attacks/Melees/${it.spriteKey}.png`, { frameWidth: 16, frameHeight: 16 });
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Attacks/Melees/${it.spriteKey}.png`, { frameWidth: 16, frameHeight: 16 });
+            }
           }
         );
 

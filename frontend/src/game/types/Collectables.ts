@@ -1,4 +1,5 @@
 import { BaseScene } from "../core/BaseScene";
+import { MeleeEnum, ProjectileEnum } from "./Weapon";
 
 /**
 * Vetor de pares { 'string' | 'Phaser.Math.Vector2' }
@@ -18,16 +19,29 @@ export interface ICollectableManager {
   points: CollectablePoints[];
 
   /**
-  * Os coletáveis.
-  *
-  * Usar `Phaser.GameObjects.Group` para otimização.
-  */
-  children: Phaser.GameObjects.Group;
-
-  /**
   * O número máximo de coletáveis que podem estar vivos ao mesmo tempo.
   */
   maxAliveCollectables: number;
+
+  /**
+   * Os coletáveis especiais já dropados.
+   */
+  specialCollectables: Map<SpecialCollectableEnum, number>;
+
+  /**
+   * Os coletáveis regulares já dropados.
+   */
+  regularCollectables: Map<RegularCollectableEnum, number>;
+
+  /**
+   * Os projétis já dropados.
+   */
+  projectileCollectables: Map<ProjectileEnum, number>;
+
+  /**
+   * As armas corpo-a-corpo já dropadas.
+   */
+  meleeCollectables: Map<MeleeEnum, number>;
 
   /**
   * Cena pai.
@@ -39,12 +53,13 @@ export interface ICollectableManager {
  * Coletáveis regulares possíveis.
  */
 export enum RegularCollectableEnum {
+  GRAVETO
 }
 
 /**
  * Coletáveis especiais.
  */
-export enum EspecialCollectableEnum {
+export enum SpecialCollectableEnum {
   MUIRAQUITA
 }
 
@@ -63,18 +78,81 @@ export enum EspecialCollectableEnum {
   spriteKey: string;
 
   /**
+   * É dropável?
+   */
+  dropable?: boolean;
+
+  /**
    * Tipo de coletável.
    */
-  typee: RegularCollectableEnum | EspecialCollectableEnum;
+  typee: RegularCollectableEnum | SpecialCollectableEnum | ProjectileEnum | MeleeEnum;
 }
 
 /**
  * Array com os coletáveis. Necessário para o 'CollectableManager' gerar um aleatoriamente.
  */
-export const CollectableTypes: Record<RegularCollectableEnum | EspecialCollectableEnum, ICollectable> = {
-  [EspecialCollectableEnum.MUIRAQUITA]: {
+export const RegularCollectableTypes: Record<RegularCollectableEnum, ICollectable> = {
+  [RegularCollectableEnum.GRAVETO]: {
+    name: 'Graveto',
+    spriteKey: 'Graveto',
+    typee: RegularCollectableEnum.GRAVETO,
+    dropable: true
+  }
+};
+
+export const EspecialCollectableTypes: Record<SpecialCollectableEnum, ICollectable> = {
+  [SpecialCollectableEnum.MUIRAQUITA]: {
     name: 'Muiraquitã',
     spriteKey: 'Muiraquita',
-    typee: EspecialCollectableEnum.MUIRAQUITA,
+    typee: SpecialCollectableEnum.MUIRAQUITA,
+    dropable: true
+  }
+};
+
+export const ProjectileCollectableTypes: Record<ProjectileEnum, ICollectable> = {
+  [ProjectileEnum.FLECHA]: {
+    name: 'Flecha',
+    spriteKey: 'Flecha',
+    typee: ProjectileEnum.FLECHA,
+    dropable: true
+  }
+};
+
+export const MeleeCollectableTypes: Record<MeleeEnum, ICollectable> = {
+  [MeleeEnum.BANANEIRA]: {
+    name: 'Bananeira',
+    spriteKey: 'Bananeira',
+    typee: MeleeEnum.BANANEIRA,
+    dropable: true
+  },
+  [MeleeEnum.BENGALA]: {
+    name: 'Bengala',
+    spriteKey: 'Bengala',
+    typee: MeleeEnum.BENGALA,
+    dropable: false
+  },
+  [MeleeEnum.ESPADA]: {
+    name: 'Espada',
+    spriteKey: 'Espada',
+    typee: MeleeEnum.ESPADA,
+    dropable: false
+  },
+  [MeleeEnum.PALMEIRA]: {
+    name: 'Palmeira',
+    spriteKey: 'Palmeira',
+    typee: MeleeEnum.PALMEIRA,
+    dropable: true
+  },
+  [MeleeEnum.PAULADA]: {
+    name: 'Paulada',
+    spriteKey: 'Paulada',
+    typee: MeleeEnum.PAULADA,
+    dropable: false
+  },
+  [MeleeEnum.PICADA]: {
+    name: 'Picada',
+    spriteKey: 'Picada',
+    typee: MeleeEnum.PICADA,
+    dropable: false
   }
 };
