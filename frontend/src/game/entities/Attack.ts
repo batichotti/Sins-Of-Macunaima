@@ -1,4 +1,4 @@
-import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet, IMelee, AttackMode, bossThreshold } from "../types";
+import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet, IMelee, AttackMode, bossThreshold, IProjectile } from "../types";
 import { BaseScene } from "../core/BaseScene";
 import Enemy from "./Enemy";
 import PlayerProgressionSystem from "./PlayerProgressionSystem";
@@ -33,6 +33,7 @@ export default class AttackManager {
 
       EventManager.Instance.on(GameEvents.TOGGLE_WEAPON, this.toggleWeapon, this);
       EventManager.Instance.on(GameEvents.TOGGLE_ATTACK_MODE, this.toggleAttackMode, this);
+      EventManager.Instance.on(GameEvents.WEAPON_EQUIPPED, (payload: IMelee | IProjectile) => { this.equipWeapon(payload) }, this)
 
       this.updateMeleeMode();
     }
@@ -107,6 +108,21 @@ export default class AttackManager {
         EventManager.Instance.emit(GameEvents.TOGGLE_WEAPON_SUCCESS, this.currentWeapon);
     }
 
+    private equipWeapon(weapon: IMelee | IProjectile): void {
+      if(weapon.weaponType === WeaponType.MELEE) {
+        this.weaponSet.melee = weapon;
+        this.melee.changeConfig(weapon);
+      } else if(weapon.weaponType === WeaponType.PROJECTILE) {
+        this.weaponSet.projectile = weapon;
+        this.projectiles.getChildren().forEach((child) => {
+          (child as Projectile).changeConfig(weapon);
+        });
+      }
+      this.currentWeapon = weapon;
+      this.updateMeleeMode();
+      EventManager.Instance.emit(GameEvents.TOGGLE_WEAPON_SUCCESS, this.currentWeapon);
+    }
+
     get weapon(): IWeapon {
         return this.currentWeapon;
     }
@@ -154,41 +170,75 @@ export default class AttackManager {
 }
 
 class Projectile extends Phaser.Physics.Arcade.Sprite {
-    spriteKey: string;
-    baseSpeed: number;
-    lifespanTimer: Phaser.Time.TimerEvent | null = null;
+  override scene: BaseScene;
+  spriteKey: string;
+  baseSpeed: number;
+  lifespanTimer: Phaser.Time.TimerEvent | null = null;
+  private trailTimer: Phaser.Time.TimerEvent | null = null;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, spritekey: string, baseSpeed: number) {
-        super(scene, x, y, spritekey);
-        this.spriteKey = spritekey;
-        this.baseSpeed = baseSpeed;
-        this.setDepth(1000);
-        scene.add.existing(this);
-        scene.physics.add.existing(this);
-    }
+  constructor(scene: Phaser.Scene, x: number, y: number, spritekey: string, baseSpeed: number) {
+    super(scene, x, y, spritekey);
+    this.spriteKey = spritekey;
+    this.baseSpeed = baseSpeed;
+    this.setDepth(1000);
+    scene.add.existing(this);
+    scene.physics.add.existing(this);
+  }
 
-    fire(x: number, y: number, angle: number): void {
-        if(this.lifespanTimer) {
-            this.lifespanTimer.destroy();
-            this.lifespanTimer = null;
-        }
+  fire(x: number, y: number, angle: number): void {
+    this.lifespanTimer?.destroy();
+    this.trailTimer?.destroy();
 
-        this.enableBody(true, x, y, true, true);
+    this.enableBody(true, x, y, true, true);
+    const velocity = this.scene.physics.velocityFromRotation(angle, this.baseSpeed);
+    this.setRotation(angle);
+    this.setVelocity(velocity.x, velocity.y);
 
-        const velocity = this.scene.physics.velocityFromRotation(angle, this.baseSpeed);
-        this.setRotation(angle);
-        this.setVelocity(velocity.x, velocity.y);
+    this.lifespanTimer = this.scene.time.delayedCall(2000, () => {
+      if (this.active) this.disableBody(true, true);
+    });
 
-        this.lifespanTimer = this.scene.time.delayedCall(2000, () => { if(this.active) this.disableBody(true, true) });
-    }
+    this.trailTimer = this.scene.time.addEvent({
+      delay: 50,
+      loop: true,
+      callback: () => {
+        if (!this.active) return;
 
-    override destroy(): void {
-      this.lifespanTimer?.destroy();
-      super.destroy();
-    }
+        const trail = this.scene.add.circle(this.x, this.y, 4, 0xffffff, 0.4).setDepth(999);
+        this.scene.gameCameras.ui.ignore(trail);
+
+        this.scene.tweens.add({
+          targets: trail,
+          alpha: 0,
+          scaleX: 2,
+          scaleY: 2,
+          ease: 'Quad.easeOut',
+          duration: 300,
+          onComplete: () => trail.destroy()
+        });
+      }
+    });
+  }
+
+  public changeConfig(config: IProjectile): void {
+    this.baseSpeed = config.baseSpeed;
+  }
+
+  override disableBody(disableGameObject?: boolean, hideGameObject?: boolean): this {
+    this.trailTimer?.destroy();
+    return super.disableBody(disableGameObject, hideGameObject);
+  }
+
+  override destroy(): void {
+    this.lifespanTimer?.destroy();
+    this.trailTimer?.destroy();
+    super.destroy();
+  }
 }
 
+
 class Melee extends Phaser.Physics.Arcade.Sprite {
+  override scene: BaseScene;
   private attackDuration: number;
   private config: IMelee;
   private isAttacking: boolean = false;
@@ -203,9 +253,6 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
 
   constructor(scene: BaseScene, config: IMelee, player: Phaser.Physics.Arcade.Sprite) {
     super(scene, player.x, player.y, config.spriteKey || 'melee_weapon');
-    scene.gameCameras.ui.ignore(this);
-    scene.add.existing(this);
-    scene.physics.add.existing(this);
 
     this.config = config;
     this.attackDuration = config.duration;
@@ -213,9 +260,14 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
     this.orbitRadius = config.range * 0.6;
     this.halfArc = Phaser.Math.DegToRad(45);
 
+    scene.gameCameras.ui.ignore(this);
+    scene.add.existing(this);
+    scene.physics.add.existing(this);
+
     this.setDepth(101);
     this.setOrigin(0.5, 0.5);
-    this.setSize(config.range * 0.8, config.range * 0.8);
+    this.setSize(config.range * 1.6, config.range * 1.6);
+    this.setScale(1.5);
 
     this.setActive(false);
     this.setVisible(false);
@@ -245,7 +297,6 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
     const x = this.player.x + Math.cos(actual) * this.orbitRadius;
     const y = this.player.y + Math.sin(actual) * this.orbitRadius;
     this.setPosition(x, y);
-    this.setRotation(this.currentAngle + Math.PI/2);
   }
 
   setAutoMode(enabled: boolean): void {
@@ -265,27 +316,66 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
     this.clearHitEnemies();
     this.baseAngle = angle;
     this.currentAngle = -this.halfArc;
+    const normalizedAngle = Phaser.Math.Angle.Normalize(angle);
+    const toFlipX = normalizedAngle > Math.PI/2 && normalizedAngle < 3*Math.PI/2;
+    this.setFlipY(false);
+    this.setFlipX(toFlipX);
+    const toflip = toFlipX ? -1 : 1;
 
     this.setActive(true);
     this.setVisible(true);
-    this.updatePosition();
-
+    this.updatePosition()
+    this.play(`${this.config.spriteKey}_attack`);
     this.tweenSweep?.stop();
+
+    const R = this.orbitRadius * 0.6;
+    const trailWidth = Phaser.Math.RadToDeg(this.halfArc) * 2;
+    const trailInterval = 40;
+    let lastTrailTime = 0;
+
     this.tweenSweep = this.scene.tweens.add({
       targets: this,
-      currentAngle: { from: -this.halfArc, to: this.halfArc },
+      currentAngle: { from: -this.halfArc * toflip, to: this.halfArc * toflip },
       ease: 'Sine.InOut',
       duration: this.attackDuration,
-      yoyo: false,
-      repeat: 0,
-      onUpdate: () => this.updatePosition(),
-      onComplete: () => this.endAttack()
+      onUpdate: () => {
+        const now = this.scene.time.now;
+        this.updatePosition();
+
+        if (now - lastTrailTime > trailInterval) {
+          lastTrailTime = now;
+
+          const startDeg = Phaser.Math.RadToDeg(this.baseAngle + this.currentAngle) - trailWidth/2;
+          const endDeg   = startDeg + trailWidth;
+          const arc = this.scene.add.arc(this.x, this.y, R, startDeg, endDeg, false, 0xffffff, 0.3).setOrigin(0.5).setDepth(99).setBlendMode(Phaser.BlendModes.ADD);
+          arc.setDepth(99);
+          this.scene.gameCameras.ui.ignore(arc);
+
+          this.scene.tweens.add({
+            targets: arc,
+            alpha: 0,
+            scaleX: 1.2,
+            scaleY: 1.2,
+            ease: 'Quad.easeOut',
+            duration: 200,
+            onComplete: () => arc.destroy()
+          });
+        }
+      },
+      onComplete: () => {
+        this.endAttack();
+      }
     });
+  }
+
+  public changeConfig(config: IMelee): void {
+    this.config = config;
+    this.attackDuration = config.duration;
+    if(this.scene?.textures?.exists(config.spriteKey)) this.setTexture(config.spriteKey);
   }
 
   public endAttack(): void {
     this.tweenSweep?.stop();
-    this.setScale(1, 1);
     this.isAttacking = false;
     this.setActive(false);
     this.setVisible(false);

@@ -165,13 +165,25 @@ export enum MeleeEnum {
     BENGALA,
     ESPADA,
     PAULADA,
-    PICADA
+    PICADA,
+    PALMEIRA
 }
 
 export const MeleeTypes: Record<MeleeEnum, IMelee> = {
+    [MeleeEnum.PALMEIRA]: {
+        name: 'Palmeira',
+        spriteKey: 'Palmeira',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 4,
+        baseCooldown: 350,
+        range: 32,
+        duration: 500,
+        rotationSpeed: 5,
+        orbitRadius: 100
+    },
     [MeleeEnum.BANANEIRA]: {
         name: 'Bananeira',
-        spriteKey: 'arrow_sprite',
+        spriteKey: 'Palmeira',
         weaponType: WeaponType.MELEE,
         baseDamage: 4,
         baseCooldown: 350,
@@ -182,7 +194,7 @@ export const MeleeTypes: Record<MeleeEnum, IMelee> = {
     },
     [MeleeEnum.BENGALA]: {
         name: 'Bengala',
-        spriteKey: 'bengala',
+        spriteKey: 'Palmeira',
         weaponType: WeaponType.MELEE,
         baseDamage: 3,
         baseCooldown: 500,
@@ -193,7 +205,7 @@ export const MeleeTypes: Record<MeleeEnum, IMelee> = {
     },
     [MeleeEnum.ESPADA]: {
         name: 'Espada',
-        spriteKey: 'espada',
+        spriteKey: 'Palmeira',
         weaponType: WeaponType.MELEE,
         baseDamage: 3,
         baseCooldown: 350,
@@ -204,7 +216,7 @@ export const MeleeTypes: Record<MeleeEnum, IMelee> = {
     },
     [MeleeEnum.PAULADA]: {
         name: 'Paulada',
-        spriteKey: 'paulada',
+        spriteKey: 'Palmeira',
         weaponType: WeaponType.MELEE,
         baseDamage: 4,
         baseCooldown: 1250,
@@ -215,7 +227,7 @@ export const MeleeTypes: Record<MeleeEnum, IMelee> = {
     },
     [MeleeEnum.PICADA]: {
         name: 'Picada',
-        spriteKey: 'picada',
+        spriteKey: 'Palmeira',
         weaponType: WeaponType.MELEE,
         baseDamage: 3,
         baseCooldown: 350,

@@ -3,7 +3,7 @@ import { Scene } from 'phaser';
 import { WindowResolution } from '@/game/components/Properties';
 import { Player, Character } from '@/game/entities/Player';
 import { AnimatedTileData } from '../types/Tiles';
-import { AnimConfigs, AttackMode, BossTypes, CharacterTypes, EnemyTypes, MatchData, SceneData } from '../types';
+import { CharacterAnimConfigs, AttackMode, BossTypes, CharacterTypes, EnemyTypes, MatchData, SceneData, MeleeTypes, WeaponAnimConfigs } from '../types';
 import GameCameras from '../components/GameCameras';
 import IBaseScene from '../types/BaseScene';
 import AttackManager from '../entities/Attack';
@@ -192,18 +192,23 @@ export class BaseScene extends Scene implements IBaseScene {
 
     setupAnimations(): void {
       Object.values(CharacterTypes).forEach(character => {
-        const config = AnimConfigs[character.spriteKey as keyof typeof AnimConfigs];
+        const config = CharacterAnimConfigs[character.spriteKey as keyof typeof CharacterAnimConfigs];
         this.animationManager.createStandardWalkAnimation(character.spriteKey, config);
       });
 
       Object.values(EnemyTypes).forEach(enemy => {
-        const config = AnimConfigs[enemy.spriteKey as keyof typeof AnimConfigs];
+        const config = CharacterAnimConfigs[enemy.spriteKey as keyof typeof CharacterAnimConfigs];
         this.animationManager.createStandardWalkAnimation(enemy.spriteKey, config);
       });
 
       Object.values(BossTypes).forEach(boss => {
-        const config = AnimConfigs[boss.spriteKey as keyof typeof AnimConfigs];
+        const config = CharacterAnimConfigs[boss.spriteKey as keyof typeof CharacterAnimConfigs];
         this.animationManager.createStandardWalkAnimation(boss.spriteKey, config);
+      });
+
+      Object.values(MeleeTypes).forEach(melee => {
+        const config = WeaponAnimConfigs[melee.spriteKey as keyof typeof WeaponAnimConfigs];
+        this.animationManager.createStandardAttackAnimation(melee.spriteKey, config);
       });
     }
 

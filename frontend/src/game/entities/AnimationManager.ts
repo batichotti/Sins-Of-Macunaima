@@ -1,4 +1,4 @@
-import { AnimationTemplate, Directions } from "../types";
+import { CharacterAnimationTemplate, Directions, WeaponAnimationTemplate } from "../types";
 
 export default class AnimationManager {
     private scene: Phaser.Scene;
@@ -10,7 +10,7 @@ export default class AnimationManager {
 
     createStandardWalkAnimation(
         key: string,
-        config: AnimationTemplate = {
+        config: CharacterAnimationTemplate = {
             framerate: 4,
             repeat: -1,
             up: { start: 10, end: 11 },
@@ -30,6 +30,18 @@ export default class AnimationManager {
           const animKey = `${key}_${dir}`;
           if(!this.checkIfExists(animKey)) this.createAnimation(animKey, key, frames, config.framerate, config.repeat);
         });
+    }
+
+    createStandardAttackAnimation(
+        key: string,
+        config: WeaponAnimationTemplate = {
+          framerate: 4,
+          repeat: 0,
+          sequence: { start: 0, end: 2 },
+        }
+    ) {
+      const animKey = `${key}_attack`;
+      if(!this.checkIfExists(animKey)) this.createAnimation(animKey, key, config.sequence, config.framerate, config.repeat);
     }
 
     private checkIfExists(animKey: string): boolean {

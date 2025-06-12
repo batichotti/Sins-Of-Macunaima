@@ -1,6 +1,4 @@
 import { IMelee, MeleeEnum, MeleeTypes } from "./Weapon";
-import { CharacterEnum } from "./Player";
-import { AnimationTemplate, DefaultAnimationTemplate, DefaultAnimationTemplates } from "./Animations";
 
 export interface WaypointNode {
     point: Phaser.Math.Vector2;
@@ -69,7 +67,7 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
         name: 'Chupa-cú',
         spriteKey: 'Macunaima',
         spawnRegion: 'Floresta',
-        weapon: MeleeTypes[MeleeEnum.BENGALA],
+        weapon: MeleeTypes[MeleeEnum.BANANEIRA],
         baseHealth: 20,
         baseSpeed: 200,
         damageMultiplier: 1.2,
