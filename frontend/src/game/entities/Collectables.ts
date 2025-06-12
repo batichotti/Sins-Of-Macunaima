@@ -23,9 +23,16 @@ export default class CollectableManager implements ICollectableManager {
     this.player = scene.player;
     this.lastPlayerPos = scene.player.character.body?.position ?? new Phaser.Math.Vector2();
     this.setupCollectablePoints();
+    this.scene.time.addEvent({ delay: 2500, callback: this.cleanup, callbackScope: this, loop: true });
 
     EventManager.Instance.on(GameEvents.BOSS_DEFEATED, this.spawnEspecialCollectable, this);
     EventManager.Instance.on(GameEvents.WEAPON_DROPPED, (payload: { weapon: { asIWeapon: IWeapon, asICollectable: ICollectable }, position: Phaser.Math.Vector2 | { x: number, y: number } }) => this.spawnWeaponCollectable(payload), this);
+  }
+
+  private cleanup: () => void = () => {
+    this.children.forEach(child => {
+      if(!child.isAlive) child.destroy();
+    });
   }
 
   private chooseSpawn(): CollectablePoints | null {
@@ -132,6 +139,8 @@ export default class CollectableManager implements ICollectableManager {
     EventManager.Instance.emit(GameEvents.WEAPON_DROPPED_SUCCESS, payload.weapon.asIWeapon);
   }
 
+
+
   public removeCollectable(collectable: Collectable) {
     const index = this.children.indexOf(collectable);
     if (index > -1) {
@@ -172,6 +181,7 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
   override scene: BaseScene;
   name: string;
   spriteKey: string;
+  isAlive: boolean = true;
   typee: RegularCollectableEnum | SpecialCollectableEnum | MeleeEnum | ProjectileEnum;
 
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
@@ -179,11 +189,11 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
     this.name = config.name;
     this.spriteKey = config.spriteKey;
     this.typee = config.typee;
-    this.setScale(2);
-    this.setDepth(100);
+    this.setDepth(98);
     scene.gameCameras.ui.ignore(this);
     scene.physics.add.existing(this);
     this.scene.physics.add.overlap(this, this.scene.player.character, () => { this.collect() });
+    this.scene.time.delayedCall(5000, () => this.isAlive = false);
   }
 
   private collect(): void {
@@ -225,6 +235,7 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
 export class RegularCollectable extends Collectable {
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config);
+    this.setScale(2);
   }
 
   protected onCollect(): void {
@@ -235,6 +246,7 @@ export class RegularCollectable extends Collectable {
 export class SpecialCollectable extends Collectable {
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config);
+    this.setScale(2);
   }
 
   protected onCollect(): void {

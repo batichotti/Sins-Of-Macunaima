@@ -249,7 +249,7 @@ export default class EnemyManager {
             if(vel!.y > 0) coords.y = -1;
             if(vel!.y < 0) coords.y = 1;
 
-            obj1.setVelocity(vel!.x * coords.x * 0.8, vel!.y * coords.y * 0.8);
+            //obj1.setVelocity(vel!.x * coords.x * 0.8, vel!.y * coords.y * 0.8);
         }
     };
 
@@ -272,6 +272,7 @@ export default class EnemyManager {
 
           boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
           this.scene.gameCameras.ui.ignore(boss);
+          boss.setScale(2);
 
           boss.isBoss = true;
           this.bossCurrentlyAlive = true;

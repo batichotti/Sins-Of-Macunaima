@@ -33,6 +33,7 @@ export default class AttackManager {
 
       EventManager.Instance.on(GameEvents.TOGGLE_WEAPON, this.toggleWeapon, this);
       EventManager.Instance.on(GameEvents.TOGGLE_ATTACK_MODE, this.toggleAttackMode, this);
+      EventManager.Instance.on(GameEvents.WEAPON_EQUIPPED, (payload: IMelee | IProjectile) => { this.equipWeapon(payload) }, this)
 
       this.updateMeleeMode();
     }
@@ -110,8 +111,12 @@ export default class AttackManager {
     private equipWeapon(weapon: IMelee | IProjectile): void {
       if(weapon.weaponType === WeaponType.MELEE) {
         this.weaponSet.melee = weapon;
+        this.melee.changeConfig(weapon);
       } else if(weapon.weaponType === WeaponType.PROJECTILE) {
         this.weaponSet.projectile = weapon;
+        this.projectiles.getChildren().forEach((child) => {
+          (child as Projectile).changeConfig(weapon);
+        });
       }
       this.currentWeapon = weapon;
       this.updateMeleeMode();
@@ -215,6 +220,10 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  public changeConfig(config: IProjectile): void {
+    this.baseSpeed = config.baseSpeed;
+  }
+
   override disableBody(disableGameObject?: boolean, hideGameObject?: boolean): this {
     this.trailTimer?.destroy();
     return super.disableBody(disableGameObject, hideGameObject);
@@ -315,7 +324,7 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
 
     this.setActive(true);
     this.setVisible(true);
-    this.updatePosition();
+    this.updatePosition()
     this.play(`${this.config.spriteKey}_attack`);
     this.tweenSweep?.stop();
 
@@ -359,7 +368,11 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
-
+  public changeConfig(config: IMelee): void {
+    this.config = config;
+    this.attackDuration = config.duration;
+    if(this.scene?.textures?.exists(config.spriteKey)) this.setTexture(config.spriteKey);
+  }
 
   public endAttack(): void {
     this.tweenSweep?.stop();

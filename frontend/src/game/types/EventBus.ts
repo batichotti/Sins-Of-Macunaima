@@ -1,7 +1,7 @@
 import { ICollectable } from "./Collectables";
 import { IEnemy } from "./Enemy";
 import { ICharacter } from "./Player";
-import { AttackMode, IWeapon } from "./Weapon";
+import { AttackMode, IMelee, IProjectile, IWeapon } from "./Weapon";
 
 /**
  * Usado para coordenar eventos do jogo.
@@ -123,7 +123,7 @@ export type GameEventsPayloads = {
   /**
   * Para equipar uma arma.
   */
-  [GameEvents.WEAPON_EQUIPPED]: IWeapon;
+  [GameEvents.WEAPON_EQUIPPED]: IMelee | IProjectile;
 
   /**
    * Uma arma foi dropada.

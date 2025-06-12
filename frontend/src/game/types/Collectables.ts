@@ -1,5 +1,5 @@
 import { BaseScene } from "../core/BaseScene";
-import { MeleeEnum, ProjectileEnum } from "./Weapon";
+import { MeleeEnum, MeleeTypes, ProjectileEnum } from "./Weapon";
 
 /**
 * Vetor de pares { 'string' | 'Phaser.Math.Vector2' }
@@ -121,31 +121,31 @@ export const ProjectileCollectableTypes: Record<ProjectileEnum, ICollectable> = 
 export const MeleeCollectableTypes: Record<MeleeEnum, ICollectable> = {
   [MeleeEnum.BANANEIRA]: {
     name: 'Bananeira',
-    spriteKey: 'Bananeira',
+    spriteKey: MeleeTypes[MeleeEnum.BANANEIRA].spriteKey,
     typee: MeleeEnum.BANANEIRA,
     dropable: true
   },
   [MeleeEnum.BENGALA]: {
     name: 'Bengala',
-    spriteKey: 'Bengala',
+    spriteKey: MeleeTypes[MeleeEnum.BENGALA].spriteKey,
     typee: MeleeEnum.BENGALA,
     dropable: false
   },
   [MeleeEnum.ESPADA]: {
     name: 'Espada',
-    spriteKey: 'Espada',
+    spriteKey: MeleeTypes[MeleeEnum.ESPADA].spriteKey,
     typee: MeleeEnum.ESPADA,
     dropable: false
   },
   [MeleeEnum.PALMEIRA]: {
     name: 'Palmeira',
-    spriteKey: 'Palmeira',
+    spriteKey: MeleeTypes[MeleeEnum.PALMEIRA].spriteKey,
     typee: MeleeEnum.PALMEIRA,
     dropable: true
   },
   [MeleeEnum.PAULADA]: {
     name: 'Paulada',
-    spriteKey: 'Paulada',
+    spriteKey: MeleeTypes[MeleeEnum.PAULADA].spriteKey,
     typee: MeleeEnum.PAULADA,
     dropable: false
   },
