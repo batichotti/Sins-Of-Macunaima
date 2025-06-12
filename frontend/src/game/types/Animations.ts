@@ -12,7 +12,7 @@ export enum Directions {
 /**
  * Usar para definir frames de cada direção.
  */
- export type AnimationTemplate = {
+ export type CharacterAnimationTemplate = {
    framerate: number;
    repeat: number;
    up: { start: number; end: number };
@@ -21,7 +21,7 @@ export enum Directions {
    right: { start: number; end: number };
  };
 
- export const DefaultAnimationTemplate: AnimationTemplate = {
+ export const DefaultCharacterAnimationTemplate: CharacterAnimationTemplate = {
    framerate: 4,
    repeat: -1,
    up: { start: 10, end: 11 },
@@ -30,7 +30,7 @@ export enum Directions {
    right: { start: 4, end: 5 },
 };
 
-export const AnimConfigs: Record<string, AnimationTemplate> = {
+export const CharacterAnimConfigs: Record<string, CharacterAnimationTemplate> = {
   'Snake': {
     framerate: 4,
     repeat: -1,
@@ -39,4 +39,22 @@ export const AnimConfigs: Record<string, AnimationTemplate> = {
     left: { start: 0, end: 2 },
     right: { start: 3, end: 5 },
   }
+};
+
+/**
+ * Para as armas.
+ */
+export type WeaponAnimationTemplate = {
+  framerate: number;
+  repeat: number;
+  sequence: { start: number; end: number };
+};
+
+export const DefaultWeaponAnimationTemplate: WeaponAnimationTemplate = {
+  framerate: 4,
+  repeat: 0,
+  sequence: { start: 0, end: 2 },
+};
+
+export const WeaponAnimConfigs: Record<string, WeaponAnimationTemplate> = {
 };

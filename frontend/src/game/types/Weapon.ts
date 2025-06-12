@@ -165,10 +165,22 @@ export enum MeleeEnum {
     BENGALA,
     ESPADA,
     PAULADA,
-    PICADA
+    PICADA,
+    PALMEIRA
 }
 
 export const MeleeTypes: Record<MeleeEnum, IMelee> = {
+    [MeleeEnum.PALMEIRA]: {
+        name: 'Palmeira',
+        spriteKey: 'Palmeira',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 4,
+        baseCooldown: 350,
+        range: 32,
+        duration: 500,
+        rotationSpeed: 5,
+        orbitRadius: 100
+    },
     [MeleeEnum.BANANEIRA]: {
         name: 'Bananeira',
         spriteKey: 'arrow_sprite',

@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { TilePaths, TileSets } from '@/game/components/PathAssets';
 import { WindowResolution } from '@/game/components/Properties';
-import { CharacterEnum, CharacterTypes, CollectableTypes, EnemyTypes, ICharacter, ICollectable, IEnemy, ILevel, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, SceneData, WeaponSet } from '../types';
+import { CharacterEnum, CharacterTypes, CollectableTypes, EnemyTypes, ICharacter, ICollectable, IEnemy, ILevel, IMelee, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, SceneData, WeaponSet } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets globais.
@@ -62,10 +62,18 @@ export class Boot extends Scene {
           }
         );
 
+        // Corpo-a-Corpo
+        Object.values(MeleeTypes).forEach(
+          (it: IMelee) => {
+            this.load.spritesheet(it.spriteKey, `Attacks/Melees/${it.spriteKey}.png`, { frameWidth: 16, frameHeight: 16 });
+          }
+        );
+
         // Tiles
         TileSets.forEach((tile) => {
             this.load.image(`${tile}`, `tiles/${TilePaths.extruded}/${tile}.png`);
         });
+
 
         // Sprites de armas
         this.load.image('arrow_sprite', 'Attacks/Projectiles/Arrows/arrow_sprite.png');
@@ -77,7 +85,7 @@ export class Boot extends Scene {
         this.character = playableCharacters[0];
         this.weaponSet = {
           projectile: ProjectileTypes[ProjectileEnum.FLECHA],
-          melee: MeleeTypes[MeleeEnum.BANANEIRA]
+          melee: MeleeTypes[MeleeEnum.PALMEIRA]
         }
         this.player = { name: 'Irineu', level: this.level, playableCharacters: playableCharacters, weaponSet: this.weaponSet } as IPlayer;
     }

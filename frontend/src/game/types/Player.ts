@@ -1,4 +1,4 @@
-import { AnimationTemplate } from "./Animations";
+import { CharacterAnimationTemplate } from "./Animations";
 import { WeaponSet } from "./Weapon";
 
 /**
@@ -30,7 +30,7 @@ export interface IPlayer {
     /**
      * Configurações de animação.
      */
-    animConfig?: AnimationTemplate;
+    animConfig?: CharacterAnimationTemplate;
 }
 
 /**

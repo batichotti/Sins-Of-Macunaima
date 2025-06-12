@@ -1,6 +1,4 @@
 import { IMelee, MeleeEnum, MeleeTypes } from "./Weapon";
-import { CharacterEnum } from "./Player";
-import { AnimationTemplate, DefaultAnimationTemplate, DefaultAnimationTemplates } from "./Animations";
 
 export interface WaypointNode {
     point: Phaser.Math.Vector2;

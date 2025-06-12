@@ -203,9 +203,6 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
 
   constructor(scene: BaseScene, config: IMelee, player: Phaser.Physics.Arcade.Sprite) {
     super(scene, player.x, player.y, config.spriteKey || 'melee_weapon');
-    scene.gameCameras.ui.ignore(this);
-    scene.add.existing(this);
-    scene.physics.add.existing(this);
 
     this.config = config;
     this.attackDuration = config.duration;
@@ -213,9 +210,14 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
     this.orbitRadius = config.range * 0.6;
     this.halfArc = Phaser.Math.DegToRad(45);
 
+    scene.gameCameras.ui.ignore(this);
+    scene.add.existing(this);
+    scene.physics.add.existing(this);
+
     this.setDepth(101);
     this.setOrigin(0.5, 0.5);
-    this.setSize(config.range * 0.8, config.range * 0.8);
+    this.setSize(config.range * 1.6, config.range * 1.6);
+    this.setScale(1.5);
 
     this.setActive(false);
     this.setVisible(false);
@@ -245,7 +247,6 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
     const x = this.player.x + Math.cos(actual) * this.orbitRadius;
     const y = this.player.y + Math.sin(actual) * this.orbitRadius;
     this.setPosition(x, y);
-    this.setRotation(this.currentAngle + Math.PI/2);
   }
 
   setAutoMode(enabled: boolean): void {
@@ -265,15 +266,22 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
     this.clearHitEnemies();
     this.baseAngle = angle;
     this.currentAngle = -this.halfArc;
+    const normalizedAngle = Phaser.Math.Angle.Normalize(angle);
+    const toFlipX = normalizedAngle > Math.PI/2 && normalizedAngle < 3*Math.PI/2;
+    //const toFlipY = normalizedAngle > Math.PI && normalizedAngle < 2*Math.PI;
+
+    this.setFlipY(false);
+    this.setFlipX(toFlipX);
+    const toflip = toFlipX ? -1 : 1;
 
     this.setActive(true);
     this.setVisible(true);
     this.updatePosition();
-
+    this.play(`${this.config.spriteKey}_attack`);
     this.tweenSweep?.stop();
     this.tweenSweep = this.scene.tweens.add({
       targets: this,
-      currentAngle: { from: -this.halfArc, to: this.halfArc },
+      currentAngle: { from: -this.halfArc * toflip, to: this.halfArc * toflip },
       ease: 'Sine.InOut',
       duration: this.attackDuration,
       yoyo: false,
@@ -285,7 +293,6 @@ class Melee extends Phaser.Physics.Arcade.Sprite {
 
   public endAttack(): void {
     this.tweenSweep?.stop();
-    this.setScale(1, 1);
     this.isAttacking = false;
     this.setActive(false);
     this.setVisible(false);
