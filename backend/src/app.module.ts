@@ -8,17 +8,21 @@ import { UserService } from './modules/user/user.service';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: () => ({
         type: 'postgres',
-        host: process.env.DB_HOST || "localhost",
-        port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 5432,
-        username: process.env.DB_USERNAME || "postgres",
-        password: process.env.DB_PASSWORD || "postgres",
-        database: process.env.DB_NAME || "sinsofmacunaima",
+        host: process.env.DB_HOST,
+        port: Number(process.env.DB_PORT),
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
         autoLoadEntities: true,
         synchronize: true,
+        logging: false,
+        migrations: [__dirname + '/database/migrations/*.entity{.js,.ts}'], 
+        entities: [__dirname + '/**/*.entity{.js,.ts}']
       }),
     }),
     UserModule
