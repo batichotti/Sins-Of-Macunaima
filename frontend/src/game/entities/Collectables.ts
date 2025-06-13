@@ -1,6 +1,6 @@
 import { BaseScene } from "../core/BaseScene";
 import { EventManager } from "../core/EventBus";
-import { ICollectableManager, CollectablePoints, GameEvents, ICollectable, RegularCollectableEnum, SpecialCollectableEnum, EspecialCollectableTypes, MeleeEnum, ProjectileEnum, IWeapon, MeleeTypes } from "../types";
+import { ICollectableManager, CollectablePoints, GameEvents, ICollectable, RegularCollectableEnum, SpecialCollectableEnum, SpecialCollectableTypes, MeleeEnum, ProjectileEnum, IWeapon, MeleeTypes } from "../types";
 import { Player } from "./Player";
 
 export default class CollectableManager implements ICollectableManager {
@@ -31,7 +31,7 @@ export default class CollectableManager implements ICollectableManager {
 
   private cleanup: () => void = () => {
     this.children.forEach(child => {
-      if(!child.isAlive) child.destroy();
+      if(!child.isAlive && !(child instanceof SpecialCollectable)) child.destroy();
     });
   }
 
@@ -75,7 +75,7 @@ export default class CollectableManager implements ICollectableManager {
     const spawnPoint = this.chooseSpawn();
     if (!spawnPoint) return;
 
-    const validTypes = Object.values(EspecialCollectableTypes);
+    const validTypes = Object.values(SpecialCollectableTypes);
     if (validTypes.length === 0) return;
 
     const collectableType = Phaser.Utils.Array.GetRandom(validTypes);

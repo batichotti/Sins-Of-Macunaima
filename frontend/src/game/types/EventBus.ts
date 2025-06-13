@@ -86,7 +86,11 @@ export enum GameEvents {
   /**
    * Um coletável foi coletado
    */
-  COLLECTABLE_COLLECTED = 'collectableCollected'
+  COLLECTABLE_COLLECTED = 'collectableCollected',
+  /**
+   * Ativado quando o jogador ganha conseguindo um item especial.
+   */
+  TRIGGER_GAME_WIN = 'triggerGameWin'
 }
 
 /**
@@ -134,12 +138,10 @@ export type GameEventsPayloads = {
    * Arma dropada com sucesso.
    */
   [GameEvents.WEAPON_DROPPED_SUCCESS]: IWeapon;
-
   /**
   * Retorna o cooldown da arma.
   */
   [GameEvents.WEAPON_COOLDOWN]: number;
-
 
   /**
   * O jogador morreu.
@@ -191,6 +193,10 @@ export type GameEventsPayloads = {
    * Um coletável foi coletado
    */
   [GameEvents.COLLECTABLE_COLLECTED]: ICollectable;
+  /**
+   * Ativado quando o jogador zerou o jogo coletando um item especial.
+   */
+  [GameEvents.TRIGGER_GAME_WIN]: null;
 }
 
 export interface EventListener<T extends keyof GameEventsPayloads> {

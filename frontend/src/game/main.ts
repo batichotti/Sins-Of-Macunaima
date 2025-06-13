@@ -3,6 +3,7 @@ import { Game } from 'phaser';
 import { Loader } from './core/Loader';
 import { Mapa } from '@/game/scenes/World/Mapa';
 import GameOver from './core/GameOver';
+import GameWin from './core/GameWin';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -21,10 +22,11 @@ const config: Phaser.Types.Core.GameConfig = {
         }
     },
     scene: [
-        Boot,
-        Loader,
-        Mapa,
-        GameOver
+      Boot,
+      Loader,
+      Mapa,
+      GameOver,
+      GameWin
     ]
 };
 

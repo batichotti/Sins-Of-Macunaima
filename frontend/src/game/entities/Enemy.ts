@@ -253,7 +253,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
           EventManager.Instance.emit(GameEvents.BOSS_DEFEATED, null);
         }
 
-        else if(Phaser.Math.Between(1, 10) > 0) {
+        else if(Phaser.Math.Between(1, 10) <= 3) {
           let collectable = Object.values(MeleeCollectableTypes).find(it => it.name.toUpperCase() === this.weapon.name.toUpperCase());
 
           if (!collectable) {

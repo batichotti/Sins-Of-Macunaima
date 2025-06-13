@@ -248,8 +248,6 @@ export default class EnemyManager {
             if(vel!.x < 0) coords.x = 1;
             if(vel!.y > 0) coords.y = -1;
             if(vel!.y < 0) coords.y = 1;
-
-            //obj1.setVelocity(vel!.x * coords.x * 0.8, vel!.y * coords.y * 0.8);
         }
     };
 

@@ -2,42 +2,52 @@ import { Text } from "../components/Properties";
 import { MatchData, SceneData } from "../types";
 
 export default class GameOver extends Phaser.Scene {
-  private prevSceneData: MatchData;
+  private prevSceneData: MatchData | null = null;
   private container: Phaser.GameObjects.Container;
+
   constructor() {
     super('GameOver');
   }
 
-  init(data: MatchData) {
-    this.prevSceneData = data;
+  init(data?: MatchData) {
+    if(data) this.prevSceneData = data;
   }
 
   create() {
     const { width, height } = this.scale;
-
     this.container = this.add.container(width * 0.5, height * 0.35);
 
+    const gameOverTitle = `Você morreu.`;
+    const gameOverText = this.add.text(0, 0, gameOverTitle, Text.Title2).setOrigin(0.5);
+    const scoreText = this.add.text(0, 75, `Pontuação: ${this?.prevSceneData?.data?.pointsGained ?? 0}`, Text.Content).setOrigin(0.5);
+    const timeElapsed = this.add.text(0, 125, `Tempo: ${this.formatTime(this?.prevSceneData?.data?.timeElapsed ?? 0)}`, Text.Content).setOrigin(0.5);
 
-      const gameOverText = this.add.text(0, 0, 'Você morreu', Text.Title2).setOrigin(0.5);
+    const restartButton = this.add.text(0, 200, 'Tentar de novo', Text.Content).setOrigin(0.5).setInteractive();
+    const mainMenuButton = this.add.text(0, 250, 'Voltar ao menu principal', Text.Content).setOrigin(0.5).setInteractive();
 
-      const scoreText = this.add.text(0, 75, `Pontuação: ${this.prevSceneData.data.pointsGained}`, Text.Content).setOrigin(0.5);
-
-      const timeElapsed = this.add.text(0, 125, `Tempo: ${this.formatTime(this.prevSceneData.data.timeElapsed)}`, Text.Content).setOrigin(0.5);
-
-     const restartButton = this.add.text(0, 175, 'Tentar de novo', Text.Content).setOrigin(0.5).setInteractive();
-
-     this.container.add([gameOverText, scoreText, timeElapsed, restartButton]);
+    this.container.add([gameOverText, scoreText, timeElapsed, restartButton, mainMenuButton]);
 
     restartButton.on('pointerdown', () => {
-      const data: SceneData = {
-        targetScene: this.prevSceneData.scene,
-        previousScene: this.constructor.name,
-        weaponSet: this.prevSceneData.data.player.weaponSet,
-        player: this.prevSceneData.data.player,
-        level: this.prevSceneData.data.player.level,
-        character: this.prevSceneData.data.player.playableCharacters[0]
-      };
-      this.scene.start(this.prevSceneData.scene, data);
+      if(this.prevSceneData?.data && this.prevSceneData?.scene) {
+        const resetData: SceneData = {
+          targetScene: this.prevSceneData.scene,
+          previousScene: 'GameOver',
+          weaponSet: this.prevSceneData.data.player.weaponSet,
+          player: this.prevSceneData.data.player,
+          level: this.prevSceneData.data.player.level,
+          character: this.prevSceneData.data.player.playableCharacters?.[0]
+        };
+
+        this.scene.start(this.prevSceneData.scene, resetData);
+      } else {
+        console.warn('GameOver: Dados não encontrados, redirecionando para Boot');
+        this.scene.start('Boot');
+      }
+    });
+
+    // Handler para voltar ao menu principal
+    mainMenuButton.on('pointerdown', () => {
+      // Lógica para voltar ao menu principal.
     });
   }
 
