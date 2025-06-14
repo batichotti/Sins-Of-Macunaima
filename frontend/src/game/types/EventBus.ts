@@ -8,6 +8,10 @@ import { AttackMode, IMelee, IProjectile, IWeapon } from "./Weapon";
  */
 export enum GameEvents {
   /**
+   * Destravar o jogo.
+   */
+  UNFREEZE_GAME = 'unfreezeGame',
+  /**
   * Inimigo morreu.
   */
   ENEMY_DIED = 'enemyDied',
@@ -197,6 +201,10 @@ export type GameEventsPayloads = {
    * Ativado quando o jogador zerou o jogo coletando um item especial.
    */
   [GameEvents.TRIGGER_GAME_WIN]: null;
+  /**
+   * Para destravar o jogo.
+   */
+  [GameEvents.UNFREEZE_GAME]: null;
 }
 
 export interface EventListener<T extends keyof GameEventsPayloads> {

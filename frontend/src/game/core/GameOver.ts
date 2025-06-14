@@ -18,6 +18,7 @@ export default class GameOver extends Phaser.Scene {
     this.container = this.add.container(width * 0.5, height * 0.35);
 
     const gameOverTitle = `Você morreu.`;
+    const background = this.add.graphics().fillStyle(0x000000, 0.8).fillRoundedRect(-width * 0.35, -height * 0.16, width * 0.7, height * 0.7);
     const gameOverText = this.add.text(0, 0, gameOverTitle, Text.Title2).setOrigin(0.5);
     const scoreText = this.add.text(0, 75, `Pontuação: ${this?.prevSceneData?.data?.pointsGained ?? 0}`, Text.Content).setOrigin(0.5);
     const timeElapsed = this.add.text(0, 125, `Tempo: ${this.formatTime(this?.prevSceneData?.data?.timeElapsed ?? 0)}`, Text.Content).setOrigin(0.5);
@@ -25,7 +26,7 @@ export default class GameOver extends Phaser.Scene {
     const restartButton = this.add.text(0, 200, 'Tentar de novo', Text.Content).setOrigin(0.5).setInteractive();
     const mainMenuButton = this.add.text(0, 250, 'Voltar ao menu principal', Text.Content).setOrigin(0.5).setInteractive();
 
-    this.container.add([gameOverText, scoreText, timeElapsed, restartButton, mainMenuButton]);
+    this.container.add([background, gameOverText, scoreText, timeElapsed, restartButton, mainMenuButton]);
 
     restartButton.on('pointerdown', () => {
       if(this.prevSceneData?.data && this.prevSceneData?.scene) {

@@ -250,7 +250,9 @@ export class BaseScene extends Scene implements IBaseScene {
       }
     });
   }
+
   runGameWin = () => {
+    EventManager.Instance.emit(GameEvents.UNFREEZE_GAME, null);
     this.time.delayedCall(500, () => {
       const matchData: MatchData = {
         scene: this.constructor.name,

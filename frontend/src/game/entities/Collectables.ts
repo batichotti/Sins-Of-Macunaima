@@ -31,7 +31,7 @@ export default class CollectableManager implements ICollectableManager {
 
   private cleanup: () => void = () => {
     this.children.forEach(child => {
-      if(!child.isAlive && !(child instanceof SpecialCollectable)) child.destroy();
+      if(!child.isAlive && !(child.typee in SpecialCollectableEnum)) child.destroy();
     });
   }
 

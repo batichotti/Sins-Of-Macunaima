@@ -17,6 +17,7 @@ export default class GameWin extends Phaser.Scene {
     const { width, height } = this.scale;
     this.container = this.add.container(width * 0.5, height * 0.35);
 
+    const background = this.add.graphics().fillStyle(0x000000, 0.8).fillRoundedRect(-width * 0.35, -height * 0.16, width * 0.7, height * 0.7);
     const gameWinTitle = `Você derrotou o chefe\ne conseguiu o Item especial.`;
     const gameOverText = this.add.text(0, 0, gameWinTitle, Text.Title2).setOrigin(0.5);
     const scoreText = this.add.text(0, 125, `Pontuação: ${this?.prevSceneData?.data?.pointsGained ?? 0}`, Text.Content).setOrigin(0.5);
@@ -25,7 +26,7 @@ export default class GameWin extends Phaser.Scene {
     const continueButton = this.add.text(0, 225, 'Continuar jogando', Text.Content).setOrigin(0.5).setInteractive();
     const mainMenuButton = this.add.text(0, 275, 'Voltar ao menu principal', Text.Content).setOrigin(0.5).setInteractive();
 
-    this.container.add([gameOverText, scoreText, timeElapsed, continueButton, mainMenuButton]);
+    this.container.add([background, gameOverText, scoreText, timeElapsed, continueButton, mainMenuButton]);
 
     continueButton.on('pointerdown', () => {
       if(this.prevSceneData?.scene) {
