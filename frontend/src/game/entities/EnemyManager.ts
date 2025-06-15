@@ -245,9 +245,10 @@ export default class EnemyManager {
         if (!enemy.active || !enemy.weapon?.baseDamage) return;
 
         if(this.cooldownAttack) {
-            character.takeDamage(enemy.weapon.baseDamage * enemy.damageMultiplier * 0.25 * this.scene.player.level.level);
-            this.cooldownAttack = false;
-            this.scene.time.delayedCall(1250, () => { this.cooldownAttack = true; });
+          enemy.sweepTween(character.body!.position);
+          character.takeDamage(enemy.weapon.baseDamage * enemy.damageMultiplier * 0.25 * this.scene.player.level.level);
+          this.cooldownAttack = false;
+          this.scene.time.delayedCall(1250, () => { this.cooldownAttack = true; });
         }
     };
 
