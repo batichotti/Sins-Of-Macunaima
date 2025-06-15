@@ -17,7 +17,11 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     baseSpeed: number;
     pointGain: number;
     isBoss: boolean = false;
-
+    tweenSweep: Phaser.Tweens.Tween | null = null;
+    baseAngle: number = 0;
+    halfArc: number;
+    orbitRadius: number;
+    currentAngle: number = 0;
     // Sistema de pathfinding
     pathFinder!: Pathfinding;
     private path: Phaser.Math.Vector2[] = [];
@@ -62,6 +66,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
       this.lastPos.set(this.x, this.y);
       this.lastTileTarget.set(this.x, this.y);
 
+      this.orbitRadius = config.weapon.range * 0.6;
+      this.halfArc = Phaser.Math.DegToRad(45);
+
       this.setTexture(config.spriteKey);
       this.name = config.name;
       this.spriteKey = config.spriteKey;
@@ -70,6 +77,73 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
       this.baseHealth = config.baseHealth;
       this.baseSpeed = config.baseSpeed;
       this.pointGain = config.pointGain;
+    }
+
+    /**
+     * Método para animação de dano.
+     *
+     * @param position A posição do jogador.
+     */
+     sweepTween(position: Phaser.Math.Vector2): void {
+      if (!this.body || !this.active || !position || !this.weapon) return;
+
+      this.tweenSweep?.stop();
+
+      this.baseAngle = Phaser.Math.Angle.Between(this.x, this.y, position.x, position.y);
+
+      const toFlip = (this.baseAngle > Math.PI/2 && this.baseAngle < 3*Math.PI/2) ? -1 : 1;
+
+      const R = this.orbitRadius * 0.6;
+      const trailWidth = Phaser.Math.RadToDeg(this.halfArc) * 2;
+      const trailInterval = 40;
+      let lastTrailTime = 0;
+
+      this.tweenSweep = this.scene.tweens.add({
+        targets: this,
+        currentAngle: {
+          from: -this.halfArc * toFlip,
+          to: this.halfArc * toFlip
+        },
+        ease: 'Sine.InOut',
+        duration: this.weapon.duration,
+        onUpdate: () => {
+          const now = this.scene.time.now;
+
+
+          if (now - lastTrailTime > trailInterval) {
+            lastTrailTime = now;
+            this.createTrailEffect(R, trailWidth);
+          }
+        },
+      });
+    }
+
+    private createTrailEffect(radius: number, trailWidth: number): void {
+      const startDeg = Phaser.Math.RadToDeg(this.baseAngle + this.currentAngle) - trailWidth/2;
+      const endDeg = startDeg + trailWidth;
+
+      const arc = this.scene.add.arc(
+        this.x, this.y,
+        radius,
+        startDeg, endDeg,
+        false,
+        0xffffff, 0.3
+      )
+      .setOrigin(0.5)
+      .setDepth(110)
+      .setBlendMode(Phaser.BlendModes.ADD);
+
+      this.scene.gameCameras.ui.ignore(arc);
+
+      this.scene.tweens.add({
+        targets: arc,
+        alpha: 0,
+        scaleX: 1.5,
+        scaleY: 1.5,
+        ease: 'Quad.easeOut',
+        duration: 200,
+        onComplete: () => arc.destroy()
+      });
     }
 
     updatePathing(targetPx: Phaser.Math.Vector2): void {
@@ -275,6 +349,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     override destroy(): void {
+      this.tweenSweep?.stop();
       super.destroy();
     }
 }
