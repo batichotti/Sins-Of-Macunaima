@@ -20,7 +20,7 @@ export default class EnemyManager {
     waypointGraph: Map<string, Phaser.Math.Vector2[]> = new Map();
     maxEnemyDistance: number = 200;
     canPath: boolean = true;
-    canSpawn: boolean = true;
+    canSpawn: boolean = false;
     grid: Grid;
     playerPos = new Phaser.Math.Vector2();
     updateIndex = 0;
@@ -32,6 +32,7 @@ export default class EnemyManager {
     bossDefeated: boolean = false;
 
     constructor(scene: BaseScene) {
+      scene.time.delayedCall(5000, () => { this.canSpawn = true });
       this.scene = scene;
       this.enemySpawner = new EnemySpawner(scene);
       const blockers = this.scene.map.getLayer('colisao')!.tilemapLayer;
@@ -268,7 +269,7 @@ export default class EnemyManager {
         if (!spawn || !this.canSpawn || this.bossCurrentlyAlive) return;
 
         if (this.bossSpawned && !this.bossDefeated) {
-            const validBoss = Object.values(BossTypes).filter(e => e.spawnRegion === spawn.name);
+            const validBoss = Object.values(BossTypes).filter(e => e.spawnRegion === spawn.name || e.spawnRegion === 'all');
             if (validBoss.length === 0) {
                 this.bossSpawned = false;
             } else {
@@ -293,7 +294,7 @@ export default class EnemyManager {
                 return;
             }
         }
-        const validEnemies = Object.values(EnemyTypes).filter(e => e.spawnRegion === spawn.name);
+        const validEnemies = Object.values(EnemyTypes).filter(e => e.spawnRegion === spawn.name || e.spawnRegion === 'all');
         if (validEnemies.length === 0) return;
 
         const type = Phaser.Utils.Array.GetRandom(validEnemies);

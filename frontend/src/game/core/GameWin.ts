@@ -38,10 +38,55 @@ export default class GameWin extends Phaser.Scene {
       }
     });
 
+    continueButton.on('pointerover', () => {
+      const tween = this.tweens.add({
+        targets: continueButton,
+        scaleX: 1.1,
+        scaleY: 1.1,
+        duration: 150,
+        ease: 'Power2',
+        onComplete: () => { tween.destroy() }
+      });
+    });
+
+    continueButton.on('pointerout', () => {
+      const tween = this.tweens.add({
+        targets: continueButton,
+        scaleX: 1.,
+        scaleY: 1.,
+        duration: 150,
+        ease: 'Power2',
+        onComplete: () => { tween.destroy() }
+      });
+    });
+
     // Handler para voltar ao menu principal
     mainMenuButton.on('pointerdown', () => {
       // Lógica para o menu principal.
     });
+
+    mainMenuButton.on('pointerover', () => {
+      const tween = this.tweens.add({
+        targets: mainMenuButton,
+        scaleX: 1.1,
+        scaleY: 1.1,
+        duration: 150,
+        ease: 'Power2',
+        onComplete: () => { tween.destroy() }
+      });
+    });
+
+    mainMenuButton.on('pointerout', () => {
+      const tween = this.tweens.add({
+        targets: mainMenuButton,
+        scaleX: 1.,
+        scaleY: 1.,
+        duration: 150,
+        ease: 'Power2',
+        onComplete: () => { tween.destroy() }
+      });
+    });
+
   }
 
   private formatTime(time: number): string {

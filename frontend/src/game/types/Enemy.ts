@@ -66,7 +66,7 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
     [EnemyEnum.CHUPACU]: {
         name: 'Chupa-cú',
         spriteKey: 'Macunaima',
-        spawnRegion: 'Floresta',
+        spawnRegion: 'all',
         weapon: MeleeTypes[MeleeEnum.BANANEIRA],
         baseHealth: 20,
         baseSpeed: 200,
@@ -86,7 +86,7 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
     [EnemyEnum.COBRA_CORAL]: {
       name: 'Cobra Coral',
       spriteKey: 'Snake',
-      spawnRegion: 'Praia',
+      spawnRegion: 'all',
       weapon: MeleeTypes[MeleeEnum.PICADA],
       baseHealth: 15,
       baseSpeed: 220,

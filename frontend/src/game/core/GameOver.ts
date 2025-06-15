@@ -46,10 +46,55 @@ export default class GameOver extends Phaser.Scene {
       }
     });
 
+    restartButton.on('pointerover', () => {
+      const tween = this.tweens.add({
+        targets: restartButton,
+        scaleX: 1.1,
+        scaleY: 1.1,
+        duration: 150,
+        ease: 'Power2',
+        onComplete: () => { tween.destroy() }
+      });
+    });
+
+    restartButton.on('pointerout', () => {
+      const tween = this.tweens.add({
+        targets: restartButton,
+        scaleX: 1.,
+        scaleY: 1.,
+        duration: 150,
+        ease: 'Power2',
+        onComplete: () => { tween.destroy() }
+      });
+    });
+
     // Handler para voltar ao menu principal
     mainMenuButton.on('pointerdown', () => {
       // Lógica para voltar ao menu principal.
     });
+
+    mainMenuButton.on('pointerover', () => {
+      const tween = this.tweens.add({
+        targets: mainMenuButton,
+        scaleX: 1.1,
+        scaleY: 1.1,
+        duration: 150,
+        ease: 'Power2',
+        onComplete: () => { tween.destroy() }
+      });
+    });
+
+    mainMenuButton.on('pointerout', () => {
+      const tween = this.tweens.add({
+        targets: mainMenuButton,
+        scaleX: 1.,
+        scaleY: 1.,
+        duration: 150,
+        ease: 'Power2',
+        onComplete: () => { tween.destroy() }
+      });
+    });
+
   }
 
   private formatTime(time: number): string {
