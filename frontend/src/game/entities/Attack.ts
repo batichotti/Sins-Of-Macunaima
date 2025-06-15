@@ -38,6 +38,10 @@ export default class AttackManager {
       this.updateMeleeMode();
     }
 
+    public get getKills(): number {
+      return this.kills;
+    }
+
     private handleHit = (obj1: object, obj2: object) => {
         if (obj1 instanceof Melee && !(obj1 as Melee).active) return;
 

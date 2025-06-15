@@ -49,4 +49,9 @@ export interface IMatchStats {
    * Tempo decorrido.
    */
   timeElapsed: number;
+
+  /**
+   * Abates dados.
+   */
+  kills: number;
 }

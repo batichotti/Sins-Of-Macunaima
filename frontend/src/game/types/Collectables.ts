@@ -100,7 +100,7 @@ export const RegularCollectableTypes: Record<RegularCollectableEnum, ICollectabl
   }
 };
 
-export const EspecialCollectableTypes: Record<SpecialCollectableEnum, ICollectable> = {
+export const SpecialCollectableTypes: Record<SpecialCollectableEnum, ICollectable> = {
   [SpecialCollectableEnum.MUIRAQUITA]: {
     name: 'Muiraquitã',
     spriteKey: 'Muiraquita',
