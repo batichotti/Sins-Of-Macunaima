@@ -159,8 +159,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
           this.timeStuck += delta;
 
           if (this.timeStuck >= 2000) {
-              const pushX = Phaser.Utils.Array.GetRandom([-48, -32, 32, 48]);
-              const pushY = Phaser.Utils.Array.GetRandom([-48, -32, 32, 48]);
+              const pushX = Phaser.Utils.Array.GetRandom([-8, -6, 6, 8]);
+              const pushY = Phaser.Utils.Array.GetRandom([-8, -6, 6, 8]);
               this.x += pushX;
               this.y += pushY;
 
@@ -249,10 +249,28 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     override disableBody(disableGameObject: boolean = false, hideGameObject: boolean = false): this {
+      this.setActive(false);
       this.path = [];
       this.nextNode = 0
       this.currentWaypointPath = [];
-      super.disableBody(disableGameObject, hideGameObject);
+      const effect = this.scene.add.circle(this.x, this.y, 10, 0xFF0000, 0.8);
+      this.scene.gameCameras.ui.ignore(effect);
+      this.scene.tweens.add({
+        targets: effect,
+        scaleX: 2,
+        scaleY: 2,
+        alpha: 0,
+        duration: 200,
+        onUpdate: () => {
+          effect.x = this.x;
+          effect.y = this.y;
+        },
+        onComplete: () => {
+          super.disableBody(disableGameObject, hideGameObject);
+          effect.destroy();
+          super.destroy();
+        }
+      });
       return this;
     }
 
