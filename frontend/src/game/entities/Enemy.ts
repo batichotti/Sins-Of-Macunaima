@@ -150,72 +150,49 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     updateMovement(): void {
-        if (!this.body) return;
+      if (!this.body) return;
 
-        const delta = this.scene.game.loop.delta;
+      const delta = this.scene.game.loop.delta;
 
-        // Validação do próximo nó
-        if (this.nextNode < this.path.length) {
-            const nextTile = this.scene.map.worldToTileXY(
-                this.path[this.nextNode].x,
-                this.path[this.nextNode].y
-            );
+      const currentDistance = Phaser.Math.Distance.Between(this.lastPos.x, this.lastPos.y, this.x, this.y);
+      if (currentDistance < 8) {
+          this.timeStuck += delta;
 
-            if (nextTile && !this.scene.enemyManager.grid.getNode(nextTile.x, nextTile.y)?.walkable) {
-                this.path = [];
-                this.nextNode = 0;
-                return;
-            }
-        }
+          if (this.timeStuck >= 2000) {
+              const pushX = Phaser.Utils.Array.GetRandom([-48, -32, 32, 48]);
+              const pushY = Phaser.Utils.Array.GetRandom([-48, -32, 32, 48]);
+              this.x += pushX;
+              this.y += pushY;
 
-        // Se não há mais nós no caminho
-        if (this.nextNode >= this.path.length) {
-            this.setVelocity(0, 0);
+              this.path = [];
+              this.nextNode = 0;
+              this.timeStuck = 0;
+          }
+      } else {
+          this.timeStuck = 0;
+          this.lastPos.set(this.x, this.y);
+      }
 
-            // Limpa waypoint path se chegou ao destino
-            if (this.currentWaypointPath.length > 0) {
-                const lastWaypoint = this.currentWaypointPath[this.currentWaypointPath.length - 1];
-                if (Phaser.Math.Distance.Between(this.x, this.y, lastWaypoint.x, lastWaypoint.y) < 64) {
-                    this.currentWaypointPath = [];
-                }
-            }
-            return;
-        }
+      if (this.nextNode >= this.path.length) {
+        this.setVelocity(0, 0);
+        return;
+      }
 
-        // Movimento para o próximo nó
-        const dest = this.path[this.nextNode];
-        const dir = new Phaser.Math.Vector2(dest.x - this.x, dest.y - this.y);
+      const dest = this.path[this.nextNode];
+      const dir = new Phaser.Math.Vector2(dest.x - this.x, dest.y - this.y);
 
-        // Verificação para evitar divisão por zero
-        if (dir.length() > 0) {
-            dir.normalize();
-        }
+      if (dir.length() > 0) {
+        dir.normalize();
+      }
 
-        const speed = this.baseSpeed;
-        this.walkAnimation(dir);
-        this.setVelocity(dir.x * speed, dir.y * speed);
+      const speed = this.baseSpeed;
+      this.walkAnimation(dir);
+      this.setVelocity(dir.x * speed, dir.y * speed);
 
-        // Verifica se chegou ao nó atual
-        if (Phaser.Math.Distance.Between(this.x, this.y, dest.x, dest.y) < 16) {
-            this.nextNode++;
-        }
-
-        // Sistema anti-travamento melhorado
-        const currentDistance = Phaser.Math.Distance.Between(this.lastPos.x, this.lastPos.y, this.x, this.y);
-        if (currentDistance < 24) {
-            this.timeStuck += delta;
-            if (this.timeStuck >= 3000) {
-                // Tentar reposicionar antes de destruir
-                this.x += Phaser.Utils.Array.GetRandom([-32, 32]);
-                this.y += Phaser.Utils.Array.GetRandom([-32, 32]);
-                this.timeStuck = 0;
-                this.path = []; // Força recalcular path
-            }
-        } else {
-            this.timeStuck = 0;
-            this.lastPos.set(this.x, this.y);
-        }
-    }
+      if (Phaser.Math.Distance.Between(this.x, this.y, dest.x, dest.y) < 16) {
+        this.nextNode++;
+      }
+  }
 
     private walkAnimation(direction: Phaser.Math.Vector2) {
         if (direction.length() === 0) {
