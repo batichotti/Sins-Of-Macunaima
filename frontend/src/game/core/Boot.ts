@@ -68,6 +68,15 @@ export class Boot extends Scene {
           }
         );
 
+        // Corpo-a-Corpo
+        Object.values(MeleeTypes).forEach(
+          (it: IMelee) => {
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Attacks/Melees/${it.spriteKey}.png`, { frameWidth: 16, frameHeight: 16 });
+            }
+          }
+        );
+
         // Coletáveis
         Object.values(RegularCollectableTypes).forEach(
           (it: ICollectable) => {
@@ -81,15 +90,6 @@ export class Boot extends Scene {
           (it: ICollectable) => {
             if(!this.textures.exists(it.spriteKey)) {
               this.load.spritesheet(it.spriteKey, `Itens/${it.spriteKey}.png`, { frameWidth: 8, frameHeight: 8 });
-            }
-          }
-        );
-
-        // Corpo-a-Corpo
-        Object.values(MeleeTypes).forEach(
-          (it: IMelee) => {
-            if(!this.textures.exists(it.spriteKey)) {
-              this.load.spritesheet(it.spriteKey, `Attacks/Melees/${it.spriteKey}.png`, { frameWidth: 16, frameHeight: 16 });
             }
           }
         );
