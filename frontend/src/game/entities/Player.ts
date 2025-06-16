@@ -1,8 +1,9 @@
 import { EventManager } from "../core/EventBus";
-import { Directions, ICharacter, IPlayer, WeaponSet } from "../types";
+import { Directions, ICharacter, ICollectable, IPlayer, SpecialCollectableEnum, WeaponSet } from "../types";
 import { Level } from "./Level";
 import TweenManager from "./TweenManager";
 import { GameEvents } from "../types";
+import { BaseScene } from "../core/BaseScene";
 
 export class Player implements IPlayer {
     name!: string;
@@ -11,6 +12,7 @@ export class Player implements IPlayer {
     private currentCharacterIndex = 0;
     level!: Level;
     weaponSet!: WeaponSet;
+    inventory: Map<ICollectable, number> = new Map();
 
     constructor(data: IPlayer, mainCharacter: Character) {
         this.name = data.name;
@@ -23,7 +25,8 @@ export class Player implements IPlayer {
         this.applyLevelModifiers();
 
         // Registra o listener de eventos
-        EventManager.Instance.on(GameEvents.TOGGLE_CHARACTER, this.changeCharacter);
+        EventManager.Instance.on(GameEvents.TOGGLE_CHARACTER, this.changeCharacter, this);
+        EventManager.Instance.on(GameEvents.COLLECTABLE_COLLECTED, (payload: ICollectable) => this.updateInventory(payload), this);
     }
 
     private applyLevelModifiers(): void {
@@ -70,7 +73,21 @@ export class Player implements IPlayer {
 
     // Método para limpeza de recursos
     destroy(): void {
-      EventManager.Instance.off(GameEvents.TOGGLE_CHARACTER, this.changeCharacter);
+      EventManager.Instance.off(GameEvents.TOGGLE_CHARACTER, this.changeCharacter, this);
+      EventManager.Instance.off(GameEvents.COLLECTABLE_COLLECTED, (payload: ICollectable) => this.updateInventory(payload), this);
+    }
+
+    /**
+     * Atualiza o inventário.
+     * @param payload O item coletado.
+     */
+    updateInventory(payload: ICollectable): void {
+      const inventory = this.inventory;
+      inventory.set(payload, inventory.get(payload) ?? 0 + 1);
+
+      if(payload.typee in SpecialCollectableEnum) {
+        EventManager.Instance.emit(GameEvents.TRIGGER_GAME_WIN, null);
+      }
     }
 
     /**
@@ -81,19 +98,21 @@ export class Player implements IPlayer {
         name: this.name,
         playableCharacters: this.playableCharacters,
         level: this.level.export(),
-        weaponSet: this.weaponSet
+        weaponSet: this.weaponSet,
+        inventory: this.inventory
       };
     }
 }
 
 export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacter {
+    override scene: BaseScene;
     name!: string;
     health!: number;
     maximumHealth!: number;
     baseSpeed!: number;
     spriteKey!: string;
 
-    constructor(scene: Phaser.Scene, position: Phaser.Math.Vector2, config: ICharacter) {
+    constructor(scene: BaseScene, position: Phaser.Math.Vector2, config: ICharacter) {
         super(scene, position.x, position.y, config.spriteKey);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -125,11 +144,26 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
 
       this.health = Math.max(0, Math.trunc(this.health - damage)); // Garante que não fique negativo
       TweenManager.Instance.damageTween(this);
+      EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.health);
 
       if (this.health === 0) {
-          EventManager.Instance.emit(GameEvents.PLAYER_DIED, null);
-      } else {
-          EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.health);
+        const effect = this.scene.add.circle(this.x, this.y, 10, 0xFF0000, 0.8);
+        this.scene.gameCameras.ui.ignore(effect);
+        this.scene.tweens.add({
+          targets: effect,
+          scaleX: 2,
+          scaleY: 2,
+          alpha: 0,
+          duration: 200,
+          onUpdate: () => {
+            effect.x = this.x;
+            effect.y = this.y;
+          },
+          onComplete: () => {
+            effect.destroy();
+            EventManager.Instance.emit(GameEvents.PLAYER_DIED, null);
+          }
+        });
       }
     }
 

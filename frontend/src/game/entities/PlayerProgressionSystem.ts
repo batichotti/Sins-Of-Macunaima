@@ -1,3 +1,4 @@
+import { BaseScene } from "../core/BaseScene";
 import { IMatchStats, IPlayerProgressionSystem } from "../types";
 import { Player } from "./Player";
 
@@ -6,12 +7,12 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
     xpGained: number = 0;
     pointsGained: number = 0;
     xpLevelUpNeeded: number = 20;
-    timeElapsed: number = 0;
+    scene: BaseScene;
 
-    constructor(player: Player) {
+    constructor(scene: BaseScene, player: Player) {
+      this.scene = scene;
       this.player = player;
       this.xpLevelUpNeeded += this.player.level.level * 2;
-      this.timeElapsed = Date.now();
     }
 
     increaseXP(xp: number) {
@@ -40,7 +41,8 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
         player: this.player.export(),
         xpGained: this.xpGained,
         pointsGained: this.pointsGained,
-        timeElapsed: Date.now() - this.timeElapsed
+        timeElapsed: this.scene.gameUI.timeLabel.time,
+        kills: this.scene.attackManager.getKills
       }
     }
 }

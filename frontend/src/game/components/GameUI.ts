@@ -223,6 +223,10 @@ export class TimeCounter extends TextBox {
     );
   }
 
+  get time(): number {
+    return this.timeElapsed;
+  }
+
   private formatTime(time: number): string {
     const minutes = Math.floor(time / 60000);
     const seconds = Math.floor((time % 60000) / 1000);

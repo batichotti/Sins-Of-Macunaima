@@ -54,39 +54,39 @@ export interface IEnemy {
 }
 
 export enum EnemyEnum {
-    CHUPACU,
     COLONIZADOR,
-    COBRA_CORAL
+    COBRA_CORAL,
+    INDIO
 }
 
 /**
  * Array com os inimigos. Necessário para o 'EnemyManager' gerar um aleatoriamente.
  */
 export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
-    [EnemyEnum.CHUPACU]: {
-        name: 'Chupa-cú',
-        spriteKey: 'Macunaima',
-        spawnRegion: 'Floresta',
-        weapon: MeleeTypes[MeleeEnum.BANANEIRA],
-        baseHealth: 20,
-        baseSpeed: 200,
-        damageMultiplier: 1.2,
-        pointGain: 5
+    [EnemyEnum.INDIO]: {
+      name: 'Índio',
+      spriteKey: 'Std-Char',
+      spawnRegion: 'all',
+      weapon: MeleeTypes[MeleeEnum.BENGALA],
+      baseHealth: 20,
+      baseSpeed: 200,
+      damageMultiplier: 1.2,
+      pointGain: 20
     },
     [EnemyEnum.COLONIZADOR]: {
-        name: 'Colonizador',
-        spriteKey: 'Colonizador',
-        spawnRegion: 'Praia',
-        weapon: MeleeTypes[MeleeEnum.ESPADA],
-        baseHealth: 20,
-        baseSpeed: 200,
-        damageMultiplier: 1.2,
-        pointGain: 20
+      name: 'Colonizador',
+      spriteKey: 'Colonizador',
+      spawnRegion: 'Praia',
+      weapon: MeleeTypes[MeleeEnum.ESPADA],
+      baseHealth: 20,
+      baseSpeed: 200,
+      damageMultiplier: 1.2,
+      pointGain: 20
     },
     [EnemyEnum.COBRA_CORAL]: {
       name: 'Cobra Coral',
       spriteKey: 'Snake',
-      spawnRegion: 'Praia',
+      spawnRegion: 'all',
       weapon: MeleeTypes[MeleeEnum.PICADA],
       baseHealth: 15,
       baseSpeed: 220,

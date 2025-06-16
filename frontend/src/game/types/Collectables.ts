@@ -94,13 +94,13 @@ export enum SpecialCollectableEnum {
 export const RegularCollectableTypes: Record<RegularCollectableEnum, ICollectable> = {
   [RegularCollectableEnum.GRAVETO]: {
     name: 'Graveto',
-    spriteKey: 'Graveto',
+    spriteKey: 'Palmeira',
     typee: RegularCollectableEnum.GRAVETO,
     dropable: true
   }
 };
 
-export const EspecialCollectableTypes: Record<SpecialCollectableEnum, ICollectable> = {
+export const SpecialCollectableTypes: Record<SpecialCollectableEnum, ICollectable> = {
   [SpecialCollectableEnum.MUIRAQUITA]: {
     name: 'Muiraquitã',
     spriteKey: 'Muiraquita',
