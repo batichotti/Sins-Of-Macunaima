@@ -140,7 +140,8 @@ export const BaseProjectileStats = {
  * Usado para escolher os projéteis.
  */
 export enum ProjectileEnum {
-    FLECHA
+    FLECHA,
+    BOLA
 }
 
 /**
@@ -153,6 +154,14 @@ export const ProjectileTypes: Record<ProjectileEnum, IProjectile> = {
         spriteKey: 'arrow_sprite',
         baseDamage: 2,
         baseCooldown: 300,
+        baseSpeed: 500
+    },
+    [ProjectileEnum.BOLA]: {
+        name: 'Bola',
+        weaponType: WeaponType.PROJECTILE,
+        spriteKey: 'bola',
+        baseDamage: 4,
+        baseCooldown: 250,
         baseSpeed: 500
     }
 };
