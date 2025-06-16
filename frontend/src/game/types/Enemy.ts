@@ -1,4 +1,4 @@
-import { IMelee, MeleeEnum, MeleeTypes } from "./Weapon";
+import { IMelee, IProjectile, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes } from "./Weapon";
 
 export interface WaypointNode {
     point: Phaser.Math.Vector2;
@@ -31,6 +31,11 @@ export interface IEnemy {
      * Arma do inimigo.
      */
     weapon: IMelee;
+
+    /**
+     * Arma de longo alcance do inimigo.
+     */
+    projectileWeapon?: IProjectile;
 
     /**
      * Quantidade de vida base do inimigo.
@@ -96,15 +101,16 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
 };
 
 export enum BossEnum {
-  CURURE
+  CR7
 }
 
 export const BossTypes: Record<BossEnum, IEnemy> = {
-    [BossEnum.CURURE]: {
-        name: 'Curu-Ré',
-        spriteKey: 'Peri',
-        spawnRegion: 'Floresta',
+    [BossEnum.CR7]: {
+        name: 'Cristiano Ronaldo',
+        spriteKey: 'CR7',
+        spawnRegion: 'all',
         weapon: MeleeTypes[MeleeEnum.PAULADA],
+        projectileWeapon: ProjectileTypes[ProjectileEnum.BOLA],
         baseHealth: 150,
         baseSpeed: 150,
         damageMultiplier: 1.5,

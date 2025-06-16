@@ -49,7 +49,6 @@ export default class EnemyManager {
           enemy.setPathFinder(this.pathFinder);
         }
       });
-      this.scene.physics.add.collider(blockers, this.enemyPool, this.unblockEnemy);
       this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
 
       EventManager.Instance.on(GameEvents.SHOULD_SPAWN_BOSS, () => {
@@ -252,17 +251,6 @@ export default class EnemyManager {
         }
     };
 
-    private unblockEnemy = (obj1: object) => {
-        if(obj1 instanceof Enemy) {
-            const vel = obj1.body?.velocity;
-            const coords = { x: 0, y: 0 };
-            if(vel!.x > 0) coords.x = -1;
-            if(vel!.x < 0) coords.x = 1;
-            if(vel!.y > 0) coords.y = -1;
-            if(vel!.y < 0) coords.y = 1;
-        }
-    };
-
     spawnEnemy() {
         if (this.gameFrozen) return;
 
@@ -284,8 +272,7 @@ export default class EnemyManager {
 
                 boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
                 this.scene.gameCameras.ui.ignore(boss);
-                boss.setScale(2);
-
+                boss.setSize(32, 64);
                 boss.isBoss = true;
                 this.bossCurrentlyAlive = true;
                 this.bossSpawned = false;
@@ -309,6 +296,7 @@ export default class EnemyManager {
         enemy.enableBody(true, spawn.position.x, spawn.position.y, true, true);
         this.scene.gameCameras.ui.ignore(enemy);
         enemy.isBoss = false;
+        enemy.setSize(16, 32);
 
         this.scene.time.delayedCall(3000, () => this.canSpawn = true);
     }

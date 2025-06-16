@@ -1,9 +1,10 @@
 import { DistanceMethod, Pathfinding } from "../components/phaser-pathfinding";
 import { BaseScene } from "../core/BaseScene";
 import { EventManager } from "../core/EventBus";
-import { IMelee, IEnemy, Directions, MeleeCollectableTypes, ProjectileCollectableTypes,  } from "../types";
+import { IMelee, IEnemy, Directions, MeleeCollectableTypes, ProjectileCollectableTypes, IProjectile,  } from "../types";
 import TweenManager from "./TweenManager";
 import { GameEvents } from "../types";
+import { Shooter } from "./Attack";
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnemy {
     // Propriedades básicas
@@ -12,6 +13,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     spriteKey: string;
     spawnRegion: string = 'Não importa aqui. Apenas para EnemyManager';
     weapon: IMelee;
+    projectileWeapon: IProjectile;
     baseHealth: number;
     damageMultiplier: number;
     baseSpeed: number;
@@ -22,6 +24,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     halfArc: number;
     orbitRadius: number;
     currentAngle: number = 0;
+    private shooter?: Shooter;
     // Sistema de pathfinding
     pathFinder!: Pathfinding;
     private path: Phaser.Math.Vector2[] = [];
@@ -69,6 +72,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
       this.orbitRadius = config.weapon.range * 0.6;
       this.halfArc = Phaser.Math.DegToRad(45);
 
+      if ("projectileWeapon" in config && config.projectileWeapon) {
+        this.shooter = new Shooter(this.scene, config.projectileWeapon as IProjectile, 30);
+      }
+
       this.setTexture(config.spriteKey);
       this.name = config.name;
       this.spriteKey = config.spriteKey;
@@ -84,46 +91,45 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
      *
      * @param position A posição do jogador.
      */
-sweepTween(position: Phaser.Math.Vector2): void {
-    // Verificações de segurança mais robustas
-    if (!this.body || !this.active || !position || !this.weapon || !this.scene) {
+    sweepTween(position: Phaser.Math.Vector2): void {
+      if (!this.body || !this.active || !position || !this.weapon || !this.scene) {
         console.warn('sweepTween: Condições inválidas detectadas');
         return;
-    }
+      }
 
-    this.tweenSweep?.stop();
+      this.tweenSweep?.stop();
 
-    this.baseAngle = Phaser.Math.Angle.Between(this.x, this.y, position.x, position.y);
+      this.baseAngle = Phaser.Math.Angle.Between(this.x, this.y, position.x, position.y);
 
-    const toFlip = (this.baseAngle > Math.PI/2 && this.baseAngle < 3*Math.PI/2) ? -1 : 1;
+      const toFlip = (this.baseAngle > Math.PI/2 && this.baseAngle < 3*Math.PI/2) ? -1 : 1;
 
-    const R = this.orbitRadius * 0.6;
-    const trailWidth = Phaser.Math.RadToDeg(this.halfArc) * 2;
-    const trailInterval = 40;
-    let lastTrailTime = 0;
+      const R = this.orbitRadius * 0.6;
+      const trailWidth = Phaser.Math.RadToDeg(this.halfArc) * 2;
+      const trailInterval = 40;
+      let lastTrailTime = 0;
 
     this.tweenSweep = this.scene.tweens.add({
-        targets: this,
-        currentAngle: {
-            from: -this.halfArc * toFlip,
-            to: this.halfArc * toFlip
-        },
-        ease: 'Sine.InOut',
-        duration: this.weapon.duration,
-        onUpdate: () => {
-            if (!this.scene || !this.scene.time) return;
+      targets: this,
+      currentAngle: {
+        from: -this.halfArc * toFlip,
+        to: this.halfArc * toFlip
+      },
+      ease: 'Sine.InOut',
+      duration: this.weapon.duration,
+      onUpdate: () => {
+        if (!this.scene || !this.scene.time) return;
 
-            const now = this.scene.time.now;
-            
-            if (now - lastTrailTime > trailInterval) {
-                lastTrailTime = now;
-                this.createTrailEffect(R, trailWidth);
-            }
-        },
+        const now = this.scene.time.now;
+              
+        if (now - lastTrailTime > trailInterval) {
+          lastTrailTime = now;
+          this.createTrailEffect(R, trailWidth);
+        }
+      },
     });
-}
+  }
 
-private createTrailEffect(radius: number, trailWidth: number): void {
+  private createTrailEffect(radius: number, trailWidth: number): void {
     if (!this.scene || !this.active) return;
 
     const startDeg = Phaser.Math.RadToDeg(this.baseAngle + this.currentAngle) - trailWidth/2;
@@ -158,8 +164,8 @@ private createTrailEffect(radius: number, trailWidth: number): void {
             arc.destroy();
           }
         }
-    });
-  }
+      });
+    }
 
     updatePathing(targetPx: Phaser.Math.Vector2): void {
         if (!this.body || !this.pathFinder) return;
@@ -176,7 +182,7 @@ private createTrailEffect(radius: number, trailWidth: number): void {
     }
 
     private shouldRecalculatePath(target: Phaser.Math.Vector2): boolean {
-        return Phaser.Math.Distance.BetweenPoints(target, this.lastTileTarget) > this.scene.map.tileWidth * 3;
+      return Phaser.Math.Distance.BetweenPoints(target, this.lastTileTarget) > this.scene.map.tileWidth * 3;
     }
 
     private calculatePath(target: Phaser.Math.Vector2): void {
@@ -248,8 +254,8 @@ private createTrailEffect(radius: number, trailWidth: number): void {
           this.timeStuck += delta;
 
           if (this.timeStuck >= 2000) {
-              const pushX = Phaser.Utils.Array.GetRandom([-8, -6, 6, 8]);
-              const pushY = Phaser.Utils.Array.GetRandom([-8, -6, 6, 8]);
+              const pushX = Phaser.Utils.Array.GetRandom([-2, -2, 1, 2]);
+              const pushY = Phaser.Utils.Array.GetRandom([-2, -2, 1, 2]);
               this.x += pushX;
               this.y += pushY;
 
@@ -305,8 +311,8 @@ private createTrailEffect(radius: number, trailWidth: number): void {
     }
 
     private getCacheKey(targetTile: Phaser.Math.Vector2): string {
-        const startTile = this.scene.map.worldToTileXY(this.x, this.y)!;
-        return this.scene.enemyManager.pathCache.generateKey(startTile, targetTile, 3);
+      const startTile = this.scene.map.worldToTileXY(this.x, this.y)!;
+      return this.scene.enemyManager.pathCache.generateKey(startTile, targetTile, 3);
     }
 
     takeDamage(damage: number): boolean {
@@ -335,6 +341,36 @@ private createTrailEffect(radius: number, trailWidth: number): void {
         return true;
       }
       return false;
+    }
+
+    override preUpdate(time: number, delta: number) {
+      super.preUpdate(time, delta);
+      this.updateBehavior(delta);
+    }
+
+    private updateBehavior(delta: number) {
+      this.updateMovement();
+      this.tryShootAtPlayer();
+    }
+
+    private tryShootAtPlayer() {
+      if (!this.shooter) return;
+      const player = this.scene.player.character;
+      const dist = Phaser.Math.Distance.Between(
+        this.x,
+        this.y,
+        player.x,
+        player.y
+      );
+      if (dist <= this.shooter.weaponConfig.range) {
+        const angle = Phaser.Math.Angle.Between(
+          this.x,
+          this.y,
+          player.x,
+          player.y
+        );
+        this.shooter.fire(this.x, this.y, angle);
+      }
     }
 
     override disableBody(disableGameObject: boolean = false, hideGameObject: boolean = false): this {

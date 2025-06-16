@@ -58,7 +58,12 @@ export interface IWeapon {
     /**
      * O tipo da arma.
      */
-    weaponType: WeaponType
+    weaponType: WeaponType;
+
+    /**
+     * Alcance do ataque.
+     */
+    range: number;
 }
 
 /**
@@ -94,11 +99,6 @@ export interface IMelee extends IWeapon {
      * Duração do ataque.
      */
     duration: number;
-
-    /**
-     * Alcance do ataque.
-     */
-    range: number;
 
     /**
     * Velocidade de rotação da arma.
@@ -154,15 +154,17 @@ export const ProjectileTypes: Record<ProjectileEnum, IProjectile> = {
         spriteKey: 'arrow_sprite',
         baseDamage: 2,
         baseCooldown: 300,
-        baseSpeed: 500
+        baseSpeed: 500,
+        range: 100
     },
     [ProjectileEnum.BOLA]: {
         name: 'Bola',
         weaponType: WeaponType.PROJECTILE,
-        spriteKey: 'bola',
-        baseDamage: 4,
-        baseCooldown: 250,
-        baseSpeed: 500
+        spriteKey: 'Football',
+        baseDamage: 3,
+        baseCooldown: 450,
+        baseSpeed: 300,
+        range: 100
     }
 };
 

@@ -4,6 +4,7 @@ import Enemy from "./Enemy";
 import PlayerProgressionSystem from "./PlayerProgressionSystem";
 import { EventManager } from "../core/EventBus";
 import { GameEvents } from "../types";
+import { Character } from "./Player";
 
 export default class AttackManager {
     private projectiles: Phaser.Physics.Arcade.Group;
@@ -64,17 +65,13 @@ export default class AttackManager {
 
         if (enemy.takeDamage(damage)) {
           this.kills += 1;
-          if(this.kills % 10 == 0) {
-            this.scene.player.character.heal();
-            EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.scene.player.character.health);
-          }
 
           if(this.kills % bossThreshold == 0) {
             EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS, null);
           }
 
           this.playerProgressionSystem.increasePoints(enemy.pointGain);
-          this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.5);
+          this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.25);
           EventManager.Instance.emit(GameEvents.ENEMY_DIED, { points: this.playerProgressionSystem.pointsGained, kills: this.kills });
         }
 
@@ -171,6 +168,57 @@ export default class AttackManager {
       this.projectiles.destroy();
       this.melee.destroy();
     }
+}
+
+export class Shooter {
+  private scene: BaseScene;
+  private projectiles: Phaser.Physics.Arcade.Group;
+  private canShoot = true;
+  private config: IProjectile;
+
+  constructor(scene: BaseScene, initialConfig: IProjectile, poolSize: number = 20) {
+    this.scene = scene;
+    this.config = initialConfig;
+    this.projectiles = scene.physics.add.group({
+      classType: Projectile,
+      maxSize: poolSize,
+      runChildUpdate: true,
+    });
+    this.scene.physics.add.overlap(this.projectiles, scene.player.character, this.handleHit);
+  }
+
+  public changeWeapon(config: IProjectile) {
+    this.config = config;
+  }
+
+  private handleHit = (obj1: object, obj2: object) => {
+    const char = obj1 as Character;
+
+    char.takeDamage(this.config.baseDamage);
+  }
+
+  public fire(x: number, y: number, angle: number) {
+    if (!this.canShoot) return;
+    const proj = this.projectiles.get(x, y, this.config.spriteKey) as Projectile;
+    proj.scene.gameCameras.ui.ignore(proj);
+    if (!proj) return;
+    proj.changeConfig(this.config);
+    proj.fire(x, y, angle);
+
+    this.canShoot = false;
+    proj.scene.time.delayedCall(
+      this.config.baseCooldown * 4,
+      () => (this.canShoot = true)
+    );
+  }
+
+  public get group() {
+    return this.projectiles;
+  }
+
+  public get weaponConfig() {
+    return this.config;
+  }
 }
 
 class Projectile extends Phaser.Physics.Arcade.Sprite {

@@ -30,7 +30,7 @@ export default class GameOver extends Phaser.Scene {
 
     restartButton.on('pointerdown', () => {
       if(this.prevSceneData?.data && this.prevSceneData?.scene) {
-        const resetData: SceneData = {
+        let resetData: SceneData = {
           targetScene: this.prevSceneData.scene,
           previousScene: 'GameOver',
           weaponSet: this.prevSceneData.data.player.weaponSet,
@@ -38,6 +38,8 @@ export default class GameOver extends Phaser.Scene {
           level: this.prevSceneData.data.player.level,
           character: this.prevSceneData.data.player.playableCharacters?.[0]
         };
+
+        resetData.level.level = 1;
 
         this.scene.start(this.prevSceneData.scene, resetData);
       } else {
