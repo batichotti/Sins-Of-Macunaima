@@ -197,7 +197,6 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
     scene.gameCameras.ui.ignore(this);
     scene.physics.add.existing(this);
     this.scene.physics.add.overlap(this, this.scene.player.character, () => { this.collect() });
-    this.scene.time.delayedCall(2500, () => this.isAlive = false);
   }
 
   private collect(): void {
@@ -256,6 +255,7 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
 export class RegularCollectable extends Collectable {
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config);
+    this.scene.time.delayedCall(2500, () => this.isAlive = false);
     this.setScale(2);
   }
 
@@ -278,6 +278,7 @@ export class SpecialCollectable extends Collectable {
 export class MeleeCollectable extends Collectable {
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config);
+    this.scene.time.delayedCall(2500, () => this.isAlive = false);
   }
 
   protected onCollect(): void {
@@ -289,6 +290,7 @@ export class MeleeCollectable extends Collectable {
 export class ProjectileCollectable extends Collectable {
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config);
+    this.scene.time.delayedCall(2500, () => this.isAlive = false);
   }
 
   protected onCollect(): void {
