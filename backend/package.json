@@ -26,6 +26,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.0",
     "@nestjs/typeorm": "^11.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",

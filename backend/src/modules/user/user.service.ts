@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
-
 @Injectable()
 export class UserService {
     findAll(sort: 'asc' | 'desc' = 'desc') {
-        return 'All users';
+        return { message: 'All users', sort };
     }
 
     findTopScorers() {
-        return 'Top Scorers';
+        return { message: 'Top Scorers' };
     }
 
     findOne(id: string) {
-        return 'One user';
+        return { message: 'One user', id };
     }
 
     create(input: any) {
-        return 'New user';
+        return { message: 'New user', input };
     }
 }
