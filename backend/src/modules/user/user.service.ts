@@ -1,10 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable, Param } from '@nestjs/common';
 import { SignInDTO, SignUpDTO } from './dtos/user';
 
 @Injectable()
-export class UserService {
-    constructor(private userService: UserService){}
-
+export class UserService { 
     async findAll(sort: 'asc' | 'desc' = 'desc') {
         return { message: 'All users', sort };
     }
@@ -13,7 +11,7 @@ export class UserService {
         return { message: 'Top Scorers' };
     }
 
-    async findOne(id: string) {
+    async findOne(@Param('id') id: string) {
         return { message: 'One user', id };
     }
 
@@ -21,12 +19,12 @@ export class UserService {
         return { message: 'New user', input };
     }
 
-    async signup(data : SignUpDTO) {
+    async signup(@Body() data : SignUpDTO) {
         console.log({ data });
         return data;
     }
 
-    async signin(data : SignInDTO) {
+    async signin(@Body() data : SignInDTO) {
         console.log({ data });
         return data;
     }
