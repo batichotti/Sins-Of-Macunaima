@@ -4,16 +4,15 @@ import { Player } from "../entities/Player";
 import { AnimatedTileData } from "./Tiles";
 import AttackManager from "../entities/Attack";
 import InputManager from "../components/Input";
-import { EnemySpawnPoints } from "./EnemySpawnPoints";
 import EnemyManager from "../entities/EnemyManager";
 import GameUI from "../components/GameUI";
 import PlayerProgressionSystem from "../entities/PlayerProgressionSystem";
 import AnimationManager from "../entities/AnimationManager";
-import EnemySpawner from "../entities/EnemySpawner";
+import CollectableManager from "../entities/Collectables";
 
 /**
  * Cena básica do mundo.
- * 
+ *
  * Cuida de input, geração de mundo, etc.
  */
 export default interface IBaseScene {
@@ -26,6 +25,11 @@ export default interface IBaseScene {
      * O jogador.
      */
     player: Player;
+
+    /**
+    * O sistema de coletáveis.
+    */
+    collectableManager: CollectableManager;
 
     /**
      * Um array de tilesets do Tiled.
@@ -141,4 +145,9 @@ export default interface IBaseScene {
      * Método que fecha a cena atual e vai para o próximo cenário.
      */
     changeScenario(): void;
+
+    /**
+     * Executa o sistema de game over.
+     */
+    runGameOver(): void;
 }

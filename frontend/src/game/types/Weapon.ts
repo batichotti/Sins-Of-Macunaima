@@ -39,6 +39,13 @@ export interface IWeapon {
     name: string;
 
     /**
+     * Chave do sprite usado.
+     *
+     * Deve corresponder exatamente ao nome do asset.
+     */
+    spriteKey: string;
+
+    /**
      * Dano base causado.
      */
     baseDamage: number;
@@ -72,14 +79,6 @@ export interface IProjectile extends IWeapon {
     weaponType: WeaponType.PROJECTILE;
 
     /**
-     * Chave do sprite usado.
-     * 
-     * Deve corresponder exatamente ao nome do asset.
-     */
-    spriteKey: string;
-
-
-    /**
      * Velocidade de disparo base do projétil.
      */
     baseSpeed: number;
@@ -100,6 +99,16 @@ export interface IMelee extends IWeapon {
      * Alcance do ataque.
      */
     range: number;
+
+    /**
+    * Velocidade de rotação da arma.
+    */
+    rotationSpeed?: number;
+
+    /**
+    * Raio de órbita.
+    */
+    orbitRadius?: number;
 }
 
 /**
@@ -124,15 +133,8 @@ export const BaseProjectileStats = {
     /**
      * Dano base.
      */
-    damage: 50
+    damage: 5
 }
-
-/**
- * Contém os projéteis disponíveis.
- */
-export const ProjectileTypes: IProjectile[] = [
-    { name: 'Flecha', weaponType: WeaponType.PROJECTILE, spriteKey: 'arrow_sprite', baseDamage: 40, baseCooldown: 150, baseSpeed: 500 }
-];
 
 /**
  * Usado para escolher os projéteis.
@@ -144,13 +146,94 @@ export enum ProjectileEnum {
 /**
  * Contém os projéteis disponíveis.
  */
-export const MeleeTypes: IMelee[] = [
-    { name: 'Bananeira', weaponType: WeaponType.MELEE, baseDamage: 75, baseCooldown: 350, range: 32, duration: 50 }
-];
+export const ProjectileTypes: Record<ProjectileEnum, IProjectile> = {
+    [ProjectileEnum.FLECHA]: {
+        name: 'Flecha',
+        weaponType: WeaponType.PROJECTILE,
+        spriteKey: 'arrow_sprite',
+        baseDamage: 2,
+        baseCooldown: 300,
+        baseSpeed: 500
+    }
+};
 
 /**
- * Usado para escolher os projéteis.
+ * Usado para escolher as armas corpo-a-corpo.
  */
 export enum MeleeEnum {
-    BANANEIRA
+    BANANEIRA,
+    BENGALA,
+    ESPADA,
+    PAULADA,
+    PICADA,
+    PALMEIRA
 }
+
+export const MeleeTypes: Record<MeleeEnum, IMelee> = {
+    [MeleeEnum.PALMEIRA]: {
+        name: 'Palmeira',
+        spriteKey: 'Palmeira',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 4,
+        baseCooldown: 350,
+        range: 32,
+        duration: 500,
+        rotationSpeed: 5,
+        orbitRadius: 100
+    },
+    [MeleeEnum.BANANEIRA]: {
+        name: 'Bananeira',
+        spriteKey: 'Palmeira',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 4,
+        baseCooldown: 350,
+        range: 32,
+        duration: 500,
+        rotationSpeed: 5,
+        orbitRadius: 100
+    },
+    [MeleeEnum.BENGALA]: {
+        name: 'Bengala',
+        spriteKey: 'Palmeira',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 3,
+        baseCooldown: 500,
+        range: 32,
+        duration: 750,
+        rotationSpeed: 5,
+        orbitRadius: 100
+    },
+    [MeleeEnum.ESPADA]: {
+        name: 'Espada',
+        spriteKey: 'Palmeira',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 3,
+        baseCooldown: 350,
+        range: 32,
+        duration: 750,
+        rotationSpeed: 5,
+        orbitRadius: 100
+    },
+    [MeleeEnum.PAULADA]: {
+        name: 'Paulada',
+        spriteKey: 'Palmeira',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 4,
+        baseCooldown: 1250,
+        range: 64,
+        duration: 1000,
+        rotationSpeed: 5,
+        orbitRadius: 100
+    },
+    [MeleeEnum.PICADA]: {
+        name: 'Picada',
+        spriteKey: 'Palmeira',
+        weaponType: WeaponType.MELEE,
+        baseDamage: 3,
+        baseCooldown: 350,
+        range: 32,
+        duration: 750,
+        rotationSpeed: 5,
+        orbitRadius: 100
+    }
+};

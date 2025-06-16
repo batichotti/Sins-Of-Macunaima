@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { TilePaths, TileSets } from '@/game/components/PathAssets';
 import { WindowResolution } from '@/game/components/Properties';
-import { CharacterEnum, CharacterTypes, EnemyTypes, ICharacter, IEnemy, ILevel, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, SceneData, WeaponSet, WeaponType } from '../types';
+import { BossTypes, CharacterEnum, CharacterTypes, EnemyTypes, SpecialCollectableTypes, ICharacter, ICollectable, IEnemy, ILevel, IMelee, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, RegularCollectableTypes, SceneData, WeaponSet } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets globais.
@@ -42,16 +42,56 @@ export class Boot extends Scene {
         this.load.setPath('assets');
 
         //  Jogador
-        CharacterTypes.forEach(
-            (it: ICharacter) => {
-                this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
+        Object.values(CharacterTypes).forEach(
+          (it: ICharacter) => {
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
             }
+          }
         );
 
-        EnemyTypes.forEach(
-            (it: IEnemy) => {
-                this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
+        // Inimigos
+        Object.values(EnemyTypes).forEach(
+          (it: IEnemy) => {
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 16, frameHeight: 32 });
             }
+          }
+        );
+
+        // Bosses
+        Object.values(BossTypes).forEach(
+          (it: IEnemy) => {
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Bosses/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 32, frameHeight: 64 });
+            }
+          }
+        );
+
+        // Corpo-a-Corpo
+        Object.values(MeleeTypes).forEach(
+          (it: IMelee) => {
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Attacks/Melees/${it.spriteKey}.png`, { frameWidth: 16, frameHeight: 16 });
+            }
+          }
+        );
+
+        // Coletáveis
+        Object.values(RegularCollectableTypes).forEach(
+          (it: ICollectable) => {
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Itens/${it.spriteKey}.png`, { frameWidth: 8, frameHeight: 8 });
+            }
+          }
+        );
+
+        Object.values(SpecialCollectableTypes).forEach(
+          (it: ICollectable) => {
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Itens/${it.spriteKey}.png`, { frameWidth: 8, frameHeight: 8 });
+            }
+          }
         );
 
         // Tiles
@@ -59,18 +99,18 @@ export class Boot extends Scene {
             this.load.image(`${tile}`, `tiles/${TilePaths.extruded}/${tile}.png`);
         });
 
-        // Sprites de armas
         this.load.image('arrow_sprite', 'Attacks/Projectiles/Arrows/arrow_sprite.png');
 
 
         // Aqui seria o lugar ideal para pegar tudo do backend. Mas enquanto isso construímos o personagem do zero.
         this.level = { level: 1 } as ILevel;
-        this.character = CharacterTypes[CharacterEnum.MACUNAIMA];
+        const playableCharacters = [ CharacterTypes[CharacterEnum.MACUNAIMA], CharacterTypes[CharacterEnum.PERI] ];
+        this.character = playableCharacters[0];
         this.weaponSet = {
-            projectile: ProjectileTypes[ProjectileEnum.FLECHA],
-            melee: MeleeTypes[MeleeEnum.BANANEIRA]
+          projectile: ProjectileTypes[ProjectileEnum.FLECHA],
+          melee: MeleeTypes[MeleeEnum.PALMEIRA]
         }
-        this.player = { name: 'Irineu' } as IPlayer;
+        this.player = { name: 'Irineu', level: this.level, playableCharacters: playableCharacters, weaponSet: this.weaponSet } as IPlayer;
     }
 
 
@@ -79,7 +119,7 @@ export class Boot extends Scene {
         const outlineWidth = WindowResolution.width * 0.65;
         const outlineHeight = WindowResolution.height * 0.04;
         const maxBarWidth = outlineWidth - 2;
-    
+
         // Moldura centralizada
         this.add.rectangle(
             WindowResolution.width / 2,
@@ -95,7 +135,7 @@ export class Boot extends Scene {
             outlineHeight - 2,
             0xffffff
         ).setOrigin(0, 0.5);
-    
+
         // Atualização de progresso
         this.load.on('progress', (progress: number) => {
             bar.width = maxBarWidth * progress;

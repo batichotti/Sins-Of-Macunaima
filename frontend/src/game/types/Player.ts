@@ -1,6 +1,5 @@
-import { Level } from "../entities/Level";
+import { ICollectable } from "./Collectables";
 import { WeaponSet } from "./Weapon";
-import { Character } from "../entities/Player";
 
 /**
  * Jogador que joga o jogo.
@@ -12,19 +11,28 @@ export interface IPlayer {
     name: string;
 
     /**
-     * O personagem usado pelo jogador.
+     * Os personagens que o jogador pode usar.
+     *
+     * O primeiro personagem é o que o jogo usará no início da partida.
      */
-    character: Character;
+    playableCharacters: ICharacter[];
 
     /**
      * O nível do jogador. Define modificadores de dano, vida, etc.
      */
-    level: Level;
+    level: ILevel;
 
     /**
      * Set de armas que o jogador usará na partida.
      */
     weaponSet: WeaponSet;
+
+    /**
+     * Inventário do jogador.
+     *
+     * Não visível durante o jogo. Para mandar o que o jogador conseguiu para o backend.
+     */
+    inventory: Map<ICollectable, number>;
 }
 
 /**
@@ -36,8 +44,8 @@ export interface ICharacter {
      */
     name: string;
     /**
-     * A chave do asset utilizado pelo personagem do jogador. 
-     * 
+     * A chave do asset utilizado pelo personagem do jogador.
+     *
      * Deve corresponder exatamente ao nome usado no arquivo de assets.
      */
     spriteKey: string;
@@ -77,6 +85,11 @@ export interface ILevel {
 }
 
 /**
+ * Define de quantos em quantos abates um Chefão aparece.
+ */
+export const bossThreshold = 20;
+
+/**
  * Modificadores de níveis. Multiplique com o nível atual e a vida base do personagem para ter a vida total.
  */
 export const levelModifiers = {
@@ -85,15 +98,29 @@ export const levelModifiers = {
 };
 
 /**
- * Os personagens existentes no jogo.
- */
-export const CharacterTypes: ICharacter[] = [
-    { name: 'Macunaíma', spriteKey: 'Macunaima', maximumHealth: 200, health: 200, baseSpeed: 200 }
-];
-
-/**
  * Usado para localizar o personagem em 'characterTypes'.
  */
 export enum CharacterEnum {
-    MACUNAIMA
+    MACUNAIMA,
+    PERI
 }
+
+/**
+ * Os personagens existentes no jogo.
+ */
+export const CharacterTypes: Record<CharacterEnum, ICharacter> = {
+    [CharacterEnum.MACUNAIMA]: {
+        name: 'Macunaíma',
+        spriteKey: 'Macunaima',
+        maximumHealth: 20,
+        health: 20,
+        baseSpeed: 200
+    },
+    [CharacterEnum.PERI]: {
+        name: 'Peri',
+        spriteKey: 'Peri',
+        maximumHealth: 25,
+        health: 25,
+        baseSpeed: 150
+    }
+};

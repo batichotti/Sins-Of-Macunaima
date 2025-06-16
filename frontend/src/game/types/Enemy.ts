@@ -1,4 +1,12 @@
-import { IMelee } from "./Weapon";
+import { IMelee, MeleeEnum, MeleeTypes } from "./Weapon";
+
+export interface WaypointNode {
+    point: Phaser.Math.Vector2;
+    g: number;
+    h: number;
+    f: number;
+    parent: WaypointNode | null;
+}
 
 /**
  * Contém informações base dos inimigos.
@@ -37,7 +45,7 @@ export interface IEnemy {
     /**
      * Multiplicador de dano do inimigo. Escala com o nível do jogador.
      */
-    damageMultiplier: number; 
+    damageMultiplier: number;
 
     /**
      * Pontuação ganha por matar o inimigo.
@@ -45,65 +53,61 @@ export interface IEnemy {
     pointGain: number;
 }
 
+export enum EnemyEnum {
+    COLONIZADOR,
+    COBRA_CORAL,
+    INDIO
+}
+
 /**
  * Array com os inimigos. Necessário para o 'EnemyManager' gerar um aleatoriamente.
  */
-export const EnemyTypes = [
-    { 
-        name: 'Chupa-cú', 
-        spriteKey: 'Macunaima', 
-        spawnRegion: 'Floresta',
-        weapon: { 
-            name: 'bengala', 
-            baseDamage: 15, 
-            baseCooldown: 500 
-        } as IMelee, 
-        baseHealth: 200,
-        baseSpeed: 200,
-        damageMultiplier: 1.2,
-        pointGain: 20
-    } as IEnemy,
-        { 
-        name: 'Colonizador', 
-        spriteKey: 'Colonizador', 
-        spawnRegion: 'Praia',
-        weapon: { 
-            name: 'Espada', 
-            baseDamage: 20, 
-            baseCooldown: 500 
-        } as IMelee, 
-        baseHealth: 200, 
-        baseSpeed: 200,
-        damageMultiplier: 1.2,
-        pointGain: 20
-    } as IEnemy
-];
-
-/**
- * Enum usado para escolher inimigos.
- */
-export enum EnemyEnum {
-    CHUPACU,
-    COLONIZADOR
+export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
+    [EnemyEnum.INDIO]: {
+      name: 'Índio',
+      spriteKey: 'Std-Char',
+      spawnRegion: 'all',
+      weapon: MeleeTypes[MeleeEnum.BENGALA],
+      baseHealth: 20,
+      baseSpeed: 200,
+      damageMultiplier: 1.2,
+      pointGain: 20
+    },
+    [EnemyEnum.COLONIZADOR]: {
+      name: 'Colonizador',
+      spriteKey: 'Colonizador',
+      spawnRegion: 'Praia',
+      weapon: MeleeTypes[MeleeEnum.ESPADA],
+      baseHealth: 20,
+      baseSpeed: 200,
+      damageMultiplier: 1.2,
+      pointGain: 20
+    },
+    [EnemyEnum.COBRA_CORAL]: {
+      name: 'Cobra Coral',
+      spriteKey: 'Snake',
+      spawnRegion: 'all',
+      weapon: MeleeTypes[MeleeEnum.PICADA],
+      baseHealth: 15,
+      baseSpeed: 220,
+      damageMultiplier: 1.05,
+      pointGain: 20
+    }
 };
 
-export const BossTypes = [
-    { 
-        name: 'Curu-Ré', 
-        spriteKey: 'TODO', 
-        spawnRegion: 'PlanicieClaraSuperior',
-        weapon: { 
-            name: 'Paulada', 
-            baseDamage: 50, 
-            baseCooldown: 1250 
-        } as IMelee, 
-        baseHealth: 1500,
-        baseSpeed: 150,
-        damageMultiplier: 1.2,
-        pointGain: 500
-    } as IEnemy,
-];
-
 export enum BossEnum {
-    CURURE
+  CURURE
 }
+
+export const BossTypes: Record<BossEnum, IEnemy> = {
+    [BossEnum.CURURE]: {
+        name: 'Curu-Ré',
+        spriteKey: 'Peri',
+        spawnRegion: 'Floresta',
+        weapon: MeleeTypes[MeleeEnum.PAULADA],
+        baseHealth: 150,
+        baseSpeed: 150,
+        damageMultiplier: 1.5,
+        pointGain: 500
+    }
+};

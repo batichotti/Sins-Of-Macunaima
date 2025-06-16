@@ -1,26 +1,33 @@
-import { DistanceMethod, Pathfinding, PathNode } from "../components/phaser-pathfinding";
+import { DistanceMethod, Pathfinding } from "../components/phaser-pathfinding";
 import { BaseScene } from "../core/BaseScene";
-import { IMelee, IEnemy, WeaponType, Directions } from "../types";
+import { EventManager } from "../core/EventBus";
+import { IMelee, IEnemy, Directions, MeleeCollectableTypes, ProjectileCollectableTypes,  } from "../types";
 import TweenManager from "./TweenManager";
+import { GameEvents } from "../types";
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnemy {
     // Propriedades básicas
     name: string;
-    scene: BaseScene;
+    override scene: BaseScene;
     spriteKey: string;
-    spawnRegion = 'Não importa aqui. Apenas para EnemyManager';
+    spawnRegion: string = 'Não importa aqui. Apenas para EnemyManager';
     weapon: IMelee;
     baseHealth: number;
     damageMultiplier: number;
     baseSpeed: number;
     pointGain: number;
-    
+    isBoss: boolean = false;
+    tweenSweep: Phaser.Tweens.Tween | null = null;
+    baseAngle: number = 0;
+    halfArc: number;
+    orbitRadius: number;
+    currentAngle: number = 0;
     // Sistema de pathfinding
     pathFinder!: Pathfinding;
     private path: Phaser.Math.Vector2[] = [];
     private nextNode = 0;
     private currentWaypointPath: Phaser.Math.Vector2[] = [];
-    
+
     // Controle de estado
     private timeStuck: number = 0;
     private lastPos = new Phaser.Math.Vector2(0, 0);
@@ -29,11 +36,11 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
 
     constructor(scene: BaseScene, position: Phaser.Math.Vector2, spriteKey: string) {
         super(scene, position.x, position.y, spriteKey);
-        
+
         // Configuração inicial
         this.randomPivot = Phaser.Utils.Array.GetRandom([ -3, -4, -5, -6, -7, -8, 3, 4, 5, 6, 7, 8 ]);
         this.spriteKey = spriteKey;
-        
+
         // Adiciona à cena e física
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -51,26 +58,118 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     configureEnemy(config: IEnemy): void {
-        // Configura propriedades do inimigo
-        this.setTexture(config.spriteKey);
-        this.name = config.name;
-        this.spriteKey = config.spriteKey;
-        this.damageMultiplier = config.damageMultiplier;
-        this.weapon = config.weapon;
-        this.baseHealth = config.baseHealth;
-        this.baseSpeed = config.baseSpeed;
-        this.pointGain = config.pointGain;
+      // Configura propriedades do inimigo
+      this.path = [];
+      this.currentWaypointPath = [];
+      this.nextNode = 0;
+      this.timeStuck = 0;
+      this.lastPos.set(this.x, this.y);
+      this.lastTileTarget.set(this.x, this.y);
+
+      this.orbitRadius = config.weapon.range * 0.6;
+      this.halfArc = Phaser.Math.DegToRad(45);
+
+      this.setTexture(config.spriteKey);
+      this.name = config.name;
+      this.spriteKey = config.spriteKey;
+      this.damageMultiplier = config.damageMultiplier;
+      this.weapon = config.weapon;
+      this.baseHealth = config.baseHealth;
+      this.baseSpeed = config.baseSpeed;
+      this.pointGain = config.pointGain;
     }
+
+    /**
+     * Método para animação de dano.
+     *
+     * @param position A posição do jogador.
+     */
+sweepTween(position: Phaser.Math.Vector2): void {
+    // Verificações de segurança mais robustas
+    if (!this.body || !this.active || !position || !this.weapon || !this.scene) {
+        console.warn('sweepTween: Condições inválidas detectadas');
+        return;
+    }
+
+    this.tweenSweep?.stop();
+
+    this.baseAngle = Phaser.Math.Angle.Between(this.x, this.y, position.x, position.y);
+
+    const toFlip = (this.baseAngle > Math.PI/2 && this.baseAngle < 3*Math.PI/2) ? -1 : 1;
+
+    const R = this.orbitRadius * 0.6;
+    const trailWidth = Phaser.Math.RadToDeg(this.halfArc) * 2;
+    const trailInterval = 40;
+    let lastTrailTime = 0;
+
+    this.tweenSweep = this.scene.tweens.add({
+        targets: this,
+        currentAngle: {
+            from: -this.halfArc * toFlip,
+            to: this.halfArc * toFlip
+        },
+        ease: 'Sine.InOut',
+        duration: this.weapon.duration,
+        onUpdate: () => {
+            if (!this.scene || !this.scene.time) return;
+
+            const now = this.scene.time.now;
+            
+            if (now - lastTrailTime > trailInterval) {
+                lastTrailTime = now;
+                this.createTrailEffect(R, trailWidth);
+            }
+        },
+    });
+}
+
+private createTrailEffect(radius: number, trailWidth: number): void {
+    if (!this.scene || !this.active) return;
+
+    const startDeg = Phaser.Math.RadToDeg(this.baseAngle + this.currentAngle) - trailWidth/2;
+    const endDeg = startDeg + trailWidth;
+
+    const arc = this.scene.add.arc(
+        this.x, this.y,
+        radius,
+        startDeg, endDeg,
+        false,
+        0xffffff, 0.3
+    )
+    .setOrigin(0.5)
+    .setDepth(110)
+    .setBlendMode(Phaser.BlendModes.ADD);
+
+    if (this.scene.gameCameras && this.scene.gameCameras.ui) {
+      this.scene.gameCameras.ui.ignore(arc);
+    }
+
+    const currentScene = this.scene;
+    
+    currentScene.tweens.add({
+        targets: arc,
+        alpha: 0,
+        scaleX: 1.5,
+        scaleY: 1.5,
+        ease: 'Quad.easeOut',
+        duration: 200,
+        onComplete: () => {
+          if (arc && arc.active) {
+            arc.destroy();
+          }
+        }
+    });
+  }
 
     updatePathing(targetPx: Phaser.Math.Vector2): void {
         if (!this.body || !this.pathFinder) return;
 
         if (this.shouldRecalculatePath(targetPx)) {
             const targetPos = this.scene.enemyManager.getTargetPosition(
-                new Phaser.Math.Vector2(this.x, this.y), 
+                new Phaser.Math.Vector2(this.x, this.y),
                 targetPx
             );
-            
+
             this.calculatePath(targetPos);
             this.lastTileTarget = targetPx.clone();
         }
@@ -88,7 +187,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
                 new Phaser.Math.Vector2(this.x, this.y),
                 target
             );
-            
+
             this.path = this.convertWaypointPath(waypointPath);
             this.nextNode = 0;
             this.currentWaypointPath = waypointPath;
@@ -107,14 +206,14 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
             return;
         }
 
-        const raw = this.pathFinder.findPathBetweenTl(startTile!, targetTile!, { 
+        const raw = this.pathFinder.findPathBetweenTl(startTile!, targetTile!, {
             distanceMethod: DistanceMethod.Octile,
             diagonal: true,
             simplify: true
         });
 
         this.path = raw.map(n => this.scene.map.tileToWorldXY(n.tileX, n.tileY)!.add(new Phaser.Math.Vector2(this.scene.map.tileWidth/2, this.scene.map.tileHeight/2)));
-        
+
         this.scene.enemyManager.pathCache.set(cacheKey, this.path);
         this.nextNode = 0;
         this.lastTileTarget = targetTile!.clone();
@@ -123,11 +222,11 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     private convertWaypointPath(waypoints: Phaser.Math.Vector2[]): Phaser.Math.Vector2[] {
         return waypoints.flatMap((wp, i) => {
             if (i === waypoints.length - 1) return [wp];
-            
+
             const next = waypoints[i + 1];
             const steps = Math.ceil(Phaser.Math.Distance.Between(wp.x, wp.y, next.x, next.y) / 32);
             const points: Phaser.Math.Vector2[] = [];
-            
+
             for (let j = 0; j <= steps; j++) {
                 const t = j / steps;
                 points.push(new Phaser.Math.Vector2(
@@ -140,59 +239,69 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     updateMovement(): void {
-        const delta = this.scene.game.loop.delta;
-        
-        if (this.nextNode < this.path.length) {
-            const nextTile = this.scene.map.worldToTileXY(
-                this.path[this.nextNode].x,
-                this.path[this.nextNode].y
-            );
-            
-            if (!this.scene.enemyManager.grid.getNode(nextTile!.x, nextTile!.y)?.walkable) {
-                this.path = [];
-                this.nextNode = 0;
-                return;
-            }
-        }
+      if (!this.body) return;
 
-        if (this.nextNode >= this.path.length) {
-            this.setVelocity(0, 0);
-            
-            if (this.currentWaypointPath.length > 0 && Phaser.Math.Distance.Between(this.x, this.y, this.currentWaypointPath.slice(-1)[0].x, this.currentWaypointPath.slice(-1)[0].y) < 50) {
-                this.currentWaypointPath = [];
-            }
+      const delta = this.scene.game.loop.delta;
+
+      const currentDistance = Phaser.Math.Distance.Between(this.lastPos.x, this.lastPos.y, this.x, this.y);
+      if (currentDistance < 8) {
+          this.timeStuck += delta;
+
+          if (this.timeStuck >= 2000) {
+              const pushX = Phaser.Utils.Array.GetRandom([-8, -6, 6, 8]);
+              const pushY = Phaser.Utils.Array.GetRandom([-8, -6, 6, 8]);
+              this.x += pushX;
+              this.y += pushY;
+
+              this.path = [];
+              this.nextNode = 0;
+              this.timeStuck = 0;
+          }
+      } else {
+          this.timeStuck = 0;
+          this.lastPos.set(this.x, this.y);
+      }
+
+      if (this.nextNode >= this.path.length) {
+        this.setVelocity(0, 0);
+        return;
+      }
+
+      const dest = this.path[this.nextNode];
+      const dir = new Phaser.Math.Vector2(dest.x - this.x, dest.y - this.y);
+
+      if (dir.length() > 0) {
+        dir.normalize();
+      }
+
+      const speed = this.baseSpeed;
+      this.walkAnimation(dir);
+      this.setVelocity(dir.x * speed, dir.y * speed);
+
+      if (Phaser.Math.Distance.Between(this.x, this.y, dest.x, dest.y) < 16) {
+        this.nextNode++;
+      }
+  }
+
+    private walkAnimation(direction: Phaser.Math.Vector2) {
+        if (direction.length() === 0) {
+            this.setFrame(0);
             return;
         }
 
-        const dest = this.path[this.nextNode];
-        const dir = new Phaser.Math.Vector2(dest.x - this.x, dest.y - this.y).normalize();
-        const speed = this.baseSpeed;
-
-        this.walkAnimation(dir);
-
-        this.setVelocity(dir.x * speed, dir.y * speed);
-
-        if (Phaser.Math.Distance.Between(this.x, this.y, dest.x, dest.y) < 32) {
-            this.nextNode++;
-        }
-
-        if (Phaser.Math.Distance.Between(this.lastPos.x, this.lastPos.y, this.x, this.y) < 5) {
-            this.timeStuck += delta;
-            if (this.timeStuck >= 3000) {
-                this.destroy();
+        if (Math.abs(direction.x) > Math.abs(direction.y)) {
+            if (direction.x > 0) {
+                this.play(`${this.spriteKey}_${Directions.RIGHT}`, true);
+            } else {
+                this.play(`${this.spriteKey}_${Directions.LEFT}`, true);
             }
         } else {
-            this.timeStuck = 0;
-            this.lastPos.set(this.x, this.y);
+            if (direction.y > 0) {
+                this.play(`${this.spriteKey}_${Directions.DOWN}`, true);
+            } else {
+                this.play(`${this.spriteKey}_${Directions.UP}`, true);
+            }
         }
-    }
-
-    private walkAnimation(direction: Phaser.Math.Vector2) {
-        if(direction.x > 0) this.play(`${this.spriteKey}_${Directions.RIGHT}`, true);
-        else if(direction.x < 0) this.play(`${this.spriteKey}_${Directions.LEFT}`, true);
-        else if(direction.y > 0) this.play(`${this.spriteKey}_${Directions.DOWN}`, true);
-        else if(direction.y < 0) this.play(`${this.spriteKey}_${Directions.UP}`, true);
-        else this.setFrame(0);
     }
 
     private getCacheKey(targetTile: Phaser.Math.Vector2): string {
@@ -201,18 +310,61 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     takeDamage(damage: number): boolean {
-        this.baseHealth -= damage;
-        TweenManager.Instance.damageTween(this);
+      if (!this.active || !this.body) return false;
+      this.baseHealth -= damage;
+      TweenManager.Instance.damageTween(this);
 
-        if (this.baseHealth <= 0) {
-            this.destroy();
-            return true;
+      if (this.baseHealth <= 0) {
+        if (this.isBoss) {
+          EventManager.Instance.emit(GameEvents.BOSS_DEFEATED, null);
         }
-        return false;
+
+        else if(Phaser.Math.Between(1, 10) <= 3) {
+          let collectable = Object.values(MeleeCollectableTypes).find(it => it.name.toUpperCase() === this.weapon.name.toUpperCase());
+
+          if (!collectable) {
+            collectable = Object.values(ProjectileCollectableTypes).find(it => it.name.toUpperCase() === this.weapon.name.toUpperCase());
+          }
+
+          if (collectable && collectable.dropable) {
+            EventManager.Instance.emit(GameEvents.WEAPON_DROPPED, { weapon: { asIWeapon: this.weapon, asICollectable: collectable }, position: this.body.position });
+          }
+        }
+
+        this.disableBody(true, true);
+        return true;
+      }
+      return false;
     }
 
-    destroy(): void {
-        this.disableBody(true, true);
-        super.destroy();
+    override disableBody(disableGameObject: boolean = false, hideGameObject: boolean = false): this {
+      this.setActive(false);
+      this.path = [];
+      this.nextNode = 0
+      this.currentWaypointPath = [];
+      const effect = this.scene.add.circle(this.x, this.y, 10, 0xFF0000, 0.8);
+      this.scene.gameCameras.ui.ignore(effect);
+      this.scene.tweens.add({
+        targets: effect,
+        scaleX: 2,
+        scaleY: 2,
+        alpha: 0,
+        duration: 200,
+        onUpdate: () => {
+          effect.x = this.x;
+          effect.y = this.y;
+        },
+        onComplete: () => {
+          super.disableBody(disableGameObject, hideGameObject);
+          effect.destroy();
+          super.destroy();
+        }
+      });
+      return this;
+    }
+
+    override destroy(): void {
+      this.tweenSweep?.stop();
+      super.destroy();
     }
 }
