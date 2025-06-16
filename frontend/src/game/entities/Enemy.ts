@@ -8,7 +8,7 @@ import { GameEvents } from "../types";
 export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnemy {
     // Propriedades básicas
     name: string;
-    scene: BaseScene;
+    override scene: BaseScene;
     spriteKey: string;
     spawnRegion: string = 'Não importa aqui. Apenas para EnemyManager';
     weapon: IMelee;
@@ -84,67 +84,82 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
      *
      * @param position A posição do jogador.
      */
-     sweepTween(position: Phaser.Math.Vector2): void {
-      if (!this.body || !this.active || !position || !this.weapon) return;
+sweepTween(position: Phaser.Math.Vector2): void {
+    // Verificações de segurança mais robustas
+    if (!this.body || !this.active || !position || !this.weapon || !this.scene) {
+        console.warn('sweepTween: Condições inválidas detectadas');
+        return;
+    }
 
-      this.tweenSweep?.stop();
+    this.tweenSweep?.stop();
 
-      this.baseAngle = Phaser.Math.Angle.Between(this.x, this.y, position.x, position.y);
+    this.baseAngle = Phaser.Math.Angle.Between(this.x, this.y, position.x, position.y);
 
-      const toFlip = (this.baseAngle > Math.PI/2 && this.baseAngle < 3*Math.PI/2) ? -1 : 1;
+    const toFlip = (this.baseAngle > Math.PI/2 && this.baseAngle < 3*Math.PI/2) ? -1 : 1;
 
-      const R = this.orbitRadius * 0.6;
-      const trailWidth = Phaser.Math.RadToDeg(this.halfArc) * 2;
-      const trailInterval = 40;
-      let lastTrailTime = 0;
+    const R = this.orbitRadius * 0.6;
+    const trailWidth = Phaser.Math.RadToDeg(this.halfArc) * 2;
+    const trailInterval = 40;
+    let lastTrailTime = 0;
 
-      this.tweenSweep = this.scene.tweens.add({
+    this.tweenSweep = this.scene.tweens.add({
         targets: this,
         currentAngle: {
-          from: -this.halfArc * toFlip,
-          to: this.halfArc * toFlip
+            from: -this.halfArc * toFlip,
+            to: this.halfArc * toFlip
         },
         ease: 'Sine.InOut',
         duration: this.weapon.duration,
         onUpdate: () => {
-          const now = this.scene.time.now;
+            if (!this.scene || !this.scene.time) return;
 
-
-          if (now - lastTrailTime > trailInterval) {
-            lastTrailTime = now;
-            this.createTrailEffect(R, trailWidth);
-          }
+            const now = this.scene.time.now;
+            
+            if (now - lastTrailTime > trailInterval) {
+                lastTrailTime = now;
+                this.createTrailEffect(R, trailWidth);
+            }
         },
-      });
-    }
+    });
+}
 
-    private createTrailEffect(radius: number, trailWidth: number): void {
-      const startDeg = Phaser.Math.RadToDeg(this.baseAngle + this.currentAngle) - trailWidth/2;
-      const endDeg = startDeg + trailWidth;
+private createTrailEffect(radius: number, trailWidth: number): void {
+    if (!this.scene || !this.active) return;
 
-      const arc = this.scene.add.arc(
+    const startDeg = Phaser.Math.RadToDeg(this.baseAngle + this.currentAngle) - trailWidth/2;
+    const endDeg = startDeg + trailWidth;
+
+    const arc = this.scene.add.arc(
         this.x, this.y,
         radius,
         startDeg, endDeg,
         false,
         0xffffff, 0.3
-      )
-      .setOrigin(0.5)
-      .setDepth(110)
-      .setBlendMode(Phaser.BlendModes.ADD);
+    )
+    .setOrigin(0.5)
+    .setDepth(110)
+    .setBlendMode(Phaser.BlendModes.ADD);
 
+    if (this.scene.gameCameras && this.scene.gameCameras.ui) {
       this.scene.gameCameras.ui.ignore(arc);
+    }
 
-      this.scene.tweens.add({
+    const currentScene = this.scene;
+    
+    currentScene.tweens.add({
         targets: arc,
         alpha: 0,
         scaleX: 1.5,
         scaleY: 1.5,
         ease: 'Quad.easeOut',
         duration: 200,
-        onComplete: () => arc.destroy()
-      });
-    }
+        onComplete: () => {
+          if (arc && arc.active) {
+            arc.destroy();
+          }
+        }
+    });
+  }
 
     updatePathing(targetPx: Phaser.Math.Vector2): void {
         if (!this.body || !this.pathFinder) return;
