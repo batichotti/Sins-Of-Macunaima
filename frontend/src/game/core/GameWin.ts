@@ -1,12 +1,12 @@
 import { Text } from "../components/Properties";
-import { MatchData, SceneData } from "../types";
+import { MatchData } from "../types";
 
-export default class GameOver extends Phaser.Scene {
+export default class GameWin extends Phaser.Scene {
   private prevSceneData: MatchData | null = null;
   private container: Phaser.GameObjects.Container;
 
   constructor() {
-    super('GameOver');
+    super('GameWin');
   }
 
   init(data?: MatchData) {
@@ -17,38 +17,30 @@ export default class GameOver extends Phaser.Scene {
     const { width, height } = this.scale;
     this.container = this.add.container(width * 0.5, height * 0.35);
 
-    const gameOverTitle = `Você morreu.`;
     const background = this.add.graphics().fillStyle(0x000000, 0.8).fillRoundedRect(-width * 0.35, -height * 0.16, width * 0.7, height * 0.7);
-    const gameOverText = this.add.text(0, 0, gameOverTitle, Text.Title2).setOrigin(0.5);
-    const scoreText = this.add.text(0, 75, `Pontuação: ${this?.prevSceneData?.data?.pointsGained ?? 0}`, Text.Content).setOrigin(0.5);
-    const timeElapsed = this.add.text(0, 125, `Tempo: ${this.formatTime(this?.prevSceneData?.data?.timeElapsed ?? 0)}`, Text.Content).setOrigin(0.5);
+    const gameWinTitle = `Você derrotou o chefe\ne conseguiu o Item especial.`;
+    const gameOverText = this.add.text(0, 0, gameWinTitle, Text.Title2).setOrigin(0.5);
+    const scoreText = this.add.text(0, 125, `Pontuação: ${this?.prevSceneData?.data?.pointsGained ?? 0}`, Text.Content).setOrigin(0.5);
+    const timeElapsed = this.add.text(0, 175, `Tempo: ${this.formatTime(this?.prevSceneData?.data?.timeElapsed ?? 0)}`, Text.Content).setOrigin(0.5);
 
-    const restartButton = this.add.text(0, 200, 'Tentar de novo', Text.Content).setOrigin(0.5).setInteractive();
-    const mainMenuButton = this.add.text(0, 250, 'Voltar ao menu principal', Text.Content).setOrigin(0.5).setInteractive();
+    const continueButton = this.add.text(0, 225, 'Continuar jogando', Text.Content).setOrigin(0.5).setInteractive();
+    const mainMenuButton = this.add.text(0, 275, 'Voltar ao menu principal', Text.Content).setOrigin(0.5).setInteractive();
 
-    this.container.add([background, gameOverText, scoreText, timeElapsed, restartButton, mainMenuButton]);
+    this.container.add([background, gameOverText, scoreText, timeElapsed, continueButton, mainMenuButton]);
 
-    restartButton.on('pointerdown', () => {
-      if(this.prevSceneData?.data && this.prevSceneData?.scene) {
-        const resetData: SceneData = {
-          targetScene: this.prevSceneData.scene,
-          previousScene: 'GameOver',
-          weaponSet: this.prevSceneData.data.player.weaponSet,
-          player: this.prevSceneData.data.player,
-          level: this.prevSceneData.data.player.level,
-          character: this.prevSceneData.data.player.playableCharacters?.[0]
-        };
-
-        this.scene.start(this.prevSceneData.scene, resetData);
+    continueButton.on('pointerdown', () => {
+      if(this.prevSceneData?.scene) {
+        this.scene.resume(this.prevSceneData.scene);
+        this.scene.stop('GameWin');
       } else {
-        console.warn('GameOver: Dados não encontrados, redirecionando para Boot');
+        console.warn('GameWin: Não foi possível retomar a cena, redirecionando para Boot');
         this.scene.start('Boot');
       }
     });
 
-    restartButton.on('pointerover', () => {
+    continueButton.on('pointerover', () => {
       const tween = this.tweens.add({
-        targets: restartButton,
+        targets: continueButton,
         scaleX: 1.1,
         scaleY: 1.1,
         duration: 150,
@@ -57,9 +49,9 @@ export default class GameOver extends Phaser.Scene {
       });
     });
 
-    restartButton.on('pointerout', () => {
+    continueButton.on('pointerout', () => {
       const tween = this.tweens.add({
-        targets: restartButton,
+        targets: continueButton,
         scaleX: 1.,
         scaleY: 1.,
         duration: 150,
@@ -70,7 +62,7 @@ export default class GameOver extends Phaser.Scene {
 
     // Handler para voltar ao menu principal
     mainMenuButton.on('pointerdown', () => {
-      // Lógica para voltar ao menu principal.
+      // Lógica para o menu principal.
     });
 
     mainMenuButton.on('pointerover', () => {

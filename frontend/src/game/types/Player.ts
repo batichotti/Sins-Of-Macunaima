@@ -1,4 +1,4 @@
-import { CharacterAnimationTemplate } from "./Animations";
+import { ICollectable } from "./Collectables";
 import { WeaponSet } from "./Weapon";
 
 /**
@@ -28,9 +28,11 @@ export interface IPlayer {
     weaponSet: WeaponSet;
 
     /**
-     * Configurações de animação.
+     * Inventário do jogador.
+     *
+     * Não visível durante o jogo. Para mandar o que o jogador conseguiu para o backend.
      */
-    animConfig?: CharacterAnimationTemplate;
+    inventory: Map<ICollectable, number>;
 }
 
 /**
@@ -85,7 +87,7 @@ export interface ILevel {
 /**
  * Define de quantos em quantos abates um Chefão aparece.
  */
-export const bossThreshold = 40;
+export const bossThreshold = 20;
 
 /**
  * Modificadores de níveis. Multiplique com o nível atual e a vida base do personagem para ter a vida total.
