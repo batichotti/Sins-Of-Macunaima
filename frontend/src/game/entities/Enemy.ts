@@ -322,7 +322,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
 
       if (this.baseHealth <= 0) {
         if (this.isBoss) {
-          EventManager.Instance.emit(GameEvents.BOSS_DEFEATED, null);
+          this.scene.runGameWin();
         }
 
         else if(Phaser.Math.Between(1, 10) <= 3) {

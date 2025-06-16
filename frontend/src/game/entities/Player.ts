@@ -63,7 +63,6 @@ export class Player implements IPlayer {
 
         // Aplica os novos modificadores
         this.character.maximumHealth = Math.floor(this.character.maximumHealth * healthMultiplier);
-        this.character.health = this.character.maximumHealth * 0.25;
         this.weaponSet.melee.baseDamage *= damageMultiplier;
         this.weaponSet.projectile.baseDamage *= damageMultiplier;
 
@@ -161,7 +160,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite implements ICharacte
           },
           onComplete: () => {
             effect.destroy();
-            EventManager.Instance.emit(GameEvents.PLAYER_DIED, null);
+            this.scene.runGameOver();
           }
         });
       }
