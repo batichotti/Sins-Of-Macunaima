@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { TilePaths, TileSets } from '@/game/components/PathAssets';
 import { WindowResolution } from '@/game/components/Properties';
-import { BossTypes, CharacterEnum, CharacterTypes, EnemyTypes, SpecialCollectableTypes, ICharacter, ICollectable, IEnemy, ILevel, IMelee, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, RegularCollectableTypes, SceneData, WeaponSet } from '../types';
+import { BossTypes, CharacterEnum, CharacterTypes, EnemyTypes, SpecialCollectableTypes, ICharacter, ICollectable, IEnemy, ILevel, IMelee, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, RegularCollectableTypes, SceneData, WeaponSet, IProjectile } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets globais.
@@ -63,7 +63,7 @@ export class Boot extends Scene {
         Object.values(BossTypes).forEach(
           (it: IEnemy) => {
             if(!this.textures.exists(it.spriteKey)) {
-              this.load.spritesheet(it.spriteKey, `Bosses/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 32, frameHeight: 64 });
+              this.load.spritesheet(it.spriteKey, `Characters/${it.spriteKey}/Sprite/${it.spriteKey}_Sprite_Sheet.png`, { frameWidth: 32, frameHeight: 64 });
             }
           }
         );
@@ -76,6 +76,15 @@ export class Boot extends Scene {
             }
           }
         );
+
+        // Projéteis
+         Object.values(ProjectileTypes).forEach(
+          (it: IProjectile) => {
+            if(!this.textures.exists(it.spriteKey)) {
+              this.load.spritesheet(it.spriteKey, `Attacks/Projectiles/${it.spriteKey}.png`, { frameWidth: 16, frameHeight: 16 });
+            }
+          }
+        );       
 
         // Coletáveis
         Object.values(RegularCollectableTypes).forEach(
@@ -98,8 +107,6 @@ export class Boot extends Scene {
         TileSets.forEach((tile) => {
             this.load.image(`${tile}`, `tiles/${TilePaths.extruded}/${tile}.png`);
         });
-
-        this.load.image('arrow_sprite', 'Attacks/Projectiles/Arrows/arrow_sprite.png');
 
 
         // Aqui seria o lugar ideal para pegar tudo do backend. Mas enquanto isso construímos o personagem do zero.

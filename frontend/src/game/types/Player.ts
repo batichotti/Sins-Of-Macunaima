@@ -87,7 +87,7 @@ export interface ILevel {
 /**
  * Define de quantos em quantos abates um Chefão aparece.
  */
-export const bossThreshold = 20;
+export const bossThreshold = 15;
 
 /**
  * Modificadores de níveis. Multiplique com o nível atual e a vida base do personagem para ter a vida total.

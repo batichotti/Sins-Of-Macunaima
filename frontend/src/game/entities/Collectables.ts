@@ -32,7 +32,7 @@ export default class CollectableManager implements ICollectableManager {
   private cleanup: () => void = () => {
     for (let i = this.children.length - 1; i >= 0; i--) {
       const child = this.children[i];
-      if (!child.isAlive && !(child instanceof SpecialCollectable)) {
+      if (!child.isAlive && child.destroyable) {
         child.destroy();
         this.children.splice(i, 1);
       }
@@ -97,15 +97,19 @@ export default class CollectableManager implements ICollectableManager {
 
     let collectable: Collectable;
 
-    if (Object.values(RegularCollectableEnum).includes(config.typee as RegularCollectableEnum)) {
-      collectable = new RegularCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
-    } else if (Object.values(SpecialCollectableEnum).includes(config.typee as SpecialCollectableEnum)) {
+    if (Object.values(SpecialCollectableEnum).includes(config.typee as SpecialCollectableEnum)) {
       collectable = new SpecialCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
-    } else if (Object.values(MeleeEnum).includes(config.typee as MeleeEnum)) {
+    }
+    else if (Object.values(RegularCollectableEnum).includes(config.typee as RegularCollectableEnum)) {
+      collectable = new RegularCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
+    }
+    else if (Object.values(MeleeEnum).includes(config.typee as MeleeEnum)) {
       collectable = new MeleeCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
-    } else if (Object.values(ProjectileEnum).includes(config.typee as ProjectileEnum)) {
+    }
+    else if (Object.values(ProjectileEnum).includes(config.typee as ProjectileEnum)) {
       collectable = new ProjectileCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
-    } else {
+    }
+    else {
       collectable = new RegularCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
     }
 
@@ -186,6 +190,8 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
   name: string;
   spriteKey: string;
   isAlive: boolean = true;
+  destroyable: boolean = true;
+  collected: boolean = false;
   typee: RegularCollectableEnum | SpecialCollectableEnum | MeleeEnum | ProjectileEnum;
 
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
@@ -201,10 +207,9 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
   }
 
   private collect(): void {
-    if (!this.active) return;
+    if (!this.active || this.collected) return;
+    this.collected = true;
     this.playCollectEffect();
-
-    this.onCollect();
   }
 
   override destroy(): void {
@@ -246,6 +251,7 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
       duration: 200,
       onComplete: () => {
         this.setActive(false).setVisible(false);
+        this.onCollect();
         this.scene.collectableManager.removeCollectable(this);
         effect.destroy();
       }
@@ -267,11 +273,13 @@ export class RegularCollectable extends Collectable {
 export class SpecialCollectable extends Collectable {
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config);
+    this.destroyable = false;
     this.setScale(2);
   }
 
   protected onCollect(): void {
     EventManager.Instance.emit(GameEvents.COLLECTABLE_COLLECTED, this.export());
+    this.scene.runGameWin();
   }
 }
 

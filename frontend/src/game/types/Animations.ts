@@ -38,6 +38,14 @@ export const CharacterAnimConfigs: Record<string, CharacterAnimationTemplate> = 
     down: { start: 3, end: 5 },
     left: { start: 0, end: 2 },
     right: { start: 3, end: 5 },
+  },
+  'CR7': {
+    framerate: 4,
+    repeat: -1,
+    up: { start: 1, end: 2 },
+    down: { start: 1, end: 2 },
+    left: { start: 2, end: 2 },
+    right: { start: 1, end: 2 },
   }
 };
 

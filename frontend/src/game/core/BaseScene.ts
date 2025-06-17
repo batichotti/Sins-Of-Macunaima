@@ -60,8 +60,6 @@ export class BaseScene extends Scene implements IBaseScene {
   }
 
   protected create(): void {
-    EventManager.Instance.on(GameEvents.PLAYER_DIED, this.runGameOver, this);
-    EventManager.Instance.on(GameEvents.TRIGGER_GAME_WIN, this.runGameWin, this);
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown, this);
     this.setupLayers();
     this.setupAnimatedTiles();
@@ -253,25 +251,21 @@ export class BaseScene extends Scene implements IBaseScene {
 
   runGameWin = () => {
     EventManager.Instance.emit(GameEvents.UNFREEZE_GAME, null);
-    this.time.delayedCall(500, () => {
-      const matchData: MatchData = {
-        scene: this.constructor.name,
-        data: this.playerProgressionSystem.export()
-      };
-      this.scene.pause(this.constructor.name);
-      this.scene.launch('GameWin', matchData);
-    });
+    const matchData: MatchData = {
+      scene: this.constructor.name,
+      data: this.playerProgressionSystem.export()
+    };
+    this.scene.pause(this.constructor.name);
+    this.scene.launch('GameWin', matchData);
   }
 
   runGameOver = () => {
-    this.time.delayedCall(500, () => {
-      const matchData: MatchData = {
-        scene: this.constructor.name,
-        data: this.playerProgressionSystem.export()
-      };
-      this.scene.pause(this.constructor.name);
-      this.scene.launch('GameOver', matchData);
-    });
+    const matchData: MatchData = {
+      scene: this.constructor.name,
+      data: this.playerProgressionSystem.export()
+    };
+    this.scene.pause(this.constructor.name);
+    this.scene.launch('GameOver', matchData);
   }
 
   changeScenario(): void {
@@ -296,9 +290,6 @@ export class BaseScene extends Scene implements IBaseScene {
   }
 
   private shutdown = (): void => {
-    EventManager.Instance.off(GameEvents.PLAYER_DIED, this.runGameOver, this);
-    EventManager.Instance.off(GameEvents.TRIGGER_GAME_WIN, this.runGameWin, this);
-
     this.children.removeAll(true);
     this.gameUI?.destroy();
     this.player?.destroy();

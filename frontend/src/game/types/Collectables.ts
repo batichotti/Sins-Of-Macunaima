@@ -53,14 +53,14 @@ export interface ICollectableManager {
  * Coletáveis regulares possíveis.
  */
 export enum RegularCollectableEnum {
-  GRAVETO
+  GRAVETO = 'graveto'
 }
 
 /**
  * Coletáveis especiais.
  */
 export enum SpecialCollectableEnum {
-  MUIRAQUITA
+  MUIRAQUITA = 'muiraquita'
 }
 
 /**
@@ -115,6 +115,12 @@ export const ProjectileCollectableTypes: Record<ProjectileEnum, ICollectable> = 
     spriteKey: 'Flecha',
     typee: ProjectileEnum.FLECHA,
     dropable: true
+  },
+  [ProjectileEnum.BOLA]: {
+    name: 'Bola',
+    spriteKey: 'Football',
+    typee: ProjectileEnum.BOLA,
+    dropable: false
   }
 };
 

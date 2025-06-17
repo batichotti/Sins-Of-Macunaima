@@ -39,6 +39,8 @@ export default class GameOver extends Phaser.Scene {
           character: this.prevSceneData.data.player.playableCharacters?.[0]
         };
 
+        resetData.level.level = 1;
+
         this.scene.start(this.prevSceneData.scene, resetData);
       } else {
         console.warn('GameOver: Dados não encontrados, redirecionando para Boot');

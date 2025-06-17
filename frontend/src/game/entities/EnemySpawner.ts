@@ -5,7 +5,7 @@ export default class EnemySpawner {
     private scene: BaseScene;
     private lastPlayerPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 0); // Inicializar
     private spawnPoints: EnemySpawnPoints[] = [];
-    private minDistance: number = 20;
+    private minDistance: number = 120;
     private maxDistance: number = 640;
     private canChoose: boolean = true;
 

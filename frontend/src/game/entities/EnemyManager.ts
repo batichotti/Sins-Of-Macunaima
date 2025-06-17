@@ -49,7 +49,6 @@ export default class EnemyManager {
           enemy.setPathFinder(this.pathFinder);
         }
       });
-      this.scene.physics.add.collider(blockers, this.enemyPool, this.unblockEnemy);
       this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
 
       EventManager.Instance.on(GameEvents.SHOULD_SPAWN_BOSS, () => {
@@ -238,77 +237,85 @@ export default class EnemyManager {
         );
     }
 
+    private resetEnemyForReuse(enemy: Enemy): void {
+      enemy.setVelocity(0, 0);
+      this.scene.tweens.killTweensOf(enemy);
+        
+      enemy.setActive(true);
+      enemy.setVisible(true);
+    }
+
     private attack = (obj1: object, obj2: object) => {
-        const enemy = obj2 as Enemy;
-        const character = obj1 as Character;
+      const enemy = obj2 as Enemy;
+      const character = obj1 as Character;
 
-        if (!enemy.active || !enemy.weapon?.baseDamage) return;
+      if (!enemy.active || !enemy.visible || !enemy.weapon?.baseDamage) return;
 
-        if(this.cooldownAttack) {
-          enemy.sweepTween(character.body!.position);
-          character.takeDamage(enemy.weapon.baseDamage * enemy.damageMultiplier * 0.25 * this.scene.player.level.level);
-          this.cooldownAttack = false;
-          this.scene.time.delayedCall(1250, () => { this.cooldownAttack = true; });
-        }
-    };
-
-    private unblockEnemy = (obj1: object) => {
-        if(obj1 instanceof Enemy) {
-            const vel = obj1.body?.velocity;
-            const coords = { x: 0, y: 0 };
-            if(vel!.x > 0) coords.x = -1;
-            if(vel!.x < 0) coords.x = 1;
-            if(vel!.y > 0) coords.y = -1;
-            if(vel!.y < 0) coords.y = 1;
-        }
-    };
+      if(this.cooldownAttack) {
+        enemy.sweepTween(character.body!.position);
+        character.takeDamage(enemy.weapon.baseDamage * enemy.damageMultiplier * 0.25 * this.scene.player.level.level);
+        this.cooldownAttack = false;
+        this.scene.time.delayedCall(1250, () => { this.cooldownAttack = true; });
+      }
+    }
 
     spawnEnemy() {
-        if (this.gameFrozen) return;
+      if (this.gameFrozen) return;
 
-        const spawn = this.enemySpawner.chooseSpawn();
-        if (!spawn || !this.canSpawn || this.bossCurrentlyAlive) return;
+      const spawn = this.enemySpawner.chooseSpawn();
+      if (!spawn || !this.canSpawn || this.bossCurrentlyAlive) return;
 
-        if (this.bossSpawned && !this.bossDefeated) {
-            const validBoss = Object.values(BossTypes).filter(e => e.spawnRegion === spawn.name || e.spawnRegion === 'all');
-            if (validBoss.length === 0) {
-                this.bossSpawned = false;
-            } else {
-                const bossType = Phaser.Utils.Array.GetRandom(validBoss);
-                const boss = this.enemyPool.get(spawn.position.x, spawn.position.y, bossType.spriteKey) as Enemy;
-                if (!boss) return;
+      if (this.bossSpawned && !this.bossDefeated) {
+          const validBoss = Object.values(BossTypes).filter(e => e.spawnRegion === spawn.name || e.spawnRegion === 'all');
+          if (validBoss.length === 0) {
+              this.bossSpawned = false;
+          } else {
+              const bossType = Phaser.Utils.Array.GetRandom(validBoss);
+              const boss = this.enemyPool.get() as Enemy;
+              if (!boss) return;
 
-                this.canSpawn = false;
-                boss.configureEnemy(bossType);
-                boss.setPathFinder(this.pathFinder);
+              this.canSpawn = false;
+                
+              this.resetEnemyForReuse(boss);
+              
+              boss.configureEnemy(bossType);
+              boss.setPathFinder(this.pathFinder);
+              
+              boss.setPosition(spawn.position.x, spawn.position.y);
+              boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
 
-                boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
-                this.scene.gameCameras.ui.ignore(boss);
-                boss.setScale(2);
+              this.scene.gameCameras.ui.ignore(boss);
+              boss.setSize(32, 64);
+              boss.isBoss = true;
+              this.bossCurrentlyAlive = true;
+              this.bossSpawned = false;
 
-                boss.isBoss = true;
-                this.bossCurrentlyAlive = true;
-                this.bossSpawned = false;
-
-                EventManager.Instance.emit(GameEvents.BOSS_SPAWNED, bossType);
-                this.scene.time.delayedCall(3000, () => this.canSpawn = true);
-                return;
+              EventManager.Instance.emit(GameEvents.BOSS_SPAWNED, bossType);
+              return;
             }
         }
+        
         const validEnemies = Object.values(EnemyTypes).filter(e => e.spawnRegion === spawn.name || e.spawnRegion === 'all');
         if (validEnemies.length === 0) return;
 
         const type = Phaser.Utils.Array.GetRandom(validEnemies);
-        const enemy = this.enemyPool.get(spawn.position.x, spawn.position.y, type.spriteKey) as Enemy;
+        const enemy = this.enemyPool.get() as Enemy;
         if (!enemy) return;
 
         this.canSpawn = false;
+        
+        this.resetEnemyForReuse(enemy);
+        
         enemy.configureEnemy(type);
         enemy.setScale(1.5);
         enemy.setPathFinder(this.pathFinder);
+        
+        enemy.setPosition(spawn.position.x, spawn.position.y);
         enemy.enableBody(true, spawn.position.x, spawn.position.y, true, true);
+        
         this.scene.gameCameras.ui.ignore(enemy);
         enemy.isBoss = false;
+        enemy.setSize(16, 32);
 
         this.scene.time.delayedCall(3000, () => this.canSpawn = true);
     }
@@ -377,7 +384,7 @@ export default class EnemyManager {
       while (processed < BATCH_SIZE && attempts < maxAttempts) {
         const enemy = activeEnemies[this.updateIndex];
 
-          if (enemy && enemy.active && enemy.body) {
+          if (enemy.active && enemy.visible && enemy.body) {
             enemy.updatePathing(this.playerPos);
             processed++;
           }
@@ -393,7 +400,7 @@ export default class EnemyManager {
     updateMovement() {
       const enemies = this.enemyPool.getChildren() as Enemy[];
       for (const enemy of enemies) {
-        if (enemy.active && enemy.body) {
+        if (enemy.active && enemy.visible && enemy.body) {
           enemy.updateMovement();
         }
       }

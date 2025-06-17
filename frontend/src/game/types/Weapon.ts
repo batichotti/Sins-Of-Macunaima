@@ -58,7 +58,12 @@ export interface IWeapon {
     /**
      * O tipo da arma.
      */
-    weaponType: WeaponType
+    weaponType: WeaponType;
+
+    /**
+     * Alcance do ataque.
+     */
+    range: number;
 }
 
 /**
@@ -94,11 +99,6 @@ export interface IMelee extends IWeapon {
      * Duração do ataque.
      */
     duration: number;
-
-    /**
-     * Alcance do ataque.
-     */
-    range: number;
 
     /**
     * Velocidade de rotação da arma.
@@ -140,7 +140,8 @@ export const BaseProjectileStats = {
  * Usado para escolher os projéteis.
  */
 export enum ProjectileEnum {
-    FLECHA
+    FLECHA = 'flecha',
+    BOLA = 'bola'
 }
 
 /**
@@ -153,7 +154,17 @@ export const ProjectileTypes: Record<ProjectileEnum, IProjectile> = {
         spriteKey: 'arrow_sprite',
         baseDamage: 2,
         baseCooldown: 300,
-        baseSpeed: 500
+        baseSpeed: 500,
+        range: 100
+    },
+    [ProjectileEnum.BOLA]: {
+        name: 'Bola',
+        weaponType: WeaponType.PROJECTILE,
+        spriteKey: 'Football',
+        baseDamage: 2,
+        baseCooldown: 450,
+        baseSpeed: 300,
+        range: 150
     }
 };
 
@@ -161,12 +172,12 @@ export const ProjectileTypes: Record<ProjectileEnum, IProjectile> = {
  * Usado para escolher as armas corpo-a-corpo.
  */
 export enum MeleeEnum {
-    BANANEIRA,
-    BENGALA,
-    ESPADA,
-    PAULADA,
-    PICADA,
-    PALMEIRA
+    BANANEIRA = 'bananeira',
+    BENGALA = 'bengala',
+    ESPADA = 'espada',
+    PAULADA = 'paulada',
+    PICADA = 'picada',
+    PALMEIRA = 'palmeira'
 }
 
 export const MeleeTypes: Record<MeleeEnum, IMelee> = {
