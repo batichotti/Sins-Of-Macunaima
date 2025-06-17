@@ -3,7 +3,7 @@ import { isMobile } from 'react-device-detect';
 
 
 // Detecta a orientação da tela do sistema e manda uma mensagem para mudar para paisagem.
-export default function screenRotation() {
+export default function ScreenRotation() {
     const [isPortrait, setIsPortrait] = useState(false);
 
     useEffect(() => {
