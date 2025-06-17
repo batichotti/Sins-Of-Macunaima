@@ -340,10 +340,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
 
     override preUpdate(time: number, delta: number) {
       super.preUpdate(time, delta);
-      this.updateBehavior(delta);
+      this.updateBehavior();
     }
 
-    private updateBehavior(delta: number) {
+    private updateBehavior() {
       this.updateMovement();
       this.tryShootAtPlayer();
     }
