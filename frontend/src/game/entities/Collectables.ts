@@ -25,7 +25,7 @@ export default class CollectableManager implements ICollectableManager {
     this.setupCollectablePoints();
     this.scene.time.addEvent({ delay: 2500, callback: this.cleanup, callbackScope: this, loop: true });
 
-    EventManager.Instance.on(GameEvents.TOGGLE_WEAPON, this.spawnEspecialCollectable, this);
+    EventManager.Instance.on(GameEvents.BOSS_DEFEATED, this.spawnEspecialCollectable, this);
     EventManager.Instance.on(GameEvents.WEAPON_DROPPED, (payload: { weapon: { asIWeapon: IWeapon, asICollectable: ICollectable }, position: Phaser.Math.Vector2 | { x: number, y: number } }) => this.spawnWeaponCollectable(payload), this);
   }
 
@@ -191,6 +191,7 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
   spriteKey: string;
   isAlive: boolean = true;
   destroyable: boolean = true;
+  collected: boolean = false;
   typee: RegularCollectableEnum | SpecialCollectableEnum | MeleeEnum | ProjectileEnum;
 
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
@@ -206,10 +207,9 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
   }
 
   private collect(): void {
-    if (!this.active) return;
+    if (!this.active || this.collected) return;
+    this.collected = true;
     this.playCollectEffect();
-
-    this.onCollect();
   }
 
   override destroy(): void {
@@ -251,6 +251,7 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
       duration: 200,
       onComplete: () => {
         this.setActive(false).setVisible(false);
+        this.onCollect();
         this.scene.collectableManager.removeCollectable(this);
         effect.destroy();
       }
@@ -278,7 +279,7 @@ export class SpecialCollectable extends Collectable {
 
   protected onCollect(): void {
     EventManager.Instance.emit(GameEvents.COLLECTABLE_COLLECTED, this.export());
-    this.scene.time.delayedCall(250, () => { this.scene.runGameWin() });
+    this.scene.runGameWin();
   }
 }
 
