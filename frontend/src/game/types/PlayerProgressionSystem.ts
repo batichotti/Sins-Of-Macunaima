@@ -1,5 +1,5 @@
 import { Player } from "../entities/Player";
-import { IPlayer } from "./Player";
+import { IPlayer, IPlayerExport } from "./Player";
 
 /**
  * Coordena quanto de XP e pontos o jogador ganha no final da partida.
@@ -8,7 +8,7 @@ export interface IPlayerProgressionSystem {
     /**
      * Instância do jogador.
      */
-    player: Player;
+    player: IPlayer;
 
     /**
      * XP ganho até agora.
@@ -44,7 +44,7 @@ export interface IMatchStats {
   /**
   * O jogador.
   */
-  player: IPlayer;
+  player: IPlayerExport;
 
   /**
    * Pontuação.

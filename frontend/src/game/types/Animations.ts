@@ -1,3 +1,4 @@
+import IBaseScene from "./BaseScene";
 
 /**
  * Indica a direção do corpo.
@@ -10,10 +11,11 @@ export enum Directions {
 }
 
 export interface IAnimationManager {
-  scene: Phaser.Scene;
+  scene: IBaseScene;
   animations: Map<string, Phaser.Animations.Animation>;
   createStandardWalkAnimation(key: string, config: CharacterAnimationTemplate): void;
   createStandardAttackAnimation(key: string, config: WeaponAnimationTemplate): void; 
+  destroy(): void;
 }
 
 /**

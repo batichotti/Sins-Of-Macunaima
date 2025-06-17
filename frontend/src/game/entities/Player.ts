@@ -1,5 +1,5 @@
 import { EventManager } from "../core/EventBus";
-import { Directions, ICharacter, ICollectable, IPlayer, SpecialCollectableEnum, WeaponSet } from "../types";
+import { Directions, ICharacter, ICollectable, IPlayer, IPlayerExport, SpecialCollectableEnum, WeaponSet } from "../types";
 import { Level } from "./Level";
 import TweenManager from "./TweenManager";
 import { GameEvents } from "../types";
@@ -51,7 +51,7 @@ export class Player implements IPlayer {
         this.character.changeCharacter(modifiedConfig);
     };
 
-    levelUp(): void {
+    public levelUp(): void {
         const previousHealth = this.level.healthIncrease;
         const previousDamage = this.level.damageIncrease;
 
@@ -70,17 +70,12 @@ export class Player implements IPlayer {
         EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.character.health);
     }
 
-    // Método para limpeza de recursos
-    destroy(): void {
+    public destroy(): void {
       EventManager.Instance.off(GameEvents.TOGGLE_CHARACTER, this.changeCharacter, this);
       EventManager.Instance.off(GameEvents.COLLECTABLE_COLLECTED, (payload: ICollectable) => this.updateInventory(payload), this);
     }
 
-    /**
-     * Atualiza o inventário.
-     * @param payload O item coletado.
-     */
-    updateInventory(payload: ICollectable): void {
+    public updateInventory(payload: ICollectable): void {
       const inventory = this.inventory;
       inventory.set(payload, inventory.get(payload) ?? 0 + 1);
 
@@ -89,16 +84,13 @@ export class Player implements IPlayer {
       }
     }
 
-    /**
-     * Exporta informações do jogador.
-    */
-    export(): IPlayer {
+    export(): IPlayerExport {
       return {
         name: this.name,
         playableCharacters: this.playableCharacters,
         level: this.level.export(),
         weaponSet: this.weaponSet,
-        inventory: this.inventory
+        inventory: this.inventory,
       };
     }
 }

@@ -33,6 +33,49 @@ export interface IPlayer {
      * Não visível durante o jogo. Para mandar o que o jogador conseguiu para o backend.
      */
     inventory: Map<ICollectable, number>;
+
+    levelUp(): void;
+
+    /**
+     * Atualiza o inventário.
+     * @param payload O item coletado.
+     */
+    updateInventory(payload: ICollectable): void;
+
+    export(): IPlayerExport;
+
+    destroy(): void;
+}
+
+export interface IPlayerExport {
+    /**
+     * Nome de usuário do jogador.
+     */
+    name: string;
+
+    /**
+     * Os personagens que o jogador pode usar.
+     *
+     * O primeiro personagem é o que o jogo usará no início da partida.
+     */
+    playableCharacters: ICharacter[];
+
+    /**
+     * O nível do jogador. Define modificadores de dano, vida, etc.
+     */
+    level: ILevel;
+
+    /**
+     * Set de armas que o jogador usará na partida.
+     */
+    weaponSet: WeaponSet;
+
+    /**
+     * Inventário do jogador.
+     *
+     * Não visível durante o jogo. Para mandar o que o jogador conseguiu para o backend.
+     */
+    inventory: Map<ICollectable, number>;
 }
 
 /**

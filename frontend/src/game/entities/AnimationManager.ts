@@ -1,10 +1,11 @@
+import { BaseScene } from "../core/BaseScene";
 import { CharacterAnimationTemplate, Directions, WeaponAnimationTemplate, IAnimationManager } from "../types";
 
 export default class AnimationManager implements IAnimationManager {
-    scene: Phaser.Scene;
+    scene: BaseScene
     animations = new Map<string, Phaser.Animations.Animation>();
 
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: BaseScene) {
         this.scene = scene;
     }
 
@@ -67,7 +68,7 @@ export default class AnimationManager implements IAnimationManager {
         if (animation) this.animations.set(animKey, animation);
     }
 
-    destroy(): void {
+    public destroy(): void {
         this.animations.forEach(anim => {
             this.scene.anims.remove(anim.key);
         });
