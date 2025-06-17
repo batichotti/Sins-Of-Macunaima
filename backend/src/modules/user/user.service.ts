@@ -1,4 +1,4 @@
-import { Body, Injectable, Param } from '@nestjs/common';
+import { Injectable, Param } from '@nestjs/common';
 import { SignInDTO, SignUpDTO } from './dtos/user';
 
 @Injectable()
@@ -19,12 +19,12 @@ export class UserService {
         return { message: 'New user', input };
     }
 
-    async signup(@Body() data : SignUpDTO) {
+    async signup(data : SignUpDTO) {
         console.log({ data });
         return data;
     }
 
-    async signin(@Body() data : SignInDTO) {
+    async signin(data : SignInDTO) {
         console.log({ data });
         return data;
     }

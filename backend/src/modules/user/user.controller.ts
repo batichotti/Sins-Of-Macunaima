@@ -23,13 +23,15 @@ export class UserController {
     
     @Post('signup')
     async signup(@Body() body: SignUpDTO) {
-        console.log({ body });
+        await this.userService.signup(body);
+        
         return body;
     }
     
     @Post('signin')
     async signin(@Body() body: SignInDTO) {
-        console.log({ body });
+        await this.userService.signin(body);
+        
         return body;
     }
 }
