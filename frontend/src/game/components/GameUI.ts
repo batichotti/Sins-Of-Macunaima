@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { Text } from '@/game/components/Properties';
 import { AttackMode, ICharacter, ICollectable, ITextBox, IWeapon } from '../types';
-import { IGameUI, GameUIPlaceholders, IGameUIHandlers }from '../types/GameUI';
+import { IGameUI, GameUIPlaceholders, IGameUIHandlers, ICooldownBar, ITimeCounter }from '../types/GameUI';
 import { BaseScene } from '../core/BaseScene';
 import { EventManager } from '../core/EventBus';
 import { GameEvents } from '../types';
@@ -17,7 +17,6 @@ export default class GameUI implements IGameUI {
   pointsLabel: TextBox;
   killsLabel: TextBox;
   attackModeLabel: TextBox;
-  bossInfoLabel: TextBox;
   notificationsLabel: NotificationPopUp;
   timeLabel: TimeCounter;
   handlers: IGameUIHandlers;
@@ -140,14 +139,7 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
   }
 }
 
-export class BossInformation extends Phaser.GameObjects.Container {
-  fill: Phaser.GameObjects.Graphics;
-  width: number;
-  height: number;
-  private currentTween: Phaser.Tweens.Tween;
-}
-
-export class CooldownBar extends Phaser.GameObjects.Container {
+export class CooldownBar extends Phaser.GameObjects.Container implements ICooldownBar {
   fill: Phaser.GameObjects.Graphics;
   width: number;
   height: number;
@@ -165,7 +157,7 @@ export class CooldownBar extends Phaser.GameObjects.Container {
     scene.add.existing(this);
   }
 
-  startCooldown(duration: number) {
+  public startCooldown(duration: number) {
     this.currentTween?.destroy();
 
     const animationObject = { progress: 1 };
@@ -195,7 +187,7 @@ export class CooldownBar extends Phaser.GameObjects.Container {
     }
   }
 
-  destroy() {
+  public destroy(): void {
     this.currentTween?.destroy();
     this.fill.destroy();
     super.destroy();
@@ -203,7 +195,7 @@ export class CooldownBar extends Phaser.GameObjects.Container {
 }
 
 
-export class TimeCounter extends TextBox {
+export class TimeCounter extends TextBox implements ITimeCounter {
   private internalCounter: Phaser.Time.TimerEvent;
   private timeElapsed: number = 0;
 
