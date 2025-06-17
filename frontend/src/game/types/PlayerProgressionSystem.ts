@@ -1,4 +1,3 @@
-import { Player } from "../entities/Player";
 import { IPlayer, IPlayerExport } from "./Player";
 
 /**
