@@ -1,7 +1,5 @@
 import { BaseScene } from '@/game/core/BaseScene';
 import { SceneData } from '@/game/types';
-import TextBox from '@/game/components/GameUI';
-import EnemyManager from '@/game/entities/EnemyManager';
 
 export class Mapa extends BaseScene {
     constructor() {
