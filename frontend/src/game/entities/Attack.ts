@@ -81,7 +81,7 @@ export default class AttackManager {
     };
 
     private eraseProjectile = (obj1: object) => {
-        (obj1 as Projectile).disableBody(true, true);
+      (obj1 as Projectile).disableBody(true, true);
     };
 
     private toggleAttackMode = () => {
@@ -124,11 +124,11 @@ export default class AttackManager {
       EventManager.Instance.emit(GameEvents.TOGGLE_WEAPON_SUCCESS, this.currentWeapon);
     }
 
-    get weapon(): IWeapon {
+    public get weapon(): IWeapon {
         return this.currentWeapon;
     }
 
-    fire(x: number, y: number, angle: number): void {
+    public fire(x: number, y: number, angle: number): void {
         if (!this.canAttack) return;
 
         switch (this.currentWeapon.weaponType) {
@@ -164,7 +164,7 @@ export default class AttackManager {
         this.scene.time.delayedCall(this.currentWeapon.baseCooldown, () => { this.canAttack = true });
     }
 
-    destroy(): void {
+    public destroy(): void {
       this.projectiles.destroy();
       this.melee.destroy();
     }

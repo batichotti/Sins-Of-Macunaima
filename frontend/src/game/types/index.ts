@@ -7,7 +7,7 @@ export * from './BaseScene';
 export * from './TextBox';
 export * from './Input';
 export * from './Enemy';
-export * from './EnemySpawnPoints';
+export * from './Attack';
 export * from './CachedPath';
 export * from './GameUI';
 export * from './PlayerProgressionSystem';

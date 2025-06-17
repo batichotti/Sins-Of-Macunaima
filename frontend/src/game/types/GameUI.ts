@@ -27,6 +27,7 @@ export interface IGameUI {
   timeLabel: TimeCounter;
   notificationsLabel: NotificationPopUp;
   handlers: IGameUIHandlers;
+  destroy(): void;
 }
 
 /**

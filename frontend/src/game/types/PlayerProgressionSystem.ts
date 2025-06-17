@@ -24,6 +24,17 @@ export interface IPlayerProgressionSystem {
      * XP necessário para subir de nível.
      */
     xpLevelUpNeeded: number;
+
+    increaseXP(xp: number): void;
+
+    increasePoints(points: number): void;
+
+    levelUp(): void;
+
+    /**
+    * Método para exportar informações.
+    */
+    export(): IMatchStats;
 }
 
 /**

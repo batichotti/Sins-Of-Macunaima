@@ -72,7 +72,7 @@ export default class GameUI implements IGameUI {
     eventManager.on(GameEvents.TOGGLE_CHARACTER_SUCCESS, this.handlers.onCharacterChange, this);
   }
 
-  destroy(): void {
+  public destroy(): void {
     const eventManager = EventManager.Instance;
     eventManager.off(GameEvents.HEALTH_CHANGE, this.handlers.onHealthChange, this);
     eventManager.off(GameEvents.TOGGLE_WEAPON_SUCCESS, this.handlers.onWeaponChange, this);
