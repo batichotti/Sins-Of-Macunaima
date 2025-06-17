@@ -271,7 +271,12 @@ export default class EnemyManager implements IEnemyManager {
               this.bossSpawned = false;
           } else {
               const bossType = Phaser.Utils.Array.GetRandom(validBoss);
-              const boss = this.enemyPool.get() as Enemy;
+              let tries = 0;
+              let boss = this.enemyPool.get() as Enemy;
+              while(!boss.canSpawn && tries < 10) {
+                boss = this.enemyPool.get() as Enemy;
+                tries++;
+              }
               if (!boss) return;
 
               this.canSpawn = false;
@@ -299,7 +304,12 @@ export default class EnemyManager implements IEnemyManager {
         if (validEnemies.length === 0) return;
 
         const type = Phaser.Utils.Array.GetRandom(validEnemies);
-        const enemy = this.enemyPool.get() as Enemy;
+        let tries = 0;
+        let enemy = this.enemyPool.get() as Enemy;
+        while(!enemy.canSpawn && tries < 10) {
+          enemy = this.enemyPool.get() as Enemy;
+          tries++;
+        }
         if (!enemy) return;
 
         this.canSpawn = false;
@@ -317,7 +327,7 @@ export default class EnemyManager implements IEnemyManager {
         enemy.isBoss = false;
         enemy.setSize(16, 32);
 
-        this.scene.time.delayedCall(3000, () => this.canSpawn = true);
+        this.scene.time.delayedCall(2500, () => this.canSpawn = true);
     }
 
     public findNearestEnemy(): Phaser.Math.Vector2 | null {
