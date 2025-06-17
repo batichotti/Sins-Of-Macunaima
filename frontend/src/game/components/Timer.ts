@@ -1,3 +1,5 @@
+import { ITimer } from "../types";
+
 /**
  * Classe utilitária que cronometra tempo e exporta o resultado.
  */
