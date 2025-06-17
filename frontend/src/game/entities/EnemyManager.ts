@@ -1,5 +1,5 @@
 import Enemy from "./Enemy";
-import { BossTypes, EnemyTypes } from "../types";
+import { BossTypes, EnemyTypes, IEnemyManager } from "../types";
 import { BaseScene } from "../core/BaseScene";
 import { Pathfinding } from "../components/phaser-pathfinding";
 import { Grid } from "../components/phaser-pathfinding";
@@ -10,7 +10,7 @@ import { EventManager } from "../core/EventBus";
 import { GameEvents } from "../types";
 import { WaypointNode } from "../types";
 
-export default class EnemyManager {
+export default class EnemyManager implements IEnemyManager {
     enemySpawner: EnemySpawner;
     gameFrozen: boolean = false;
     enemyPool: Phaser.Physics.Arcade.Group;
@@ -320,7 +320,7 @@ export default class EnemyManager {
         this.scene.time.delayedCall(3000, () => this.canSpawn = true);
     }
 
-    findNearestEnemy(): Phaser.Math.Vector2 | null {
+    public findNearestEnemy(): Phaser.Math.Vector2 | null {
         const children = this.enemyPool.getChildren();
         if (children.length <= 0) return null;
 
@@ -353,7 +353,7 @@ export default class EnemyManager {
         return nearestDistance < this.maxEnemyDistance ? nearestPosition : null;
     }
 
-    updatePathing() {
+    public updatePathing() {
       if (!this.canPath) return;
 
       this.canPath = false;
@@ -397,7 +397,7 @@ export default class EnemyManager {
       this.scene.time.delayedCall(100, () => this.canPath = true);
     }
 
-    updateMovement() {
+    public updateMovement() {
       const enemies = this.enemyPool.getChildren() as Enemy[];
       for (const enemy of enemies) {
         if (enemy.active && enemy.visible && enemy.body) {
@@ -406,7 +406,7 @@ export default class EnemyManager {
       }
     }
 
-    destroy(): void {
+    public destroy(): void {
       EventManager.Instance.off(GameEvents.SHOULD_SPAWN_BOSS, () => {
           if (!this.bossCurrentlyAlive && !this.bossDefeated) {
             this.bossSpawned = true;

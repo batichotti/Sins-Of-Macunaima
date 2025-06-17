@@ -1,8 +1,8 @@
-import { CharacterAnimationTemplate, Directions, WeaponAnimationTemplate } from "../types";
+import { CharacterAnimationTemplate, Directions, WeaponAnimationTemplate, IAnimationManager } from "../types";
 
-export default class AnimationManager {
-    private scene: Phaser.Scene;
-    private animations = new Map<string, Phaser.Animations.Animation>();
+export default class AnimationManager implements IAnimationManager {
+    scene: Phaser.Scene;
+    animations = new Map<string, Phaser.Animations.Animation>();
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
@@ -18,7 +18,7 @@ export default class AnimationManager {
             left: { start: 7, end: 8 },
             right: { start: 4, end: 5 }
         }
-    ) {
+    ): void {
         const directions = [
             { dir: Directions.UP, frames: config.up },
             { dir: Directions.DOWN, frames: config.down },

@@ -15,7 +15,7 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
       this.xpLevelUpNeeded += this.player.level.level * 2;
     }
 
-    increaseXP(xp: number) {
+    public increaseXP(xp: number) {
       this.xpGained += xp;
       const needed = this.xpLevelUpNeeded;
       if (this.xpGained >= needed) {
@@ -25,18 +25,18 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
       }
     }
 
-    increasePoints(points: number) {
+    public increasePoints(points: number) {
       this.pointsGained += points;
     }
 
-    levelUp() {
+    public levelUp() {
       this.player.levelUp();
     }
 
     /**
     * Método para exportar informações.
     */
-    export(): IMatchStats {
+    public export(): IMatchStats {
       return {
         player: this.player.export(),
         xpGained: this.xpGained,

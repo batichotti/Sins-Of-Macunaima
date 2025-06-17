@@ -1,13 +1,13 @@
 import { BaseScene } from "../core/BaseScene";
-import { EnemySpawnPoints } from "../types";
+import { EnemySpawnPoints, IEnemySpawner } from "../types";
 
-export default class EnemySpawner {
-    private scene: BaseScene;
-    private lastPlayerPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 0); // Inicializar
-    private spawnPoints: EnemySpawnPoints[] = [];
-    private minDistance: number = 120;
-    private maxDistance: number = 640;
-    private canChoose: boolean = true;
+export default class EnemySpawner implements IEnemySpawner{
+    scene: BaseScene;
+    lastPlayerPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 0); // Inicializar
+    spawnPoints: EnemySpawnPoints[] = [];
+    minDistance: number = 120;
+    maxDistance: number = 640;
+    canChoose: boolean = true;
 
     constructor(scene: BaseScene) {
         this.scene = scene;
@@ -31,7 +31,7 @@ export default class EnemySpawner {
         }
     }
 
-    chooseSpawn(): EnemySpawnPoints | null {
+    public chooseSpawn(): EnemySpawnPoints | null {
         if (!this.canChoose || this.spawnPoints.length === 0) {
             return null;
         }

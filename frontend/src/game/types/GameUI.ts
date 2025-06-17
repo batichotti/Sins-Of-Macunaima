@@ -1,5 +1,6 @@
 import { NotificationPopUp, TextBox, TimeCounter } from "../components/GameUI";
 import { ICharacter } from "./Player";
+import { ITextBox } from "./TextBox";
 import { AttackMode, IWeapon } from "./Weapon";
 
 /**
@@ -16,17 +17,33 @@ import { AttackMode, IWeapon } from "./Weapon";
  * - Handlers para atualização de conteúdo.
  */
 export interface IGameUI {
-  playerLabel: TextBox;
-  characterLabel: TextBox;
-  levelLabel: TextBox;
-  healthLabel: TextBox;
-  weaponSetLabel: TextBox;
-  attackModeLabel: TextBox;
-  killsLabel: TextBox;
-  bossInfoLabel: TextBox;
-  timeLabel: TimeCounter;
-  notificationsLabel: NotificationPopUp;
+  playerLabel: ITextBox;
+  characterLabel: ITextBox;
+  levelLabel: ITextBox;
+  healthLabel: ITextBox;
+  weaponSetLabel: ITextBox;
+  attackModeLabel: ITextBox;
+  killsLabel: ITextBox;
+  timeLabel: ITimeCounter;
+  notificationsLabel: INotificationPopUp;
   handlers: IGameUIHandlers;
+  destroy(): void;
+}
+
+export interface ICooldownBar {
+  fill: Phaser.GameObjects.Graphics;
+  width: number;
+  height: number;
+  startCooldown(duration: number): void;
+  destroy(): void;
+}
+
+export interface ITimeCounter {
+  get time(): number;
+}
+
+export interface INotificationPopUp {
+  destroy(): void;
 }
 
 /**

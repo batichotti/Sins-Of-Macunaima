@@ -9,6 +9,15 @@ import GameUI from "../components/GameUI";
 import PlayerProgressionSystem from "../entities/PlayerProgressionSystem";
 import AnimationManager from "../entities/AnimationManager";
 import CollectableManager from "../entities/Collectables";
+import { IGameCameras } from "./GameCameras";
+import { IPlayer } from "./Player";
+import { ICollectableManager } from "./Collectables";
+import { IAnimationManager } from "./Animations";
+import { IEnemyManager } from "./Enemy";
+import { IInput } from "./Input";
+import { IGameUI } from "./GameUI";
+import { IAttackManager } from "./Attack";
+import { IPlayerProgressionSystem } from "./PlayerProgressionSystem";
 
 /**
  * Cena básica do mundo.
@@ -19,17 +28,17 @@ export default interface IBaseScene {
     /**
      * As câmeras do jogo.
      */
-    gameCameras: GameCameras;
+    gameCameras: IGameCameras;
 
     /**
      * O jogador.
      */
-    player: Player;
+    player: IPlayer;
 
     /**
     * O sistema de coletáveis.
     */
-    collectableManager: CollectableManager;
+    collectableManager: ICollectableManager;
 
     /**
      * Um array de tilesets do Tiled.
@@ -49,12 +58,12 @@ export default interface IBaseScene {
     /**
      * O gerenciador de animações da cena base.
      */
-    animationManager: AnimationManager;
+    animationManager: IAnimationManager;
 
     /**
      * O gerenciador de inimigos.
      */
-    enemyManager: EnemyManager;
+    enemyManager: IEnemyManager;
 
     /**
      * O map do jogo.
@@ -64,7 +73,7 @@ export default interface IBaseScene {
     /**
      * O gerenciador do teclado e mouse.
      */
-    inputManager:InputManager;
+    inputManager: IInput;
 
     /**
      * Os dados da cena. Obtidos da cena de boot.
@@ -84,17 +93,17 @@ export default interface IBaseScene {
     /**
      * O gerenciador de ataques.
      */
-    attackManager: AttackManager;
+    attackManager: IAttackManager;
 
     /**
      * A UI do jogo.
      */
-    gameUI: GameUI;
+    gameUI: IGameUI;
 
     /**
      * Sistema de pontos e xp do jogo.
      */
-    playerProgressionSystem: PlayerProgressionSystem;
+    playerProgressionSystem: IPlayerProgressionSystem;
 
     /**
      * Configura camadas.

@@ -9,6 +9,13 @@ export enum Directions {
     RIGHT = 'right'
 }
 
+export interface IAnimationManager {
+  scene: Phaser.Scene;
+  animations: Map<string, Phaser.Animations.Animation>;
+  createStandardWalkAnimation(key: string, config: CharacterAnimationTemplate): void;
+  createStandardAttackAnimation(key: string, config: WeaponAnimationTemplate): void; 
+}
+
 /**
  * Usar para definir frames de cada direção.
  */
