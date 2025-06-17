@@ -193,7 +193,8 @@ export class Shooter {
 
   private handleHit = (obj1: object, obj2: object) => {
     const char = obj1 as Character;
-
+    const proj = obj2 as Projectile;
+    proj.disableBody(true, true);
     char.takeDamage(this.config.baseDamage);
   }
 

@@ -120,7 +120,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         if (!this.scene || !this.scene.time) return;
 
         const now = this.scene.time.now;
-              
+
         if (now - lastTrailTime > trailInterval) {
           lastTrailTime = now;
           this.createTrailEffect(R, trailWidth);
@@ -151,7 +151,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     const currentScene = this.scene;
-    
+
     currentScene.tweens.add({
         targets: arc,
         alpha: 0,
@@ -254,11 +254,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
           this.timeStuck += delta;
 
           if (this.timeStuck >= 2000) {
-              const pushX = Phaser.Utils.Array.GetRandom([-2, -2, 1, 2]);
-              const pushY = Phaser.Utils.Array.GetRandom([-2, -2, 1, 2]);
-              this.x += pushX;
-              this.y += pushY;
-
               this.path = [];
               this.nextNode = 0;
               this.timeStuck = 0;
@@ -322,7 +317,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
 
       if (this.baseHealth <= 0) {
         if (this.isBoss) {
-          this.scene.runGameWin();
+          EventManager.Instance.emit(GameEvents.BOSS_DEFEATED, null);
         }
 
         else if(Phaser.Math.Between(1, 10) <= 3) {

@@ -74,7 +74,7 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
       spawnRegion: 'all',
       weapon: MeleeTypes[MeleeEnum.BENGALA],
       baseHealth: 20,
-      baseSpeed: 200,
+      baseSpeed: 120,
       damageMultiplier: 1.2,
       pointGain: 20
     },
@@ -84,7 +84,7 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
       spawnRegion: 'Praia',
       weapon: MeleeTypes[MeleeEnum.ESPADA],
       baseHealth: 20,
-      baseSpeed: 200,
+      baseSpeed: 100,
       damageMultiplier: 1.2,
       pointGain: 20
     },
@@ -94,7 +94,7 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
       spawnRegion: 'all',
       weapon: MeleeTypes[MeleeEnum.PICADA],
       baseHealth: 15,
-      baseSpeed: 220,
+      baseSpeed: 160,
       damageMultiplier: 1.05,
       pointGain: 20
     }
@@ -112,7 +112,7 @@ export const BossTypes: Record<BossEnum, IEnemy> = {
         weapon: MeleeTypes[MeleeEnum.PAULADA],
         projectileWeapon: ProjectileTypes[ProjectileEnum.BOLA],
         baseHealth: 150,
-        baseSpeed: 150,
+        baseSpeed: 120,
         damageMultiplier: 1.5,
         pointGain: 500
     }

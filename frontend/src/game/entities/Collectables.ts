@@ -25,14 +25,14 @@ export default class CollectableManager implements ICollectableManager {
     this.setupCollectablePoints();
     this.scene.time.addEvent({ delay: 2500, callback: this.cleanup, callbackScope: this, loop: true });
 
-    EventManager.Instance.on(GameEvents.BOSS_DEFEATED, this.spawnEspecialCollectable, this);
+    EventManager.Instance.on(GameEvents.TOGGLE_WEAPON, this.spawnEspecialCollectable, this);
     EventManager.Instance.on(GameEvents.WEAPON_DROPPED, (payload: { weapon: { asIWeapon: IWeapon, asICollectable: ICollectable }, position: Phaser.Math.Vector2 | { x: number, y: number } }) => this.spawnWeaponCollectable(payload), this);
   }
 
   private cleanup: () => void = () => {
     for (let i = this.children.length - 1; i >= 0; i--) {
       const child = this.children[i];
-      if (!child.isAlive && !(child instanceof SpecialCollectable)) {
+      if (!child.isAlive && child.destroyable) {
         child.destroy();
         this.children.splice(i, 1);
       }
@@ -97,15 +97,19 @@ export default class CollectableManager implements ICollectableManager {
 
     let collectable: Collectable;
 
-    if (Object.values(RegularCollectableEnum).includes(config.typee as RegularCollectableEnum)) {
-      collectable = new RegularCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
-    } else if (Object.values(SpecialCollectableEnum).includes(config.typee as SpecialCollectableEnum)) {
+    if (Object.values(SpecialCollectableEnum).includes(config.typee as SpecialCollectableEnum)) {
       collectable = new SpecialCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
-    } else if (Object.values(MeleeEnum).includes(config.typee as MeleeEnum)) {
+    }
+    else if (Object.values(RegularCollectableEnum).includes(config.typee as RegularCollectableEnum)) {
+      collectable = new RegularCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
+    }
+    else if (Object.values(MeleeEnum).includes(config.typee as MeleeEnum)) {
       collectable = new MeleeCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
-    } else if (Object.values(ProjectileEnum).includes(config.typee as ProjectileEnum)) {
+    }
+    else if (Object.values(ProjectileEnum).includes(config.typee as ProjectileEnum)) {
       collectable = new ProjectileCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
-    } else {
+    }
+    else {
       collectable = new RegularCollectable(this.scene, spawnPoint.position.x, spawnPoint.position.y, config);
     }
 
@@ -186,6 +190,7 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
   name: string;
   spriteKey: string;
   isAlive: boolean = true;
+  destroyable: boolean = true;
   typee: RegularCollectableEnum | SpecialCollectableEnum | MeleeEnum | ProjectileEnum;
 
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
@@ -197,6 +202,7 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
     scene.gameCameras.ui.ignore(this);
     scene.physics.add.existing(this);
     this.scene.physics.add.overlap(this, this.scene.player.character, () => { this.collect() });
+    this.scene.time.delayedCall(2500, () => this.isAlive = false);
   }
 
   private collect(): void {
@@ -255,7 +261,6 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
 export class RegularCollectable extends Collectable {
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config);
-    this.scene.time.delayedCall(2500, () => this.isAlive = false);
     this.setScale(2);
   }
 
@@ -267,18 +272,19 @@ export class RegularCollectable extends Collectable {
 export class SpecialCollectable extends Collectable {
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config);
+    this.destroyable = false;
     this.setScale(2);
   }
 
   protected onCollect(): void {
     EventManager.Instance.emit(GameEvents.COLLECTABLE_COLLECTED, this.export());
+    this.scene.time.delayedCall(250, () => { this.scene.runGameWin() });
   }
 }
 
 export class MeleeCollectable extends Collectable {
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config);
-    this.scene.time.delayedCall(2500, () => this.isAlive = false);
   }
 
   protected onCollect(): void {
@@ -290,7 +296,6 @@ export class MeleeCollectable extends Collectable {
 export class ProjectileCollectable extends Collectable {
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config);
-    this.scene.time.delayedCall(2500, () => this.isAlive = false);
   }
 
   protected onCollect(): void {

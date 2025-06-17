@@ -252,7 +252,7 @@ export default class EnemyManager {
     };
 
     spawnEnemy() {
-        if (this.gameFrozen) return;
+      if (this.gameFrozen) return;
 
         const spawn = this.enemySpawner.chooseSpawn();
         if (!spawn || !this.canSpawn || this.bossCurrentlyAlive) return;
@@ -278,7 +278,6 @@ export default class EnemyManager {
                 this.bossSpawned = false;
 
                 EventManager.Instance.emit(GameEvents.BOSS_SPAWNED, bossType);
-                this.scene.time.delayedCall(3000, () => this.canSpawn = true);
                 return;
             }
         }
