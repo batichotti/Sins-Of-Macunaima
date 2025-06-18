@@ -1,5 +1,6 @@
 import { Text } from "../components/Properties";
 import { MatchData } from "../types";
+import { EventBus } from "./EventBus";
 
 export default class GameWin extends Phaser.Scene {
   private prevSceneData: MatchData | null = null;
@@ -29,6 +30,8 @@ export default class GameWin extends Phaser.Scene {
     this.container.add([background, gameOverText, scoreText, timeElapsed, continueButton, mainMenuButton]);
 
     continueButton.on('pointerdown', () => {
+      this.backedTransfer();
+
       if(this.prevSceneData?.scene) {
         this.scene.resume(this.prevSceneData.scene);
         this.scene.stop('GameWin');
@@ -62,6 +65,8 @@ export default class GameWin extends Phaser.Scene {
 
     // Handler para voltar ao menu principal
     mainMenuButton.on('pointerdown', () => {
+      this.backedTransfer();
+      this.returnMainMenu();
       // Lógica para o menu principal.
     });
 
@@ -95,4 +100,12 @@ export default class GameWin extends Phaser.Scene {
     if (minutes === 0) return `${seconds}s`;
     else return `${minutes}m: ${seconds < 10 ? '0' : ''}${seconds}s`;
   }
+
+    private backedTransfer() {
+      if(this.prevSceneData) EventBus.emit('backendTransfer', this.prevSceneData);
+    }
+  
+    private returnMainMenu() {
+      EventBus.emit('mainMenu');
+    }
 }

@@ -1,4 +1,4 @@
-import { ICharacter, ILevel, IPlayer } from "./Player";
+import { ICharacter, ILevel, IPlayer, IPlayerExport } from "./Player";
 import { IMatchStats } from "./PlayerProgressionSystem";
 import { WeaponSet } from "./Weapon";
 
@@ -23,7 +23,7 @@ export type SceneData = {
     /**
      * O jogador em si.
      */
-    player: IPlayer;
+    player: IPlayerExport;
 
     /**
      * O personagem do jogador.

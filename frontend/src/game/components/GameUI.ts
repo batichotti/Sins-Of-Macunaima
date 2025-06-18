@@ -140,12 +140,12 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
 }
 
 export class CooldownBar extends Phaser.GameObjects.Container implements ICooldownBar {
+  override scene: BaseScene
   fill: Phaser.GameObjects.Graphics;
   width: number;
   height: number;
-  private currentTween?: Phaser.Tweens.Tween;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number) {
+  constructor(scene: BaseScene, x: number, y: number, width: number, height: number) {
     super(scene, x, y);
     this.width = width;
     this.height = height;
@@ -158,25 +158,34 @@ export class CooldownBar extends Phaser.GameObjects.Container implements ICooldo
   }
 
   public startCooldown(duration: number) {
-    this.currentTween?.destroy();
 
     const animationObject = { progress: 1 };
 
     this.updateFillBar(1);
 
-    this.currentTween = this.scene.tweens.add({
-      targets: animationObject,
-      progress: 0,
-      ease: 'Linear',
-      duration: duration,
-      onUpdate: () => {
-        this.updateFillBar(animationObject.progress);
-      },
-      onComplete: () => {
-        this.updateFillBar(0);
-        this.currentTween?.destroy();
-      }
-    });
+    if (this.scene.sys.isActive() && this.scene.sys.isVisible()) {
+      this.createTween(animationObject, duration);
+    } else {
+      this.scene.sys.events.once('ready', () => this.createTween(animationObject, duration));
+    }
+  }
+
+  private createTween(animationObject: { progress: number }, duration: number): void {
+    if(this.scene.tweens) {
+      const currentTween = this.scene.tweens.add({
+        targets: animationObject,
+        progress: 0,
+        ease: 'Linear',
+        duration: duration,
+        onUpdate: () => {
+          this.updateFillBar(animationObject.progress);
+        },
+        onComplete: () => {
+          this.updateFillBar(0);
+          currentTween.destroy();
+        }
+      });
+    }
   }
 
   private updateFillBar(progress: number) {
@@ -188,7 +197,7 @@ export class CooldownBar extends Phaser.GameObjects.Container implements ICooldo
   }
 
   public destroy(): void {
-    this.currentTween?.destroy();
+    this.fill.clear();
     this.fill.destroy();
     super.destroy();
   }

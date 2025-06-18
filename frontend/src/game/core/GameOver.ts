@@ -1,5 +1,6 @@
 import { Text } from "../components/Properties";
 import { MatchData, SceneData } from "../types";
+import { EventBus } from "./EventBus";
 
 export default class GameOver extends Phaser.Scene {
   private prevSceneData: MatchData | null = null;
@@ -29,6 +30,8 @@ export default class GameOver extends Phaser.Scene {
     this.container.add([background, gameOverText, scoreText, timeElapsed, restartButton, mainMenuButton]);
 
     restartButton.on('pointerdown', () => {
+      this.backedTransfer();
+
       if(this.prevSceneData?.data && this.prevSceneData?.scene) {
         const resetData: SceneData = {
           targetScene: this.prevSceneData.scene,
@@ -72,7 +75,8 @@ export default class GameOver extends Phaser.Scene {
 
     // Handler para voltar ao menu principal
     mainMenuButton.on('pointerdown', () => {
-      // Lógica para voltar ao menu principal.
+      this.backedTransfer();
+      this.returnMainMenu();
     });
 
     mainMenuButton.on('pointerover', () => {
@@ -104,5 +108,13 @@ export default class GameOver extends Phaser.Scene {
     const seconds = Math.floor((time % 60000) / 1000);
     if (minutes === 0) return `${seconds}s`;
     else return `${minutes}m: ${seconds < 10 ? '0' : ''}${seconds}s`;
+  }
+
+  private backedTransfer() {
+    if(this.prevSceneData) EventBus.emit('backendTransfer', this.prevSceneData);
+  }
+
+  private returnMainMenu() {
+    EventBus.emit('mainMenu');
   }
 }

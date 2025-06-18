@@ -1,13 +1,57 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IRefPhaserGame, PhaserGame } from './game/PhaserGame';
+import { CharacterEnum, CharacterTypes, ILevel, IMatchStats, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes } from './game/types';
 
 function App() {
     const phaserRef = useRef<IRefPhaserGame | null>(null);
+    const [matchDTO, setmatchDTO] = useState<IMatchStats | null>(null);
 
-    const currentScene = (scene?: Phaser.Scene) => {
-        if (!scene || !scene.scene) return;
-        console.log(scene.scene.key);
+    /**
+     * Pegar os dados do backend aqui.
+     */
+    async function fetchMatchStats() {
+        // Pegar daqui os dados do backend.
+        const data: IMatchStats = {
+            player: {
+                name: 'Irineu',
+                level: { level: 1 } as ILevel,
+                playableCharacters: [
+                    CharacterTypes[CharacterEnum.MACUNAIMA],
+                    CharacterTypes[CharacterEnum.PERI]
+                ],
+                weaponSet: {
+                    projectile: ProjectileTypes[ProjectileEnum.FLECHA],
+                    melee: MeleeTypes[MeleeEnum.PALMEIRA]
+                },
+                inventory: new Map
+            },
+            pointsGained: 0,
+            xpGained: 0,
+            timeElapsed: 0,
+            kills: 0
+        }
+
+        setmatchDTO(data);
     }
+
+    /**
+     * Manda os dados para o backend.
+     * 
+     * @param data Dados do backend transferidos para o jogo.
+     */
+    async function handleBackendTransfer(data: Partial<IMatchStats>) {
+        console.log('PhaserGame: Dados recebidos do phaser:', data);
+    }
+
+
+    /**
+     * Volta para o menu principal.
+     */
+    async function handleMainMenu() {
+        console.log('PhaserGame: Voltando ao menu principal...');
+    }
+
+    useEffect(() => { fetchMatchStats()}, []);
 
     return (
         <div id="app" style={{
@@ -69,7 +113,7 @@ function App() {
                     justifyContent: 'center',
                     alignItems: 'center'
                 }}>
-                    <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+                    <PhaserGame ref={phaserRef} matchDTO={matchDTO} backendTransfer={handleBackendTransfer} mainMenu={handleMainMenu}/>
                 </div>
             </div>
         </div>

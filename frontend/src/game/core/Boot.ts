@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { TilePaths, TileSets } from '@/game/components/PathAssets';
 import { WindowResolution } from '@/game/components/Properties';
-import { BossTypes, CharacterEnum, CharacterTypes, EnemyTypes, SpecialCollectableTypes, ICharacter, ICollectable, IEnemy, ILevel, IMelee, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, RegularCollectableTypes, SceneData, WeaponSet, IProjectile } from '../types';
+import { BossTypes, CharacterEnum, CharacterTypes, EnemyTypes, SpecialCollectableTypes, ICharacter, ICollectable, IEnemy, ILevel, IMelee, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, RegularCollectableTypes, SceneData, WeaponSet, IProjectile, IMatchStats } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets globais.
@@ -14,27 +14,12 @@ export class Boot extends Scene {
     private targetScene = 'Mapa';
 
     /**
-     * Dados do jogador. Que serão obtidos do backend.
+     * IMatchStats.
      */
-    private player: IPlayer;
-
-    /**
-     * Dados do personagem. Que serão obtidos do backend.
-     */
-    private character: ICharacter;
-
-    /**
-     * Dados do jogador. Que serão obtidos do backend.
-     */
-    private level: ILevel;
-
-    /**
-     * Dados do personagem. Que serão obtidos do backend.
-     */
-    private weaponSet: WeaponSet;
+    private match: IMatchStats;
 
     constructor () {
-        super('Boot');
+      super('Boot');
     }
 
     preload () {
@@ -107,21 +92,11 @@ export class Boot extends Scene {
         TileSets.forEach((tile) => {
             this.load.image(`${tile}`, `tiles/${TilePaths.extruded}/${tile}.png`);
         });
-
-
-        // Aqui seria o lugar ideal para pegar tudo do backend. Mas enquanto isso construímos o personagem do zero.
-        this.level = { level: 1 } as ILevel;
-        const playableCharacters = [ CharacterTypes[CharacterEnum.MACUNAIMA], CharacterTypes[CharacterEnum.PERI] ];
-        this.character = playableCharacters[0];
-        this.weaponSet = {
-          projectile: ProjectileTypes[ProjectileEnum.FLECHA],
-          melee: MeleeTypes[MeleeEnum.PALMEIRA]
-        }
-        this.player = { name: 'Irineu', level: this.level, playableCharacters: playableCharacters, weaponSet: this.weaponSet } as IPlayer;
     }
 
 
-    init() {
+    init(data: IMatchStats) {
+        this.match = data;
         // Valores base
         const outlineWidth = WindowResolution.width * 0.65;
         const outlineHeight = WindowResolution.height * 0.04;
@@ -151,6 +126,6 @@ export class Boot extends Scene {
 
 
     create () {
-        this.scene.start('Loader', { targetScene: this.targetScene, previousScene: this.constructor.name, player: this.player, character: this.character, level: this.level, weaponSet: this.weaponSet } as SceneData);
+      this.scene.start('Loader', { targetScene: this.targetScene, previousScene: this.constructor.name, player: this.match.player, character: this.match.player.playableCharacters[0], level: this.match.player.level, weaponSet: this.match.player.weaponSet } as SceneData);
     }
 }
