@@ -1,8 +1,11 @@
 import { Injectable, Param } from '@nestjs/common';
 import { SignInDTO, SignUpDTO } from './dtos/user';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService { 
+    constructor(private prismaService: PrismaService){}
+
     async findAll(sort: 'asc' | 'desc' = 'desc') {
         return { message: 'All users', sort };
     }
@@ -20,6 +23,11 @@ export class UserService {
     }
 
     async signup(data : SignUpDTO) {
+        const userAlreadyExists = await this.prismaService.user.findUnique({
+            where: {
+                email: data.email,
+            },
+        });
         console.log({ data });
         return data;
     }
