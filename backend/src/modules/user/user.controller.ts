@@ -23,9 +23,7 @@ export class UserController {
     
     @Post('signup')
     async signup(@Body() body: SignUpDTO) {
-        await this.userService.signup(body);
-        
-        return body;
+        return this.userService.signup(body);
     }
     
     @Post('signin')
