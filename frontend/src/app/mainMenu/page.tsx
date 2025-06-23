@@ -7,6 +7,14 @@ export default function MainMenu() {
 
     return (
         <div className={styles.MainMenuContainer}>
+            <div className={styles.Description}>
+                <img src='../favicon.png' alt='Logo do SoM'/>
+                <p>
+                    Bem-vindo ao Sins of Macunaíma!
+                    <br />
+                    Um roguelike puramente brasileiro. Consiga a maior pontuação enfrentando os inimigos mais icônicos da literatura e folclore brasileira.
+                </p>
+            </div>
             <div className={styles.Buttons}>
                 <button onClick={() => router.push('/game')}>Jogar</button>
                 <br />

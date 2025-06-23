@@ -5,3 +5,26 @@
     align-items: center;
     min-height: 0;
 }
+
+.MainMenuContainer img {
+    width: 100%;
+    max-width: 120px;
+}
+
+.MainMenuContainer p {
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    color: #222;
+    margin-top: 1em;
+}
+
+.MainMenuContainer button {
+    background: #fff;
+    color: #222;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5em 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 1em;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+}
