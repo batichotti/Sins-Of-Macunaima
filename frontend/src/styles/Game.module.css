@@ -1,0 +1,23 @@
+.AppContainer header .TopScorersButton {
+    background: #fff;
+    color: #222;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5em 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: auto;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+}
+
+.GameContainer {
+    width: 100vw;
+    max-width: 100%;
+    height: calc(100vh - 80px);
+    max-height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    min-height: 0;
+}

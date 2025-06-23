@@ -20,15 +20,26 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@/app": [
+        "./src/app/*"
       ]
     },
-    "target": "ES2017"
+    "target": "ES2017",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/game/components/Properties.ts", "src/game/components/ScreenRotation.ts"  ],
+    "**/*.tsx",
+    "next-env.d.ts",
+    "src/game/components/Properties.ts",
+    "src/game/components/ScreenRotation.ts",
+    "dist/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]

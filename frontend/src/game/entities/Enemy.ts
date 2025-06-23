@@ -71,6 +71,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
       this.lastPos.set(this.x, this.y);
       this.lastTileTarget.set(this.x, this.y);
       this.canSpawn = false;
+      this.baseHealth = config.baseHealth; 
 
       this.orbitRadius = config.weapon.range * 0.6;
       this.halfArc = Phaser.Math.DegToRad(45);
@@ -398,7 +399,11 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     override destroy(): void {
+      this.path = [];
+      this.nextNode = 0;
+      this.currentWaypointPath = [];
       this.tweenSweep?.stop();
+
       super.destroy();
     }
 }
