@@ -29,6 +29,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     pathFinder!: Pathfinding;
     private path: Phaser.Math.Vector2[] = [];
     private nextNode = 0;
+    private tts: number = 5000;
+    canSpawn: boolean = true;
     private currentWaypointPath: Phaser.Math.Vector2[] = [];
 
     // Controle de estado
@@ -68,6 +70,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
       this.timeStuck = 0;
       this.lastPos.set(this.x, this.y);
       this.lastTileTarget.set(this.x, this.y);
+      this.canSpawn = false;
+      this.baseHealth = config.baseHealth; 
 
       this.orbitRadius = config.weapon.range * 0.6;
       this.halfArc = Phaser.Math.DegToRad(45);
@@ -331,8 +335,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
             EventManager.Instance.emit(GameEvents.WEAPON_DROPPED, { weapon: { asIWeapon: this.weapon, asICollectable: collectable }, position: this.body.position });
           }
         }
-
         this.disableBody(true, true);
+        this.scene.time.delayedCall(this.tts, () => { this.canSpawn = true });
         return true;
       }
       return false;
@@ -395,7 +399,11 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     override destroy(): void {
+      this.path = [];
+      this.nextNode = 0;
+      this.currentWaypointPath = [];
       this.tweenSweep?.stop();
+
       super.destroy();
     }
 }

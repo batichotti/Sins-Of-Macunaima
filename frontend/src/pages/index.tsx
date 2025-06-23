@@ -1,16 +1,12 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
 import dynamic from "next/dynamic";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const ScreenRotation = dynamic(
-    () => import('@/game/core/ScreenRotation'),
-    {ssr: false}
-);
+const ScreenRotation = dynamic(() => import('@/game/core/ScreenRotation'), { ssr: false });
 
-const AppWithoutSSR = dynamic(() => import("@/App"), { ssr: false });
+const MainMenu = dynamic(() => import("@/app/mainMenu/page"), { ssr: false });
 
 export default function Home() {
     return (
@@ -21,9 +17,9 @@ export default function Home() {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/favicon.png" />
             </Head>
-            <main className={`${styles.main} ${inter.className}`}>
-                <AppWithoutSSR />
+            <main className={`${inter.className}`}>
                 <ScreenRotation />
+                <MainMenu />
             </main>
         </>
     );

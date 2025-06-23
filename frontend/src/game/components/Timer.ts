@@ -1,9 +1,11 @@
+import { ITimer } from "../types";
+
 /**
  * Classe utilitária que cronometra tempo e exporta o resultado.
  */
-export class Timer {
-    private startTime: number;
-    private endTime: number;
+export class Timer implements ITimer {
+    startTime: number;
+    endTime: number;
 
     constructor() {
         this.startTime = Date.now();

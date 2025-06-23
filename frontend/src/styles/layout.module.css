@@ -1,0 +1,27 @@
+.html {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #363434;
+}
+
+.html header {
+    width: 100%;
+    padding: 2vw 4vw;
+    color: #fff;
+    text-align: center;
+    z-index: 1000;
+    background: #222;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.html header h1 {
+    margin: 0;
+    font-size: clamp(1.2rem, 3vw, 2.5rem);
+    flex: 1;
+    text-align: center;
+}

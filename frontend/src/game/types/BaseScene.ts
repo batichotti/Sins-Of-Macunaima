@@ -1,14 +1,5 @@
-import GameCameras from "../components/GameCameras";
 import { SceneData } from "./SceneData";
-import { Player } from "../entities/Player";
 import { AnimatedTileData } from "./Tiles";
-import AttackManager from "../entities/Attack";
-import InputManager from "../components/Input";
-import EnemyManager from "../entities/EnemyManager";
-import GameUI from "../components/GameUI";
-import PlayerProgressionSystem from "../entities/PlayerProgressionSystem";
-import AnimationManager from "../entities/AnimationManager";
-import CollectableManager from "../entities/Collectables";
 import { IGameCameras } from "./GameCameras";
 import { IPlayer } from "./Player";
 import { ICollectableManager } from "./Collectables";

@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id_user    Int       @id @default(autoincrement())
+  nick       String
+  email      String    @unique
+  password   String
+  runs       Run[]
+  progresses Progress[]
+  seens      Seen[]
+}
+
+model Match {
+  id_match  Int      @id @default(autoincrement())
+  datetime  DateTime
+  runs      Run[]
+}
+
+model Run {
+  id_match      Int
+  id_user       Int
+  points        Int
+  duration_time Int
+  match         Match  @relation(fields: [id_match], references: [id_match])
+  user          User   @relation(fields: [id_user], references: [id_user])
+
+  @@id([id_match, id_user])
+}
+
+model Bestiary {
+  id_beast     Int     @id @default(autoincrement())
+  description  String
+  seens        Seen[]
+}
+
+model Achievements {
+  id_achievments Int     @id @default(autoincrement())
+  desc           String
+  progresses     Progress[]
+}
+
+model Progress {
+  id_achievments Int
+  id_user        Int
+  progress       Int
+  achievements   Achievements @relation(fields: [id_achievments], references: [id_achievments])
+  user           User         @relation(fields: [id_user], references: [id_user])
+
+  @@id([id_achievments, id_user])
+}
+
+model Seen {
+  id_beast Int
+  id_user  Int
+  bestiary Bestiary @relation(fields: [id_beast], references: [id_beast])
+  user     User     @relation(fields: [id_user], references: [id_user])
+
+  @@id([id_beast, id_user])
+}

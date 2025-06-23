@@ -45,11 +45,12 @@ export default class EnemyManager implements IEnemyManager {
         runChildUpdate: true,
         createCallback: (enemyObj: Phaser.GameObjects.GameObject) => {
           const enemy = enemyObj as Enemy;
-          enemy.setActive(true).setVisible(true).setCollideWorldBounds(true);
+          enemy.setActive(false).setVisible(false).setCollideWorldBounds(true);
           enemy.setPathFinder(this.pathFinder);
         }
       });
       this.scene.physics.add.overlap(this.scene.player.character, this.enemyPool, this.attack);
+      this.scene.physics.add.collider(this.enemyPool, blockers);
 
       EventManager.Instance.on(GameEvents.SHOULD_SPAWN_BOSS, () => {
           if (!this.bossCurrentlyAlive && !this.bossDefeated) {
@@ -72,6 +73,15 @@ export default class EnemyManager implements IEnemyManager {
       }, this);
 
       this.loadWaypoints();
+
+      this.preCreateEnemies(40);
+    }
+
+    private preCreateEnemies(count: number): void {
+        for (let i = 0; i < count; i++) {
+            const enemy = this.enemyPool.create(0, 0, 'dummy_texture') as Enemy;
+            enemy.setActive(false).setVisible(false);
+        }
     }
 
     private loadWaypoints(): void {
@@ -270,8 +280,15 @@ export default class EnemyManager implements IEnemyManager {
           if (validBoss.length === 0) {
               this.bossSpawned = false;
           } else {
+            let boss: Enemy | null = null;
               const bossType = Phaser.Utils.Array.GetRandom(validBoss);
-              const boss = this.enemyPool.get() as Enemy;
+              const children = this.enemyPool.getChildren() as Enemy[];
+              for (const child of children) {
+                if (!child.active && !child.visible && child.canSpawn) {
+                  boss = child;
+                  break;
+                }
+              }
               if (!boss) return;
 
               this.canSpawn = false;
@@ -299,7 +316,15 @@ export default class EnemyManager implements IEnemyManager {
         if (validEnemies.length === 0) return;
 
         const type = Phaser.Utils.Array.GetRandom(validEnemies);
-        const enemy = this.enemyPool.get() as Enemy;
+        let enemy: Enemy | null = null;
+        const children = this.enemyPool.getChildren() as Enemy[];
+        for (const child of children) {
+          if (!child.active && !child.visible && child.canSpawn) {
+            enemy = child;
+            break;
+          }
+        }
+        
         if (!enemy) return;
 
         this.canSpawn = false;
@@ -317,7 +342,7 @@ export default class EnemyManager implements IEnemyManager {
         enemy.isBoss = false;
         enemy.setSize(16, 32);
 
-        this.scene.time.delayedCall(3000, () => this.canSpawn = true);
+        this.scene.time.delayedCall(2500, () => this.canSpawn = true);
     }
 
     public findNearestEnemy(): Phaser.Math.Vector2 | null {
