@@ -51,7 +51,7 @@ function App() {
                             const response = await fetch('http://localhost:3001/user/top');
                             const data = await response.text();
                             alert(data);
-                        } catch (error) {
+                        } catch (error: any) {
                             alert('Erro ao buscar top scorers! ' + error);
                         }
                     }}
