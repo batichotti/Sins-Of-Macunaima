@@ -33,18 +33,12 @@ export class UserService {
             throw new UnauthorizedException('User already exists');
         }
 
-        const user = await this.prismaService.user.create({ 
-            data: {
-                ...data,
-                best_run: 0
-            }
-        });
+        const user = await this.prismaService.user.create({ data });
 
         return {
             id: user.id_user,
             name:user.name,
             email: user.email,
-            best_run: user.best_run || 0,
         };
     }
 

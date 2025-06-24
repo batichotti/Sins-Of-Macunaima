@@ -14,13 +14,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id_user    Int       @id @default(autoincrement())
   name       String
   email      String    @unique
   password   String
-  best_run   Int
+  best_run   Int       @default(0)
   runs       Run[]
   progresses Progress[]
   seens      Seen[]

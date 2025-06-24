@@ -1,4 +1,4 @@
-import { IsEmail, IsString, IsNumber, MinLength } from 'class-validator';
+import { IsEmail, IsString, IsNumber, MinLength, IsOptional } from 'class-validator';
 
 export class SignUpDTO {
     @IsEmail()
@@ -13,12 +13,11 @@ export class SignUpDTO {
     password: string;
 
     @IsNumber()
-    best_run: number;
+    @IsOptional()
+    best_run: number = 0;
 }
-
 
 export class SignInDTO {
     email: string;
     password: string;
-    best_run: number;
 }
