@@ -17,6 +17,8 @@
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
+    border: none;
+    border-radius: 8px;
 }
 
 .html header h1 {

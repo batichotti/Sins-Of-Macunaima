@@ -164,7 +164,7 @@ export const ProjectileTypes: Record<ProjectileEnum, IProjectile> = {
         baseDamage: 2,
         baseCooldown: 450,
         baseSpeed: 300,
-        range: 150
+        range: 300
     }
 };
 

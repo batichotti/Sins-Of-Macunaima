@@ -10,9 +10,9 @@ export default function MainMenu() {
             <div className={styles.Description}>
                 <img src='../favicon.png' alt='Logo do SoM'/>
                 <p>
-                    Bem-vindo ao Sins of Macunaíma!
+                    Bem-vindo ao Sins of Macunaíma: um roguelike puramente brasileiro.
                     <br />
-                    Um roguelike puramente brasileiro. Consiga a maior pontuação enfrentando os inimigos mais icônicos da literatura e folclore brasileira.
+                    Consiga a maior pontuação enfrentando os inimigos mais icônicos da literatura e folclore brasileiras.
                 </p>
             </div>
             <div className={styles.Buttons}>

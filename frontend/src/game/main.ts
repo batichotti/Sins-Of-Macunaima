@@ -7,34 +7,42 @@ import GameWin from './core/GameWin';
 import { IMatchStats } from './types';
 
 const StartGame = (parent: string, matchDTO: IMatchStats) => {
-    const config: Phaser.Types.Core.GameConfig = {
-        type: Phaser.AUTO,
-        width: window.innerWidth * 0.75,
-        height: window.innerHeight * 0.75,
-        parent: 'game-container',
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-        pixelArt: true,
-        backgroundColor: '#028af8',
-        physics: {
-            default: 'arcade',
-            arcade: {
-                gravity: { x: 0, y: 0 },
-                debug: false
-            }
-        },
-        scene: [
-            Boot,
-            Loader,
-            Mapa,
-            GameOver,
-            GameWin
-        ]
-    };
-    const game = new Game({ ...config, parent });
-    game.scene.start('Boot', matchDTO);
+    try {
+        const config: Phaser.Types.Core.GameConfig = {
+            type: Phaser.AUTO,
+            scale: {
+                width: 1280,
+                height: 720,
+                autoCenter: Phaser.Scale.NONE,
+                mode: Phaser.Scale.NONE,
+            },
+            parent: 'game-container',
+            pixelArt: true,
+            backgroundColor: '#028af8',
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { x: 0, y: 0 },
+                    debug: false
+                }
+            },
+            scene: [
+                Boot,
+                Loader,
+                Mapa,
+                GameOver,
+                GameWin
+            ]
+        };
+        const game = new Game({ ...config, parent });
+        game.scene.start('Boot', matchDTO);
 
-    return game;
+        return game;
+    } catch(error) {
+        alert('Erro ao criar jogo Phaser:' + error);
+        return null;
+    }
+
 
 }
 

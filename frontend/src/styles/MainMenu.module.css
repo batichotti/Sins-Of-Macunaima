@@ -1,23 +1,40 @@
 .MainMenuContainer {
     flex: 1;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 0;
 }
 
-.MainMenuContainer img {
+.MainMenuContainer .Description{
+    display: flex;
+    flex-direction: row;
+    background: azure;
+    border: none;
+    border-radius: 8px;
+    margin-top: 1em;
+    padding: 1%;
+}
+
+.MainMenuContainer .Description img {
     width: 100%;
     max-width: 120px;
 }
 
-.MainMenuContainer p {
+.MainMenuContainer .Description p {
     font-size: clamp(0.9rem, 1.5vw, 1.2rem);
     color: #222;
     margin-top: 1em;
+    margin-left: 1em;
+    justify-content: center;
+    align-items: center;
 }
 
-.MainMenuContainer button {
+.Buttons {
+    margin: 2%;
+}
+
+.Buttons button {
     background: #fff;
     color: #222;
     border: none;
@@ -25,6 +42,7 @@
     padding: 0.5em 1.5em;
     font-weight: bold;
     cursor: pointer;
+    width: 100%;
     margin-top: 1em;
     font-size: clamp(0.9rem, 1.5vw, 1.2rem);
 }

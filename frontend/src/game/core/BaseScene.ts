@@ -61,22 +61,24 @@ export class BaseScene extends Scene implements IBaseScene {
 
   protected create(): void {
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown, this);
-    this.setupLayers();
-    this.setupAnimatedTiles();
-    this.setupPlayer();
-    this.setupTransitionPoints();
-    this.setupCollisions();
-    this.setupCameras();
-    this.inputManager = new InputManager(this);
-    this.enemyManager = new EnemyManager(this);
-    this.animationManager = new AnimationManager(this);
-    this.setupAnimations();
-    this.playerProgressionSystem = new PlayerProgressionSystem(this, this.player);
-    this.collectableManager = new CollectableManager(this);
-    this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
-    this.gameUI = new GameUI(this);
+    this.events.on(Phaser.Scenes.Events.CREATE, () => {
+      this.setupLayers();
+      this.setupAnimatedTiles();
+      this.setupPlayer();
+      this.setupTransitionPoints();
+      this.setupCollisions();
+      this.setupCameras();
+      this.inputManager = new InputManager(this);
+      this.enemyManager = new EnemyManager(this);
+      this.animationManager = new AnimationManager(this);
+      this.setupAnimations();
+      this.playerProgressionSystem = new PlayerProgressionSystem(this, this.player);
+      this.collectableManager = new CollectableManager(this);
+      this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
+      this.gameUI = new GameUI(this);
 
-    EventBus.emit('current-scene-ready', this);
+      EventBus.emit('current-scene-ready', this);
+    }, this);
   }
 
   update(time: number, delta: number): void {
@@ -297,6 +299,25 @@ export class BaseScene extends Scene implements IBaseScene {
     this.attackManager?.destroy();
     this.enemyManager?.destroy();
     this.collectableManager?.destroy();
+
+    this.events.off(Phaser.Scenes.Events.CREATE, () => {
+      this.setupLayers();
+      this.setupAnimatedTiles();
+      this.setupPlayer();
+      this.setupTransitionPoints();
+      this.setupCollisions();
+      this.setupCameras();
+      this.inputManager = new InputManager(this);
+      this.enemyManager = new EnemyManager(this);
+      this.animationManager = new AnimationManager(this);
+      this.setupAnimations();
+      this.playerProgressionSystem = new PlayerProgressionSystem(this, this.player);
+      this.collectableManager = new CollectableManager(this);
+      this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
+      this.gameUI = new GameUI(this);
+
+      EventBus.emit('current-scene-ready', this);
+    }, this);
 
     EventBus.off('current-scene-ready');
   }

@@ -164,7 +164,7 @@ export const BossTypes: Record<BossEnum, IEnemy> = {
         projectileWeapon: ProjectileTypes[ProjectileEnum.BOLA],
         baseHealth: 150,
         baseSpeed: 120,
-        damageMultiplier: 1.5,
+        damageMultiplier: 1.25,
         pointGain: 500
     }
 };

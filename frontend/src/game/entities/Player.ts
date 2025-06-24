@@ -14,7 +14,7 @@ export class Player implements IPlayer {
     weaponSet!: WeaponSet;
     inventory: Map<ICollectable, number> = new Map();
 
-    constructor(data: IPlayer, mainCharacter: Character) {
+    constructor(data: IPlayerExport, mainCharacter: Character) {
         this.name = data.name;
         this.character = mainCharacter;
         this.playableCharacters = data.playableCharacters;
@@ -44,7 +44,7 @@ export class Player implements IPlayer {
         // Aplica os modificadores de nível ao novo personagem
         const modifiedConfig: ICharacter = {
             ...newCharacterConfig,
-            health: newCharacterConfig.health * this.level.healthIncrease,
+            health: this.character.health,
             maximumHealth: newCharacterConfig.health * this.level.healthIncrease
         };
 

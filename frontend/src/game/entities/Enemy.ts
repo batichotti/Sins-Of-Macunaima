@@ -336,7 +336,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
           }
         }
         this.disableBody(true, true);
-        this.scene.time.delayedCall(this.tts, () => { this.canSpawn = true });
         return true;
       }
       return false;
@@ -374,6 +373,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
 
     override disableBody(disableGameObject: boolean = false, hideGameObject: boolean = false): this {
       this.setActive(false);
+      this.setVisible(false);
+      this.canSpawn = false;
       this.path = [];
       this.nextNode = 0
       this.currentWaypointPath = [];
@@ -392,9 +393,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
         onComplete: () => {
           super.disableBody(disableGameObject, hideGameObject);
           effect.destroy();
-          super.destroy();
         }
       });
+      this.scene.time.delayedCall(this.tts, () => { this.canSpawn = true });
       return this;
     }
 
