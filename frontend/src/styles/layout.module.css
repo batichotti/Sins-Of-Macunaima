@@ -1,29 +1,70 @@
-.html {
+.html, .body {
+    margin: 0;
+    padding: 0;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: #363434;
+    background-color: #24273a;
+    color: #cad3f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.html header {
-    width: 100%;
-    padding: 2vw 4vw;
-    color: #fff;
-    text-align: center;
-    z-index: 1000;
-    background: #222;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+.header {
+    background-color: #363a4f;
+    padding: 2vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-sizing: border-box;
+    position: relative;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
+    margin: 1vh;
 }
 
-.html header h1 {
+.titleContainer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.titleContainer h1 {
     margin: 0;
-    font-size: clamp(1.2rem, 3vw, 2.5rem);
-    flex: 1;
-    text-align: center;
+    font-size: 1.8rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 1px;
+    pointer-events: auto;
+}
+
+.buttonContainer {
+    margin-left: auto;
+    z-index: 10;
+}
+
+.AuthModal {
+    border: none;
+    border-radius: 4px;
+    padding: 0.5em 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+}
+
+.AuthModalContent {
+    background-color: #5b6078;
+    color: #cad3f5;
+    margin-top: 2em;
+    padding: 2em;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
