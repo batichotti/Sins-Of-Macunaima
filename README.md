@@ -32,9 +32,9 @@ Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Itiro Nagao.
 
 ## Instalação
 1. Clone o repositório: `git clone https://github.com/batichotti/Sins-Of-Macunaima.git`
-2. Instale as dependências: `npm install`
+2. Instale as dependências: `npm install` ou `yarn install` 
 3. Configure o banco de dados no arquivo `.env`.
-4. Inicie o servidor: `npm start`
+4. Inicie o servidor: `npm start` ou `yarn run start`
 
 ## Licença
 Este projeto está licenciado sob a [MIT License](LICENSE).
