@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 
-const AuthModal = dynamic(() => import('../_components/_authModal'), { ssr: false});
+const AuthModal = dynamic(() => import('../_components/_authModal'), { ssr: false });
 
 export default function MainMenu() {
     const router = useRouter();
