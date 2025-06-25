@@ -9,7 +9,7 @@
 
 .header {
     background-color: #363a4f;
-    padding: 2vh;
+    padding: 4vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -42,25 +42,6 @@
 .buttonContainer {
     margin-left: auto;
     z-index: 10;
-}
-
-.AuthModal {
-    border: none;
-    border-radius: 4px;
-    padding: 0.5em 1.5em;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
-}
-
-.AuthModalContent {
-    background-color: #5b6078;
-    color: #cad3f5;
-    margin-top: 2em;
-    padding: 2em;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .main {

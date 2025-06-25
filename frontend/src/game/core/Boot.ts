@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { TilePaths, TileSets } from '@/game/components/PathAssets';
 import { WindowResolution } from '@/game/components/Properties';
-import { BossTypes, CharacterEnum, CharacterTypes, EnemyTypes, SpecialCollectableTypes, ICharacter, ICollectable, IEnemy, ILevel, IMelee, IPlayer, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes, RegularCollectableTypes, SceneData, WeaponSet, IProjectile, IMatchStats } from '../types';
+import { BossTypes, CharacterTypes, EnemyTypes, SpecialCollectableTypes, ICharacter, ICollectable, IEnemy, IMelee, MeleeTypes, ProjectileTypes, RegularCollectableTypes, SceneData, IProjectile, IMatchStats } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets globais.

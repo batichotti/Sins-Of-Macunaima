@@ -11,8 +11,8 @@ const StartGame = (parent: string, matchDTO: IMatchStats) => {
         const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
             scale: {
-                width: 1280,
-                height: 720,
+                width: 1024,
+                height: 576,
                 autoCenter: Phaser.Scale.NONE,
                 mode: Phaser.Scale.NONE,
             },

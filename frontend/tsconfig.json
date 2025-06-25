@@ -35,10 +35,11 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "dist/types/**/*.ts",
     "next-env.d.ts",
     "src/game/components/Properties.ts",
     "src/game/components/ScreenRotation.ts",
-    "dist/types/**/*.ts"
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
