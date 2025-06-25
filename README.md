@@ -10,11 +10,8 @@ Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Itiro Nagao.
 ## Funcionalidades
 - **Login**: Sistema completo para registro, autenticação e gerenciamento de contas de jogadores.
 - **Jogo**: Mecânicas de gameplay estilo RPG misturado com Vampire Survivors.
-- **Sistema de Amizade**: Permite que os jogadores adicionem amigos e interajam entre si.
 - **Mortes**: Sistema de consequências para falhas e desafios.
 - **História**: Uma narrativa envolvente que guia os jogadores.
-- **Sistema de Conquistas**: Desafios e recompensas para incentivar a exploração e o progresso.
-- **Sistema de Bestiário**: Uma Pokedéx para o jogo.
 - **Partidas Solo**: Partidas onde você escolhe um personagem e joga sozinho com ele.
 
 ## Como Contribuir
