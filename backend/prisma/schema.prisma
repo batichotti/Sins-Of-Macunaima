@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -14,12 +14,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id_user    Int       @id @default(autoincrement())
-  nick       String
+  name       String    @unique
   email      String    @unique
   password   String
+  best_run   Int       @default(0)
   runs       Run[]
   progresses Progress[]
   seens      Seen[]
