@@ -27,6 +27,7 @@ Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Itiro Nagao.
 - Next.js
 - React.js
 - Phaser.js
+- Prisma
 - PostgreSQL
 
 ## Instalação
