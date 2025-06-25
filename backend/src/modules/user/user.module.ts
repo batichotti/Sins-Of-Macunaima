@@ -5,9 +5,10 @@ import { RankingModule } from '../ranking/ranking.module';
 import { AchievementsModule } from '../achievements/achievements.module';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [MatchModule, BestiaryModule, RankingModule, AchievementsModule],
+    imports: [MatchModule, BestiaryModule, RankingModule, AchievementsModule, PrismaModule],
     controllers: [UserController],
     providers: [UserService]
 })

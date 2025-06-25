@@ -10,11 +10,8 @@ Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Itiro Nagao.
 ## Funcionalidades
 - **Login**: Sistema completo para registro, autenticação e gerenciamento de contas de jogadores.
 - **Jogo**: Mecânicas de gameplay estilo RPG misturado com Vampire Survivors.
-- **Sistema de Amizade**: Permite que os jogadores adicionem amigos e interajam entre si.
 - **Mortes**: Sistema de consequências para falhas e desafios.
 - **História**: Uma narrativa envolvente que guia os jogadores.
-- **Sistema de Conquistas**: Desafios e recompensas para incentivar a exploração e o progresso.
-- **Sistema de Bestiário**: Uma Pokedéx para o jogo.
 - **Partidas Solo**: Partidas onde você escolhe um personagem e joga sozinho com ele.
 
 ## Como Contribuir
@@ -30,13 +27,14 @@ Arthur Vinicius Machado, Mateus Batichotti Silva e Pedro Itiro Nagao.
 - Next.js
 - React.js
 - Phaser.js
+- Prisma
 - PostgreSQL
 
 ## Instalação
 1. Clone o repositório: `git clone https://github.com/batichotti/Sins-Of-Macunaima.git`
-2. Instale as dependências: `npm install`
+2. Instale as dependências: `npm install` ou `yarn install` 
 3. Configure o banco de dados no arquivo `.env`.
-4. Inicie o servidor: `npm start`
+4. Inicie o servidor: `npm start` ou `yarn run start`
 
 ## Licença
 Este projeto está licenciado sob a [MIT License](LICENSE).

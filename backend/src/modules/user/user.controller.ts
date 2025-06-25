@@ -16,16 +16,14 @@ export class UserController {
         return this.userService.findTopScorers();
     }
     
-    @Get(':id') // URL parameter
-    async findOne(@Param('id') id: string){
-        return this.userService.findOne(id);
+    @Get(':name') // URL parameter
+    async findOneByName(@Param('name') name: string){
+        return this.userService.findOneByName(name);
     }
     
     @Post('signup')
     async signup(@Body() body: SignUpDTO) {
-        await this.userService.signup(body);
-        
-        return body;
+        return this.userService.signup(body);
     }
     
     @Post('signin')
