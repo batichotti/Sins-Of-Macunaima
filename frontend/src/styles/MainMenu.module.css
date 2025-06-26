@@ -7,7 +7,7 @@
 }
 
 .MainMenuContainer .Description {
-    background-color: #363a4f;
+    background: #363a4f;
     display: flex;
     flex-direction: row;
     border: none;
@@ -43,7 +43,7 @@
     margin: 0 1.5em 1.5em 1.5em;
 }
 
-.Buttons button {
+.Buttons button, .UserInfo button, .AuthModalButtons button {
     border: none;
     border-radius: 4px;
     padding: 0.5em 1.5em;
@@ -63,17 +63,10 @@
 .AuthModalButtons {
     display: flex;
     gap: 1em;
-    margin-bottom: 0.5em;
 }
 
 .AuthModalButtons button {
-    border: none;
-    border-radius: 4px;
-    padding: 0.25em 1em;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    margin-bottom: 0.5em;;
 }
 
 .AuthModalContent form {
@@ -102,4 +95,12 @@
     width: 100%;
     margin: 0.2em;
     cursor: pointer;
+}
+
+.UserInfo {
+    justify-content: space-between;
+}
+
+.UserInfo p {
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
 }

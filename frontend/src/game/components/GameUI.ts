@@ -30,6 +30,30 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
     this.scene.add.existing(this);
   }
 
+  private shrinkToFitText(): void {
+    if (!this.scene || !this.scene.sys.isActive() || !this.text || this.text.scene !== this.scene) {
+      return;
+    }
+    try {
+      const padding = 20;
+      const textWidth = this.text.width + padding;
+      const textHeight = this.size.y;
+
+      if (textWidth > this.size.x) {
+      this.background.clear();
+      this.background.fillStyle(0x000000, 0.8);
+      this.background.lineStyle(2, 0xffff00, 1);
+      this.background.fillRoundedRect(0, 0, textWidth, textHeight);
+      this.size.set(textWidth, textHeight);
+      }
+
+      this.text.setX(this.size.x / 2);
+      this.text.setY(this.size.y / 2);
+    } catch (error) {
+      console.warn('Erro ao ajustar tamanho do texto:', error);
+    }
+  }
+
   setText(newText: string): void {
     if (!this.scene || !this.scene.sys.isActive() || !this.text || this.text.scene !== this.scene) {
       return;
@@ -37,6 +61,7 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
     
     try {
       this.text.setText(this.placeholder + newText);
+      this.shrinkToFitText();
     } catch (error) {
       console.warn('Erro ao definir texto:', error);
     }
@@ -186,15 +211,15 @@ export default class GameUI implements IGameUI {
     this.weaponSetLabel = new TextBox(scene, { x: 180, y: 50 } as Phaser.Math.Vector2, { x: 440, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
     this.pointsLabel = new TextBox(scene, { x: 170, y: 50 } as Phaser.Math.Vector2, { x: 630, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.POINTS);
 
-    this.playerLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
-    this.attackModeLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 180, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.ATTACK_MODE);
-    this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 390, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
-    this.notificationsLabel = new NotificationPopUp(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 810, y: 10 } as Phaser.Math.Vector2);
+    this.playerLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 140 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
+    this.attackModeLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.ATTACK_MODE);
+    this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 220, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
+    this.notificationsLabel = new NotificationPopUp(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 640, y: 70 } as Phaser.Math.Vector2);
 
     this.weaponCooldownBar = new CooldownBar(this.scene, 460, 45, 140, 5);
     this.scene.gameCameras.main.ignore([ this.killsLabel, this.attackModeLabel, this.weaponCooldownBar, this.weaponSetLabel, this.healthLabel, this.levelLabel, this.playerLabel, this.characterLabel ]);
 
-    this.timeLabel = new TimeCounter(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 600, y: 70 } as Phaser.Math.Vector2);
+    this.timeLabel = new TimeCounter(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 430, y: 70 } as Phaser.Math.Vector2);
 
     this.safeSetText(this.playerLabel, this.scene.player.name);
     this.safeSetText(this.characterLabel, this.scene.player.character.name);

@@ -1,13 +1,13 @@
 'use client';
 import styles from '@/styles/MainMenu.module.css';
 import { useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
-
-const AuthModal = dynamic(() => import('../_components/_authModal'), { ssr: false });
+import { AuthModal } from '../_lib/_auth';
+import { useAuth } from '../_context/_authContext';
 
 export default function MainMenu() {
     const router = useRouter();
+    const { user, isAuthenticated, logout } = useAuth();
 
     return (
         <div className={styles.MainMenuContainer}>
@@ -20,9 +20,17 @@ export default function MainMenu() {
                 </p>
             </div>
             <div className={styles.OptionsContainer}>
-                <div className={styles.AuthModal}>
-                    <AuthModal />
-                </div>
+                {!isAuthenticated ? (
+                    <div className={styles.AuthModal}>
+                        <AuthModal />
+                    </div>
+                ) : (
+                    <div className={styles.UserInfo}>
+                        <p>Olá, {user?.name}!</p>
+                        <button onClick={logout}>Sair</button>
+                    </div>
+                )}
+                
                 <div className={styles.Buttons}>
                     <button onClick={() => router.push('/game')}>Jogar</button>
                     <br />

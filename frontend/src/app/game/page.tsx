@@ -5,6 +5,8 @@ import dynamic from 'next/dynamic';
 import { CharacterEnum, CharacterTypes, ILevel, IMatchStats, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes } from '../../game/types';
 import styles from '@/styles/Game.module.css';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../_context/_authContext';
+import { AuthModal } from '../_lib/_auth';
 
 const PhaserGame = dynamic(() => import('../../game/PhaserGame').then(mod => mod.PhaserGame), { ssr: false });
 
@@ -13,11 +15,12 @@ export default function Game() {
     const [matchDTO, setmatchDTO] = useState<IMatchStats | null>(null);
     const [gameLoaded, setGameLoaded] = useState(false);
     const router = useRouter();
+    const { user, isAuthenticated } = useAuth();
 
     async function fetchMatchStats() {
         const data: IMatchStats = {
             player: {
-                name: 'Irineu',
+                name: user?.name || 'Jogador Desconhecido',
                 level: { level: 1 } as ILevel,
                 playableCharacters: [
                     CharacterTypes[CharacterEnum.MACUNAIMA],
@@ -49,10 +52,20 @@ export default function Game() {
 
   return (
     <div className={styles.GameContainer}>
-        
-        {!gameLoaded && (<div className={styles.GamePlaceholder} />)}
-
-        {matchDTO && (<PhaserGame ref={phaserRef} backendTransfer={(data: Partial<IMatchStats>) => handleBackendTransfer(data)} mainMenu={() => handleMainMenu()} matchDTO={matchDTO} onLoad={() => setGameLoaded(true)} />)}
+        {
+            !isAuthenticated ? (
+                <div>
+                    <h2>Parece que você não está logado</h2>
+                    <h2>Inicie sessão ou cadastre-se agora</h2>
+                    <AuthModal />
+                </div>
+            ) : (
+                <div>
+                    {!gameLoaded && (<div className={styles.GamePlaceholder} />)}
+                    {matchDTO && (<PhaserGame ref={phaserRef} backendTransfer={(data: Partial<IMatchStats>) => handleBackendTransfer(data)} mainMenu={() => handleMainMenu()} matchDTO={matchDTO} onLoad={() => setGameLoaded(true)} />)}
+                </div>
+            )
+        }
     </div>
   );
 }
