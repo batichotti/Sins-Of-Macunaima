@@ -5,7 +5,9 @@ import { HashUtil } from 'src/common/utils/hash.util';
 
 @Injectable()
 export class UserService {
-    constructor(private prismaService: PrismaService) { }
+    constructor(
+        private prismaService: PrismaService,
+    ) { }
 
     async findAll(sort: 'asc' | 'desc' = 'desc') {
         return this.prismaService.user.findMany({
@@ -98,19 +100,21 @@ export class UserService {
         });
 
         return {
-            id: user.id_user,
-            name: user.name,
-            email: user.email,
+            user: {
+                id: user.id_user,
+                name: user.name,
+                email: user.email,
+            },
         };
     }
 
-    async signin(data: SignInDTO) {
+    async validateCredentials(data: SignInDTO) {
         const user = await this.prismaService.user.findUnique({
             where: { email: data.email },
         });
 
         if (!user) {
-            await HashUtil.compare('dummy', '$2b$12$dummyhash'); // Avoiding time attacks
+            await HashUtil.compare('dummy', '$2b$12$dummyhash'); // Avoiding timing attacks
             throw new UnauthorizedException('Invalid credentials');
         }
 
