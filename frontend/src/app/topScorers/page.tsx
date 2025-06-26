@@ -1,9 +1,12 @@
 'use client';
 import styles from '@/styles/TopScorers.module.css';
+import { useEffect, useState } from 'react';
 
-interface ScorerProps {
-    playerName: string,
-    playerScore: number
+interface playerDTO { 
+    id_user: number; 
+    name: string; 
+    email: string; 
+    best_run: number;
 }
 
 function ellipseString(str: string, maxChars: number = 30): string {
@@ -19,24 +22,69 @@ function ScorersListHeader() {
     );
 }
 
-function Scorer(props: ScorerProps) {
-    return (
+function Scorer(props: playerDTO) {
+    return props.id_user ? (
         <div className={styles.Scorer}>
-            <p className={styles.PlayerName}>{ellipseString(props.playerName)}</p>
-            <p className={styles.PlayerScore}>{props.playerScore}</p>
+            <p className={styles.PlayerName}>{ellipseString(props.name)}</p>
+            <p className={styles.PlayerScore}>{props.best_run}</p>
         </div>
+    ) : (
+        <div />
     );
 }
 
-function fetchTopScorers(): ScorerProps[] {
-    return [
-        { playerName: 'Seu Cachorro', playerScore: 10 },
-        { playerName: 'Sua mãe', playerScore: 1000 },
-        { playerName: 'Seu pai', playerScore: 2000 },
-    ];
-}
+export default function TopScorers() {
+    const [topScorersDTO, setTopScorersDTO] = useState<playerDTO[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string>('');
 
-export default function topScorers() {
+    async function fetchTopScorers() {
+        try {
+            setLoading(true);
+            setError('');
+            
+            const response = await fetch('http://localhost:3001/user/top', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+                const data: playerDTO[] = await response.json();
+                setTopScorersDTO(data);
+            } else {
+                setError(`Erro ao buscar os maiores pontuadores: ${response.statusText}`);
+                console.error('Erro ao buscar os maiores pontuadores:', response.statusText);
+            }
+        } catch (error) {
+            const errorMessage = 'Erro ao buscar os maiores pontuadores';
+            setError(errorMessage);
+            console.error(errorMessage, error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchTopScorers();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className={styles.TopScorersContainer}>
+                <p>Carregando...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className={styles.TopScorersContainer}>
+                <p>Erro: {error}</p>
+                <button onClick={fetchTopScorers}>Tentar novamente</button>
+            </div>
+        );
+    }
+
     return (
         <div className={styles.TopScorersContainer}>
             <div className={styles.Header}>
@@ -44,28 +92,17 @@ export default function topScorers() {
                 <h2>As maiores pontuações dos jogadores.</h2>
             </div>
             <div className={styles.ScorersList}>
-                <ScorersListHeader/>
-                {
-                    fetchTopScorers().map(
-                        (it) => {
-                            return <Scorer key={it.playerName} playerName={it.playerName} playerScore={it.playerScore}/>
-                        }
-                    )
-                }
+                <ScorersListHeader />
+                {topScorersDTO.map((player) => (
+                    <Scorer 
+                        key={player.id_user} 
+                        id_user={player.id_user}
+                        name={player.name}
+                        email={player.email}
+                        best_run={player.best_run}
+                    />
+                ))}
             </div>
-            <button
-                onClick={
-                    async () => {
-                        try {
-                            const response = await fetch('http://localhost:3001/user/top');
-                            const data = await response.text();
-                            alert(data);
-                        } catch (error) {
-                            alert('Erro ao buscar top scorers! ' + error);
-                        }
-                    }
-                }
-            >Top Scorers</button>
         </div>
     );
 }
