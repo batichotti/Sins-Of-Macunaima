@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
-import { MatchModule } from '../match/match.module';
-import { BestiaryModule } from '../bestiary/bestiary.module';
-import { RankingModule } from '../ranking/ranking.module';
-import { AchievementsModule } from '../achievements/achievements.module';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [MatchModule, BestiaryModule, RankingModule, AchievementsModule, PrismaModule],
+    imports: [
+        PrismaModule,
+    ],
     controllers: [UserController],
-    providers: [UserService]
+    providers: [UserService],
+    exports: [UserService],
 })
 export class UserModule {}
