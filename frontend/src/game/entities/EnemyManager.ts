@@ -32,7 +32,7 @@ export default class EnemyManager implements IEnemyManager {
     bossDefeated: boolean = false;
 
     constructor(scene: BaseScene) {
-      scene.time.delayedCall(5000, () => { this.canSpawn = true });
+      scene.time.delayedCall(2500, () => { this.canSpawn = true });
       this.scene = scene;
       this.enemySpawner = new EnemySpawner(scene);
       const blockers = this.scene.map.getLayer('colisao')!.tilemapLayer;
@@ -263,7 +263,7 @@ export default class EnemyManager implements IEnemyManager {
 
       if(this.cooldownAttack) {
         enemy.sweepTween(character.body!.position);
-        character.takeDamage(enemy.weapon.baseDamage * enemy.damageMultiplier * 0.25 * this.scene.player.level.level);
+        character.takeDamage(enemy.weapon.baseDamage * enemy.damageMultiplier * 0.25 * this.scene.player.level.damageIncrease);
         this.cooldownAttack = false;
         this.scene.time.delayedCall(1250, () => { this.cooldownAttack = true; });
       }

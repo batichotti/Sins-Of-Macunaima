@@ -6,6 +6,161 @@ import { BaseScene } from '../core/BaseScene';
 import { EventManager } from '../core/EventBus';
 import { GameEvents } from '../types';
 
+export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
+  override scene: BaseScene;
+  size: Phaser.Math.Vector2;
+  background: Phaser.GameObjects.Graphics;
+  text: Phaser.GameObjects.Text;
+  placeholder: string;
+
+  constructor(scene: BaseScene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2, placeholder: string) {
+    super(scene, position.x, position.y);
+    this.size = size;
+    this.placeholder = placeholder;
+
+    this.background = scene.add.graphics();
+    this.background.fillStyle(0x000000, 0.8);
+    this.background.lineStyle(2, 0xffff00, 1);
+    this.background.fillRoundedRect(0, 0, this.size.x, this.size.y);
+
+    this.text = scene.add.text(0, 0, '', { ...Text.Dialog1, fixedWidth: this.size.x, align: 'center' });
+    this.text.setDepth(100);
+
+    this.text.setOrigin(0.5, 0.5);
+    this.text.setPosition(this.size.x / 2, this.size.y / 2);
+
+    this.add([ this.background, this.text ]);
+    scene.add.existing(this);
+    scene.gameCameras.main.ignore(this);
+  }
+
+  setText(newText: string): void {
+
+    try {
+      this.text.setText(this.placeholder + newText);
+    } catch (error) {
+      console.warn('Erro ao definir texto:', error);
+    }
+  }
+
+  show(): void {
+    if (this.scene && this.scene.sys.isActive()) {
+      this.setVisible(true);
+    }
+  }
+
+  hide(): void {
+    if (this.scene && this.scene.sys.isActive()) {
+      this.setVisible(false);
+    }
+  }
+
+  override destroy(): void {
+    this.text.destroy();
+    if (this.background) {
+      this.background.destroy();
+    }
+    super.destroy();
+  }
+}
+
+export class CooldownBar extends Phaser.GameObjects.Container implements ICooldownBar {
+  override scene: BaseScene
+  fill: Phaser.GameObjects.Graphics;
+  width: number;
+  height: number;
+  private currentTween?: Phaser.Tweens.Tween;
+
+  constructor(scene: BaseScene, x: number, y: number, width: number, height: number) {
+    super(scene, x, y);
+    this.width = width;
+    this.height = height;
+    this.fill = scene.add.graphics();
+    this.fill.fillStyle(0xffffff, 1);
+    this.fill.fillRoundedRect(0, 0, 0, height, 4);
+
+    this.add([ this.fill ]);
+    scene.add.existing(this);
+    scene.gameCameras.main.ignore(this);
+  }
+
+  public startCooldown(duration: number) {
+    if (!this.scene || !this.scene.sys.isActive()) {
+      return;
+    }
+
+    if (this.currentTween) {
+      this.currentTween.destroy();
+    }
+
+    const animationObject = { progress: 1 };
+    this.updateFillBar(1);
+
+    if (this.scene.sys.isActive() && this.scene.sys.isVisible()) {
+      this.createTween(animationObject, duration);
+    } else {
+      this.scene.sys.events.once('ready', () => {
+        if (this.scene && this.scene.sys.isActive()) {
+          this.createTween(animationObject, duration);
+        }
+      });
+    }
+  }
+
+  private createTween(animationObject: { progress: number }, duration: number): void {
+    if (!this.scene || !this.scene.tweens || !this.scene.sys.isActive()) {
+      return;
+    }
+
+    this.currentTween = this.scene.tweens.add({
+      targets: animationObject,
+      progress: 0,
+      ease: 'Linear',
+      duration: duration,
+      onUpdate: () => {
+        if (this.scene && this.scene.sys.isActive()) {
+          this.updateFillBar(animationObject.progress);
+        }
+      },
+      onComplete: () => {
+        if (this.scene && this.scene.sys.isActive()) {
+          this.updateFillBar(0);
+        }
+        this.currentTween = undefined;
+      }
+    });
+  }
+
+  private updateFillBar(progress: number) {
+    if (!this.fill || !this.scene || !this.scene.sys.isActive()) {
+      return;
+    }
+
+    try {
+      this.fill.clear();
+      if (progress > 0) {
+        this.fill.fillStyle(0xffffff, 1);
+        this.fill.fillRoundedRect(0, 0, this.width * progress, this.height, 4);
+      }
+    } catch (error) {
+      console.warn('Erro ao atualizar barra de cooldown:', error);
+    }
+  }
+
+  public destroy(): void {
+    if (this.currentTween) {
+      this.currentTween.destroy();
+      this.currentTween = undefined;
+    }
+
+    if (this.fill) {
+      this.fill.clear();
+      this.fill.destroy();
+    }
+    super.destroy();
+  }
+}
+
 export default class GameUI implements IGameUI {
   scene: BaseScene;
   playerLabel: TextBox;
@@ -20,7 +175,7 @@ export default class GameUI implements IGameUI {
   notificationsLabel: NotificationPopUp;
   timeLabel: TimeCounter;
   handlers: IGameUIHandlers;
-
+  private isDestroyed: boolean = false;
 
   constructor(scene: BaseScene) {
     this.scene = scene;
@@ -31,34 +186,41 @@ export default class GameUI implements IGameUI {
     this.weaponSetLabel = new TextBox(scene, { x: 180, y: 50 } as Phaser.Math.Vector2, { x: 440, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
     this.pointsLabel = new TextBox(scene, { x: 170, y: 50 } as Phaser.Math.Vector2, { x: 630, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.POINTS);
 
-    this.playerLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
-    this.attackModeLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 180, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.ATTACK_MODE);
-    this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 390, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
-    this.notificationsLabel = new NotificationPopUp(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 810, y: 10 } as Phaser.Math.Vector2);
+    this.playerLabel = new TextBox(scene, { x: 300, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 140 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
+    this.attackModeLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.ATTACK_MODE);
+    this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 220, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
+    this.notificationsLabel = new NotificationPopUp(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 640, y: 70 } as Phaser.Math.Vector2);
 
     this.weaponCooldownBar = new CooldownBar(this.scene, 460, 45, 140, 5);
     this.scene.gameCameras.main.ignore([ this.killsLabel, this.attackModeLabel, this.weaponCooldownBar, this.weaponSetLabel, this.healthLabel, this.levelLabel, this.playerLabel, this.characterLabel ]);
 
-    this.timeLabel = new TimeCounter(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 600, y: 70 } as Phaser.Math.Vector2);
-
-    this.playerLabel.setText(this.scene.player.name);
-    this.characterLabel.setText(this.scene.player.character.name);
-    this.levelLabel.setText(this.scene.player.level.level.toString());
-    this.healthLabel.setText(this.scene.player.character.health.toString());
-    this.weaponSetLabel.setText(this.scene.attackManager.weapon.name);
-    this.pointsLabel.setText("0");
-    this.attackModeLabel.setText("");
-    this.killsLabel.setText("0");
-    this.attackModeLabel.setText("Auto");
+    this.timeLabel = new TimeCounter(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 430, y: 70 } as Phaser.Math.Vector2);
 
     this.handlers = {
-        onHealthChange: (health: number) => { this.healthLabel.setText(health.toString()) },
-        onWeaponChange: (weapon: IWeapon) => { this.weaponSetLabel.setText(weapon.name) },
-        onEnemyDied: (info: { points: number, kills: number }) => { this.pointsLabel.setText(info.points.toString()); this.killsLabel.setText(info.kills.toString()) },
-        onLevelUp: (level: number) => { this.levelLabel.setText(level.toString()) },
-        onAttackModeChange: (mode: AttackMode) => { this.attackModeLabel.setText(mode === AttackMode.AUTO ? "Auto" : "Manual") },
-        onWeaponCooldown: (cooldown: number) => { this.weaponCooldownBar.startCooldown(cooldown) },
-        onCharacterChange: (character: ICharacter) => { this.characterLabel.setText(character.name) }
+        onHealthChange: (health: number) => {
+          if (!this.isDestroyed) this.healthLabel.setText(health.toString());
+        },
+        onWeaponChange: (weapon: IWeapon) => {
+          if (!this.isDestroyed) this.weaponSetLabel.setText(weapon.name);
+        },
+        onEnemyDied: (info: { points: number, kills: number }) => {
+          if (!this.isDestroyed) {
+            this.pointsLabel.setText(info.points.toString());
+            this.killsLabel.setText(info.kills.toString());
+          }
+        },
+        onLevelUp: (level: number) => {
+          if (!this.isDestroyed) this.levelLabel.setText(level.toString());
+        },
+        onAttackModeChange: (mode: AttackMode) => {
+          if (!this.isDestroyed) this.attackModeLabel.setText(mode === AttackMode.AUTO ? "Auto" : "Manual");
+        },
+        onWeaponCooldown: (cooldown: number) => {
+          if (!this.isDestroyed && this.weaponCooldownBar) this.weaponCooldownBar.startCooldown(cooldown);
+        },
+        onCharacterChange: (character: ICharacter) => {
+          if (!this.isDestroyed) this.characterLabel.setText(character.name);
+        }
     };
 
     const eventManager = EventManager.Instance;
@@ -71,7 +233,22 @@ export default class GameUI implements IGameUI {
     eventManager.on(GameEvents.TOGGLE_CHARACTER_SUCCESS, this.handlers.onCharacterChange, this);
   }
 
+  populateInitialValues(): void {
+      this.playerLabel.setText(this.scene.player.name);
+      this.characterLabel.setText(this.scene.player.character.name);
+      this.levelLabel.setText(this.scene.player.level.level.toString());
+      this.healthLabel.setText(this.scene.player.character.health.toString());
+      this.weaponSetLabel.setText(this.scene.attackManager.weapon.name);
+      this.pointsLabel.setText("0");
+      this.killsLabel.setText("0");
+      this.attackModeLabel.setText("Auto");
+      this.timeLabel.setText("0");
+  }
+
   public destroy(): void {
+    if (this.isDestroyed) return;
+    this.isDestroyed = true;
+
     const eventManager = EventManager.Instance;
     eventManager.off(GameEvents.HEALTH_CHANGE, this.handlers.onHealthChange, this);
     eventManager.off(GameEvents.TOGGLE_WEAPON_SUCCESS, this.handlers.onWeaponChange, this);
@@ -81,134 +258,35 @@ export default class GameUI implements IGameUI {
     eventManager.off(GameEvents.TOGGLE_ATTACK_MODE_SUCCESS, this.handlers.onAttackModeChange, this);
     eventManager.off(GameEvents.TOGGLE_CHARACTER_SUCCESS, this.handlers.onCharacterChange, this);
 
-    this.playerLabel.destroy();
-    this.characterLabel.destroy();
-    this.levelLabel.destroy();
-    this.healthLabel.destroy();
-    this.weaponSetLabel.destroy();
-    this.weaponCooldownBar.destroy();
-    this.pointsLabel.destroy();
-    this.killsLabel.destroy();
-    this.attackModeLabel.destroy();
-    this.timeLabel.destroy();
-    this.notificationsLabel.destroy();
-    //this.bossInfoLabel.destroy();
-  }
-}
-
-export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
-  size: Phaser.Math.Vector2;
-  background: Phaser.GameObjects.Graphics;
-  text: Phaser.GameObjects.Text;
-  placeholder: string;
-
-  constructor(scene: Scene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2, placeholder: string) {
-    super(scene, position.x, position.y);
-    this.scene = scene;
-    this.size = size;
-    this.placeholder = placeholder;
-    this.background = new Phaser.GameObjects.Graphics(this.scene);
-    this.background.fillStyle(0x000000, 0.8);
-    this.background.lineStyle(2, 0xffff00, 1);
-    this.background.fillRoundedRect(0, 0, this.size.x, this.size.y);
-
-    this.text = new Phaser.GameObjects.Text(this.scene, this.size.x * 0.5, this.size.y * 0.5, '', { ...Text.Dialog1 }).setOrigin(0.5).setDepth(100);
-    this.setDepth(1010);
-    this.setScrollFactor(0);
-    this.add([ this.background, this.text ]);
-    this.setPosition(position.x, position.y);
-    this.scene.add.existing(this);
-  }
-
-  setText(newText: string): void {
-    this.text.setText(this.placeholder + newText);
-  }
-
-  show(): void {
-    this.setVisible(true);
-  }
-
-  hide(): void {
-    this.setVisible(false);
-  }
-
-  override destroy(): void {
-    this.text.destroy();
-    this.background.destroy();
-    super.destroy();
-  }
-}
-
-export class CooldownBar extends Phaser.GameObjects.Container implements ICooldownBar {
-  override scene: BaseScene
-  fill: Phaser.GameObjects.Graphics;
-  width: number;
-  height: number;
-
-  constructor(scene: BaseScene, x: number, y: number, width: number, height: number) {
-    super(scene, x, y);
-    this.width = width;
-    this.height = height;
-    this.fill = scene.add.graphics();
-    this.fill.fillStyle(0xffffff, 1);
-    this.fill.fillRoundedRect(0, 0, 0, height, 4);
-
-    this.add([ this.fill ]);
-    scene.add.existing(this);
-  }
-
-  public startCooldown(duration: number) {
-
-    const animationObject = { progress: 1 };
-
-    this.updateFillBar(1);
-
-    if (this.scene.sys.isActive() && this.scene.sys.isVisible()) {
-      this.createTween(animationObject, duration);
-    } else {
-      this.scene.sys.events.once('ready', () => this.createTween(animationObject, duration));
-    }
-  }
-
-  private createTween(animationObject: { progress: number }, duration: number): void {
-    if(this.scene.tweens) {
-      const currentTween = this.scene.tweens.add({
-        targets: animationObject,
-        progress: 0,
-        ease: 'Linear',
-        duration: duration,
-        onUpdate: () => {
-          this.updateFillBar(animationObject.progress);
-        },
-        onComplete: () => {
-          this.updateFillBar(0);
-          currentTween.destroy();
+    [
+      this.playerLabel,
+      this.characterLabel,
+      this.levelLabel,
+      this.healthLabel,
+      this.weaponSetLabel,
+      this.weaponCooldownBar,
+      this.pointsLabel,
+      this.killsLabel,
+      this.attackModeLabel,
+      this.timeLabel,
+      this.notificationsLabel
+    ].forEach(component => {
+      if (component && typeof component.destroy === 'function') {
+        try {
+          component.destroy();
+        } catch (error) {
+          console.warn('Erro ao destruir componente:', error);
         }
-      });
-    }
-  }
-
-  private updateFillBar(progress: number) {
-    this.fill.clear();
-    if (progress > 0) {
-      this.fill.fillStyle(0xffffff, 1);
-      this.fill.fillRoundedRect(0, 0, this.width * progress, this.height, 4);
-    }
-  }
-
-  public destroy(): void {
-    this.fill.clear();
-    this.fill.destroy();
-    super.destroy();
+      }
+    });
   }
 }
-
 
 export class TimeCounter extends TextBox implements ITimeCounter {
   private internalCounter: Phaser.Time.TimerEvent;
   private timeElapsed: number = 0;
 
-  constructor(scene: Scene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
+  constructor(scene: BaseScene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
     super(scene, size, position, GameUIPlaceholders.TIME);
     this.setText(this.formatTime(0));
     this.internalCounter = scene.time.addEvent(
@@ -248,7 +326,7 @@ export class NotificationPopUp extends TextBox {
   private hideTween?: Phaser.Tweens.Tween;
   private padding = 10;
 
-  constructor(scene: Scene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
+  constructor(scene: BaseScene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
     super(scene, size, position, '');
     super.setAlpha(0);
     super.hide();
@@ -295,7 +373,6 @@ export class NotificationPopUp extends TextBox {
       ease: 'Linear',
       duration: 300,
       onComplete: () => {
-        // espera 1s visível antes de sumir
         this.scene.time.delayedCall(1000, () => this.hideWithFade());
       }
     });

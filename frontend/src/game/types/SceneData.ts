@@ -1,4 +1,4 @@
-import { ICharacter, ILevel, IPlayer, IPlayerExport } from "./Player";
+import { ICharacter, ILevel, IPlayerExport } from "./Player";
 import { IMatchStats } from "./PlayerProgressionSystem";
 import { WeaponSet } from "./Weapon";
 

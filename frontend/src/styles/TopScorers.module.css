@@ -1,0 +1,54 @@
+.TopScorersContainer {
+    padding: 1em;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #363a4f;
+    border: none;
+    border-radius: 1em;
+    margin: 0 auto;
+    width: 65%;
+}
+
+.Header {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.ScorersList {
+    background: #494d64;
+    border: none;
+    border-radius: 1em;
+    padding: 0.25em;
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+
+.Scorer, .ScorersListHeader {
+    display: flex;
+    flex-direction: row;
+    background: #5b6078;
+    justify-content: space-between;
+    border: none;
+    border-radius: 1em;
+    margin: 0.1em;
+    padding: 0.1em 1.25em;
+}
+
+.ScorersListHeader {
+    margin-bottom: 1em;
+}
+
+.PlayerName {
+    font-weight: bold;
+}
+
+.PlayerScore {
+    right: 0;
+}

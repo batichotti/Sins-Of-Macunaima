@@ -20,7 +20,7 @@ export class UserController {
     async findOneByName(@Param('name') name: string){
         return this.userService.findOneByName(name);
     }
-    
+
     @Post()
     async create(@Body() body: SignUpDTO) {
         return this.userService.signup(body);
