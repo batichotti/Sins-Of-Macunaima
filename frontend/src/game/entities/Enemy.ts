@@ -24,7 +24,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     halfArc: number;
     orbitRadius: number;
     currentAngle: number = 0;
-    private shooter?: Shooter;
+    private shooter: Shooter | null;
     // Sistema de pathfinding
     pathFinder!: Pathfinding;
     private path: Phaser.Math.Vector2[] = [];
@@ -71,13 +71,16 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
       this.lastPos.set(this.x, this.y);
       this.lastTileTarget.set(this.x, this.y);
       this.canSpawn = false;
-      this.baseHealth = config.baseHealth; 
+      this.baseHealth = config.baseHealth;
 
       this.orbitRadius = config.weapon.range * 0.6;
       this.halfArc = Phaser.Math.DegToRad(45);
 
       if ("projectileWeapon" in config && config.projectileWeapon) {
         this.shooter = new Shooter(this.scene, config.projectileWeapon as IProjectile, 30);
+      } else {
+          this.shooter?.destroy();
+          this.shooter = null;
       }
 
       this.setTexture(config.spriteKey);

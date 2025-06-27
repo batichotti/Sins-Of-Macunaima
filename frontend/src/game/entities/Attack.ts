@@ -220,6 +220,10 @@ export class Shooter {
   public get weaponConfig() {
     return this.config;
   }
+
+  public destroy() {
+    this.projectiles.destroy();
+  }
 }
 
 class Projectile extends Phaser.Physics.Arcade.Sprite {
