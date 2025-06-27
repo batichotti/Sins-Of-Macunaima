@@ -1,7 +1,7 @@
 'use client';
 import styles from '@/styles/Profile.module.css';
 import { useAuth } from '../_context/_authContext';
-import { AuthModal } from '../_lib/_auth';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 export default function Profile() {
@@ -9,6 +9,7 @@ export default function Profile() {
     const [userDTO, setUserDTO] = useState({ id_user: 0, name: '', email: '', best_run: 0 });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const router = useRouter();
 
     async function fetchUserData() {
         if (!user?.name) return;
@@ -69,10 +70,10 @@ export default function Profile() {
                     </div>
                 </div>
             ) : (
-                <div>
+                <div className={styles.Buttons}>
                     <h2>Parece que você não está logado</h2>
-                    <h2>Inicie sessão ou cadastre-se agora</h2>
-                    <AuthModal />
+                    <h2>Inicie sessão ou cadastre-se</h2>
+                    <button onClick={ () => router.push('/mainMenu') }>Voltar ao menu principal</button>
                 </div>
             )}
         </div>

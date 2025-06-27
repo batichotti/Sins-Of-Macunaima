@@ -35,7 +35,6 @@ export function AuthModal() {
                 const data = await response.json();
                 localStorage.setItem('token', data.access_token);
                 login(data.user);
-                setActiveForm(null);
             } else {
                 const errorData = await response.json();
                 switch (response.status) {
@@ -72,7 +71,6 @@ export function AuthModal() {
                 const data = await response.json();
                 localStorage.setItem('token', data.access_token);
                 login(data.user);
-                setActiveForm(null);
             } else {
                 const errorData = await response.json();
                 

@@ -26,7 +26,7 @@ export class Player implements IPlayer {
 
         // Registra o listener de eventos
         EventManager.Instance.on(GameEvents.TOGGLE_CHARACTER, this.changeCharacter, this);
-        EventManager.Instance.on(GameEvents.COLLECTABLE_COLLECTED, (payload: ICollectable) => this.updateInventory(payload), this);
+        EventManager.Instance.on(GameEvents.COLLECTABLE_COLLECTED, this.collectableHandler, this);
     }
 
     private applyLevelModifiers(): void {
@@ -70,12 +70,12 @@ export class Player implements IPlayer {
         EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.character.health);
     }
 
-    public destroy(): void {
+    destroy() {
       EventManager.Instance.off(GameEvents.TOGGLE_CHARACTER, this.changeCharacter, this);
-      EventManager.Instance.off(GameEvents.COLLECTABLE_COLLECTED, (payload: ICollectable) => this.updateInventory(payload), this);
+      EventManager.Instance.off(GameEvents.COLLECTABLE_COLLECTED, this.collectableHandler, this);
     }
 
-    public updateInventory(payload: ICollectable): void {
+    public collectableHandler(payload: ICollectable): void {
       const inventory = this.inventory;
       inventory.set(payload, inventory.get(payload) ?? 0 + 1);
 

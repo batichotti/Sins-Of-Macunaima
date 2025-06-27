@@ -54,10 +54,10 @@ export default function Game() {
     <div className={styles.GameContainer}>
         {
             !isAuthenticated ? (
-                <div>
+                <div className={styles.Buttons}>
                     <h2>Parece que você não está logado</h2>
-                    <h2>Inicie sessão ou cadastre-se agora</h2>
-                    <AuthModal />
+                    <h2>Inicie sessão ou cadastre-se</h2>
+                    <button onClick={ () => router.push('/mainMenu') }>Voltar ao menu principal</button>
                 </div>
             ) : (
                 <div>

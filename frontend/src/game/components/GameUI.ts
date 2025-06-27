@@ -7,61 +7,37 @@ import { EventManager } from '../core/EventBus';
 import { GameEvents } from '../types';
 
 export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
+  override scene: BaseScene;
   size: Phaser.Math.Vector2;
   background: Phaser.GameObjects.Graphics;
   text: Phaser.GameObjects.Text;
   placeholder: string;
 
-  constructor(scene: Scene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2, placeholder: string) {
+  constructor(scene: BaseScene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2, placeholder: string) {
     super(scene, position.x, position.y);
-    this.scene = scene;
     this.size = size;
     this.placeholder = placeholder;
-    this.background = new Phaser.GameObjects.Graphics(this.scene);
+
+    this.background = scene.add.graphics();
     this.background.fillStyle(0x000000, 0.8);
     this.background.lineStyle(2, 0xffff00, 1);
     this.background.fillRoundedRect(0, 0, this.size.x, this.size.y);
 
-    this.text = new Phaser.GameObjects.Text(this.scene, this.size.x * 0.5, this.size.y * 0.5, '', { ...Text.Dialog1 }).setOrigin(0.5).setDepth(100);
-    this.setDepth(1010);
-    this.setScrollFactor(0);
+    this.text = scene.add.text(0, 0, '', { ...Text.Dialog1, fixedWidth: this.size.x, align: 'center' });
+    this.text.setDepth(100);
+
+    this.text.setOrigin(0.5, 0.5);
+    this.text.setPosition(this.size.x / 2, this.size.y / 2);
+
     this.add([ this.background, this.text ]);
-    this.setPosition(position.x, position.y);
-    this.scene.add.existing(this);
-  }
-
-  private shrinkToFitText(): void {
-    if (!this.scene || !this.scene.sys.isActive() || !this.text || this.text.scene !== this.scene) {
-      return;
-    }
-    try {
-      const padding = 20;
-      const textWidth = this.text.width + padding;
-      const textHeight = this.size.y;
-
-      if (textWidth > this.size.x) {
-      this.background.clear();
-      this.background.fillStyle(0x000000, 0.8);
-      this.background.lineStyle(2, 0xffff00, 1);
-      this.background.fillRoundedRect(0, 0, textWidth, textHeight);
-      this.size.set(textWidth, textHeight);
-      }
-
-      this.text.setX(this.size.x / 2);
-      this.text.setY(this.size.y / 2);
-    } catch (error) {
-      console.warn('Erro ao ajustar tamanho do texto:', error);
-    }
+    scene.add.existing(this);
+    scene.gameCameras.main.ignore(this);
   }
 
   setText(newText: string): void {
-    if (!this.scene || !this.scene.sys.isActive() || !this.text || this.text.scene !== this.scene) {
-      return;
-    }
-    
+
     try {
       this.text.setText(this.placeholder + newText);
-      this.shrinkToFitText();
     } catch (error) {
       console.warn('Erro ao definir texto:', error);
     }
@@ -80,10 +56,8 @@ export class TextBox extends Phaser.GameObjects.Container implements ITextBox {
   }
 
   override destroy(): void {
-    if (this.text && !this.text.scene.sys) {
-      this.text.destroy();
-    }
-    if (this.background && !this.background.scene.sys) {
+    this.text.destroy();
+    if (this.background) {
       this.background.destroy();
     }
     super.destroy();
@@ -107,6 +81,7 @@ export class CooldownBar extends Phaser.GameObjects.Container implements ICooldo
 
     this.add([ this.fill ]);
     scene.add.existing(this);
+    scene.gameCameras.main.ignore(this);
   }
 
   public startCooldown(duration: number) {
@@ -177,7 +152,7 @@ export class CooldownBar extends Phaser.GameObjects.Container implements ICooldo
       this.currentTween.destroy();
       this.currentTween = undefined;
     }
-    
+
     if (this.fill) {
       this.fill.clear();
       this.fill.destroy();
@@ -211,7 +186,7 @@ export default class GameUI implements IGameUI {
     this.weaponSetLabel = new TextBox(scene, { x: 180, y: 50 } as Phaser.Math.Vector2, { x: 440, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
     this.pointsLabel = new TextBox(scene, { x: 170, y: 50 } as Phaser.Math.Vector2, { x: 630, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.POINTS);
 
-    this.playerLabel = new TextBox(scene, { x: 160, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 140 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
+    this.playerLabel = new TextBox(scene, { x: 300, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 140 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
     this.attackModeLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.ATTACK_MODE);
     this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 220, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
     this.notificationsLabel = new NotificationPopUp(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 640, y: 70 } as Phaser.Math.Vector2);
@@ -221,39 +196,30 @@ export default class GameUI implements IGameUI {
 
     this.timeLabel = new TimeCounter(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 430, y: 70 } as Phaser.Math.Vector2);
 
-    this.safeSetText(this.playerLabel, this.scene.player.name);
-    this.safeSetText(this.characterLabel, this.scene.player.character.name);
-    this.safeSetText(this.levelLabel, this.scene.player.level.level.toString());
-    this.safeSetText(this.healthLabel, this.scene.player.character.health.toString());
-    this.safeSetText(this.weaponSetLabel, this.scene.attackManager.weapon.name);
-    this.safeSetText(this.pointsLabel, "0");
-    this.safeSetText(this.killsLabel, "0");
-    this.safeSetText(this.attackModeLabel, "Auto");
-
     this.handlers = {
-        onHealthChange: (health: number) => { 
-          if (!this.isDestroyed) this.safeSetText(this.healthLabel, health.toString());
+        onHealthChange: (health: number) => {
+          if (!this.isDestroyed) this.healthLabel.setText(health.toString());
         },
-        onWeaponChange: (weapon: IWeapon) => { 
-          if (!this.isDestroyed) this.safeSetText(this.weaponSetLabel, weapon.name);
+        onWeaponChange: (weapon: IWeapon) => {
+          if (!this.isDestroyed) this.weaponSetLabel.setText(weapon.name);
         },
-        onEnemyDied: (info: { points: number, kills: number }) => { 
+        onEnemyDied: (info: { points: number, kills: number }) => {
           if (!this.isDestroyed) {
-            this.safeSetText(this.pointsLabel, info.points.toString());
-            this.safeSetText(this.killsLabel, info.kills.toString());
+            this.pointsLabel.setText(info.points.toString());
+            this.killsLabel.setText(info.kills.toString());
           }
         },
-        onLevelUp: (level: number) => { 
-          if (!this.isDestroyed) this.safeSetText(this.levelLabel, level.toString());
+        onLevelUp: (level: number) => {
+          if (!this.isDestroyed) this.levelLabel.setText(level.toString());
         },
-        onAttackModeChange: (mode: AttackMode) => { 
-          if (!this.isDestroyed) this.safeSetText(this.attackModeLabel, mode === AttackMode.AUTO ? "Auto" : "Manual");
+        onAttackModeChange: (mode: AttackMode) => {
+          if (!this.isDestroyed) this.attackModeLabel.setText(mode === AttackMode.AUTO ? "Auto" : "Manual");
         },
-        onWeaponCooldown: (cooldown: number) => { 
+        onWeaponCooldown: (cooldown: number) => {
           if (!this.isDestroyed && this.weaponCooldownBar) this.weaponCooldownBar.startCooldown(cooldown);
         },
-        onCharacterChange: (character: ICharacter) => { 
-          if (!this.isDestroyed) this.safeSetText(this.characterLabel, character.name);
+        onCharacterChange: (character: ICharacter) => {
+          if (!this.isDestroyed) this.characterLabel.setText(character.name);
         }
     };
 
@@ -267,10 +233,16 @@ export default class GameUI implements IGameUI {
     eventManager.on(GameEvents.TOGGLE_CHARACTER_SUCCESS, this.handlers.onCharacterChange, this);
   }
 
-  private safeSetText(textBox: TextBox, text: string): void {
-    if (textBox && this.scene && this.scene.sys.isActive()) {
-      textBox.setText(text);
-    }
+  populateInitialValues(): void {
+      this.playerLabel.setText(this.scene.player.name);
+      this.characterLabel.setText(this.scene.player.character.name);
+      this.levelLabel.setText(this.scene.player.level.level.toString());
+      this.healthLabel.setText(this.scene.player.character.health.toString());
+      this.weaponSetLabel.setText(this.scene.attackManager.weapon.name);
+      this.pointsLabel.setText("0");
+      this.killsLabel.setText("0");
+      this.attackModeLabel.setText("Auto");
+      this.timeLabel.setText("0");
   }
 
   public destroy(): void {
@@ -314,7 +286,7 @@ export class TimeCounter extends TextBox implements ITimeCounter {
   private internalCounter: Phaser.Time.TimerEvent;
   private timeElapsed: number = 0;
 
-  constructor(scene: Scene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
+  constructor(scene: BaseScene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
     super(scene, size, position, GameUIPlaceholders.TIME);
     this.setText(this.formatTime(0));
     this.internalCounter = scene.time.addEvent(
@@ -354,7 +326,7 @@ export class NotificationPopUp extends TextBox {
   private hideTween?: Phaser.Tweens.Tween;
   private padding = 10;
 
-  constructor(scene: Scene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
+  constructor(scene: BaseScene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
     super(scene, size, position, '');
     super.setAlpha(0);
     super.hide();
