@@ -160,7 +160,7 @@ export const BossTypes: Record<BossEnum, IEnemy> = {
     [BossEnum.CR7]: {
         name: 'Cristiano Ronaldo',
         spriteKey: 'CR7',
-        spawnRegion: 'Praia',
+        spawnRegion: 'all',
         weapon: MeleeTypes[MeleeEnum.PAULADA],
         projectileWeapon: ProjectileTypes[ProjectileEnum.BOLA],
         baseHealth: 150,
