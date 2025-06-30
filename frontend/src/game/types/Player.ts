@@ -40,7 +40,7 @@ export interface IPlayer {
      * Atualiza o inventário.
      * @param payload O item coletado.
      */
-    updateInventory(payload: ICollectable): void;
+    collectableHandler(payload: ICollectable): void;
 
     export(): IPlayerExport;
 

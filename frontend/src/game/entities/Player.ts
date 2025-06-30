@@ -14,7 +14,7 @@ export class Player implements IPlayer {
     weaponSet!: WeaponSet;
     inventory: Map<ICollectable, number> = new Map();
 
-    constructor(data: IPlayer, mainCharacter: Character) {
+    constructor(data: IPlayerExport, mainCharacter: Character) {
         this.name = data.name;
         this.character = mainCharacter;
         this.playableCharacters = data.playableCharacters;
@@ -26,7 +26,7 @@ export class Player implements IPlayer {
 
         // Registra o listener de eventos
         EventManager.Instance.on(GameEvents.TOGGLE_CHARACTER, this.changeCharacter, this);
-        EventManager.Instance.on(GameEvents.COLLECTABLE_COLLECTED, (payload: ICollectable) => this.updateInventory(payload), this);
+        EventManager.Instance.on(GameEvents.COLLECTABLE_COLLECTED, this.collectableHandler, this);
     }
 
     private applyLevelModifiers(): void {
@@ -44,7 +44,7 @@ export class Player implements IPlayer {
         // Aplica os modificadores de nível ao novo personagem
         const modifiedConfig: ICharacter = {
             ...newCharacterConfig,
-            health: newCharacterConfig.health * this.level.healthIncrease,
+            health: this.character.health,
             maximumHealth: newCharacterConfig.health * this.level.healthIncrease
         };
 
@@ -70,12 +70,12 @@ export class Player implements IPlayer {
         EventManager.Instance.emit(GameEvents.HEALTH_CHANGE, this.character.health);
     }
 
-    public destroy(): void {
+    destroy() {
       EventManager.Instance.off(GameEvents.TOGGLE_CHARACTER, this.changeCharacter, this);
-      EventManager.Instance.off(GameEvents.COLLECTABLE_COLLECTED, (payload: ICollectable) => this.updateInventory(payload), this);
+      EventManager.Instance.off(GameEvents.COLLECTABLE_COLLECTED, this.collectableHandler, this);
     }
 
-    public updateInventory(payload: ICollectable): void {
+    public collectableHandler(payload: ICollectable): void {
       const inventory = this.inventory;
       inventory.set(payload, inventory.get(payload) ?? 0 + 1);
 

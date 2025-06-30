@@ -14,7 +14,7 @@ export interface IAnimationManager {
   scene: IBaseScene;
   animations: Map<string, Phaser.Animations.Animation>;
   createStandardWalkAnimation(key: string, config: CharacterAnimationTemplate): void;
-  createStandardAttackAnimation(key: string, config: WeaponAnimationTemplate): void; 
+  createStandardAttackAnimation(key: string, config: WeaponAnimationTemplate): void;
   destroy(): void;
 }
 
@@ -49,6 +49,14 @@ export const CharacterAnimConfigs: Record<string, CharacterAnimationTemplate> = 
     right: { start: 3, end: 5 },
   },
   'CR7': {
+    framerate: 4,
+    repeat: -1,
+    up: { start: 1, end: 2 },
+    down: { start: 1, end: 2 },
+    left: { start: 2, end: 2 },
+    right: { start: 1, end: 2 },
+  },
+  'Cabral': {
     framerate: 4,
     repeat: -1,
     up: { start: 1, end: 2 },

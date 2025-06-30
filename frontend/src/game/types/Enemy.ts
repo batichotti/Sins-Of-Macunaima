@@ -152,7 +152,8 @@ export const EnemyTypes: Record<EnemyEnum, IEnemy> = {
 };
 
 export enum BossEnum {
-  CR7
+  CR7,
+  CABRAL
 }
 
 export const BossTypes: Record<BossEnum, IEnemy> = {
@@ -164,7 +165,17 @@ export const BossTypes: Record<BossEnum, IEnemy> = {
         projectileWeapon: ProjectileTypes[ProjectileEnum.BOLA],
         baseHealth: 150,
         baseSpeed: 120,
-        damageMultiplier: 1.5,
+        damageMultiplier: 1.25,
+        pointGain: 500
+    },
+    [BossEnum.CABRAL]: {
+        name: 'Pedro Álvares Cabral',
+        spriteKey: 'Cabral',
+        spawnRegion: 'all',
+        weapon: MeleeTypes[MeleeEnum.PAULADA],
+        baseHealth: 150,
+        baseSpeed: 120,
+        damageMultiplier: 1.25,
         pointGain: 500
     }
 };

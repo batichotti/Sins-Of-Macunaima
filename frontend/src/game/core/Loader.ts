@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { PathScenarios } from '@/game/components/PathAssets';
-import { ICharacter, ILevel, IPlayer, SceneData, WeaponSet } from '../types';
+import { ICharacter, ILevel, IPlayerExport, SceneData, WeaponSet } from '../types';
 
 /**
  * Cena genérica cuja função é carregar assets específicos da cena de destino.
@@ -21,7 +21,7 @@ export class Loader extends Scene {
     /**
      * Dados do jogador. Que serão obtidos do boot.
      */
-    private player!: IPlayer;
+    private player!: IPlayerExport;
 
     /**
      * Dados do personagem. Que serão obtidos do boot.

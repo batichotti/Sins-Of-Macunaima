@@ -75,7 +75,7 @@ export class BaseScene extends Scene implements IBaseScene {
     this.collectableManager = new CollectableManager(this);
     this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
     this.gameUI = new GameUI(this);
-
+    this.gameUI.populateInitialValues();
     EventBus.emit('current-scene-ready', this);
   }
 
