@@ -130,4 +130,45 @@ export class UserService {
             email: user.email,
         };
     }
+
+    async updateBestRun(userId: number, newBestRun: number) {
+        const user = await this.prismaService.user.findUnique({
+            where: { id_user: userId },
+            select: {
+                id_user: true,
+                name: true,
+                email: true,
+                best_run: true,
+            },
+        });
+
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+
+        if (newBestRun <= (user.best_run || 0)) {
+            return {
+                message: 'Best run not updated - current run is not better than existing best run',
+                user: user,
+                updated: false,
+            };
+        }
+
+        const updatedUser = await this.prismaService.user.update({
+            where: { id_user: userId },
+            data: { best_run: newBestRun },
+            select: {
+                id_user: true,
+                name: true,
+                email: true,
+                best_run: true,
+            },
+        });
+
+        return {
+            message: 'Best run updated successfully',
+            user: updatedUser,
+            updated: true,
+        };
+    }
 }
