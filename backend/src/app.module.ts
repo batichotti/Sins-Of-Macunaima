@@ -8,6 +8,8 @@ import { UserService } from './modules/user/user.service';
 import { UserController } from './modules/user/user.controller';
 import { PrismaService } from './modules/prisma/prisma.service';
 import { AuthModule } from './modules/auth/auth.module';
+import { SharedModule } from './modules/shared/shared.module';
+import { GuardsModule } from './modules/guards/guards.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { AuthModule } from './modules/auth/auth.module';
         entities: [__dirname + '/**/*.entity{.js,.ts}']
       }),
     }),
+    SharedModule,
+    GuardsModule,
     UserModule,
     AuthModule
   ],
