@@ -41,8 +41,50 @@ export default function Game() {
     }
 
     async function handleBackendTransfer(data: Partial<IMatchStats>) {
-        console.log('PhaserGame: Dados recebidos do phaser:', data);
+      console.log('PhaserGame: Dados recebidos do phaser:', data);
+
+      try {
+        if (!user?.id) {
+          throw new Error('ID do usuário não encontrado');
+        }
+
+        if (!data.pointsGained && data.pointsGained !== 0) {
+          throw new Error('Pontuação não encontrada nos dados');
+        }
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('Token JWT não encontrado');
+        }
+
+        const response = await fetch(
+          `http://localhost:3001/user/${user.id}/best-run`,
+          {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              best_run: data.pointsGained,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        console.log('Pontuação enviada com sucesso:', result);
+
+        return result;
+      } catch (error) {
+        console.error('Erro ao enviar pontuação para o backend:', error);
+        throw error;
+      }
     }
+
 
     async function handleMainMenu() {
         router.push('/mainMenu')
