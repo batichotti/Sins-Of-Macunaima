@@ -250,7 +250,7 @@ export default class EnemyManager implements IEnemyManager {
     private resetEnemyForReuse(enemy: Enemy): void {
       enemy.setVelocity(0, 0);
       this.scene.tweens.killTweensOf(enemy);
-        
+
       enemy.setActive(true);
       enemy.setVisible(true);
     }
@@ -292,17 +292,17 @@ export default class EnemyManager implements IEnemyManager {
               if (!boss) return;
 
               this.canSpawn = false;
-                
+
               this.resetEnemyForReuse(boss);
-              
+
               boss.configureEnemy(bossType);
               boss.setPathFinder(this.pathFinder);
-              
+
               boss.setPosition(spawn.position.x, spawn.position.y);
               boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
 
               this.scene.gameCameras.ui.ignore(boss);
-              boss.setSize(32, 64);
+              boss.setScale(1.25);
               boss.isBoss = true;
               this.bossCurrentlyAlive = true;
               this.bossSpawned = false;
@@ -311,7 +311,7 @@ export default class EnemyManager implements IEnemyManager {
               return;
             }
         }
-        
+
         const validEnemies = Object.values(EnemyTypes).filter(e => e.spawnRegion === spawn.name || e.spawnRegion === 'all');
         if (validEnemies.length === 0) return;
 
@@ -324,20 +324,20 @@ export default class EnemyManager implements IEnemyManager {
             break;
           }
         }
-        
+
         if (!enemy) return;
 
         this.canSpawn = false;
-        
+
         this.resetEnemyForReuse(enemy);
-        
+
         enemy.configureEnemy(type);
         enemy.setScale(1.5);
         enemy.setPathFinder(this.pathFinder);
-        
+
         enemy.setPosition(spawn.position.x, spawn.position.y);
         enemy.enableBody(true, spawn.position.x, spawn.position.y, true, true);
-        
+
         this.scene.gameCameras.ui.ignore(enemy);
         enemy.isBoss = false;
         enemy.setSize(16, 32);
