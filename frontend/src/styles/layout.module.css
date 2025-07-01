@@ -49,3 +49,20 @@
     max-width: 1200px;
     margin: 0 auto;
 }
+
+.link {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #cad3f5;
+    color: #24273a;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    margin: 0.2em;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
