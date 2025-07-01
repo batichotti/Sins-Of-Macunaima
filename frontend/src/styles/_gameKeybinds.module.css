@@ -1,0 +1,123 @@
+.controlsContainer {
+    background: #363a4f;
+    border-radius: 8px;
+    padding: 16px;
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid #494d64;
+    flex-shrink: 0;
+}
+
+.title {
+  color: #cad3f5;
+  margin: 0 0 12px 0;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-bottom: 1px solid #494d64;
+  padding-bottom: 8px;
+}
+
+.control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    padding: 6px 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.control:hover {
+    background-color: rgba(202, 211, 245, 0.1);
+}
+
+.control:last-child {
+    margin-bottom: 0;
+}
+
+.key {
+    background: #cad3f5;
+    color: #24273a;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 0.8rem;
+    min-width: 45px;
+    text-align: center;
+    flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.action {
+    color: #cad3f5;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.controlsContainer::-webkit-scrollbar {
+    width: 6px;
+}
+
+.controlsContainer::-webkit-scrollbar-track {
+    background: #24273a;
+    border-radius: 3px;
+}
+
+.controlsContainer::-webkit-scrollbar-thumb {
+    background: #494d64;
+    border-radius: 3px;
+}
+
+.controlsContainer::-webkit-scrollbar-thumb:hover {
+    background: #5b6078;
+}
+
+@media (max-width: 1200px) {
+    .controlsContainer {
+        width: 100%;
+        max-width: 400px;
+        max-height: none;
+        margin: 0 auto;
+    }
+
+    .control {
+        justify-content: space-between;
+    }
+
+    .key {
+        min-width: 50px;
+    }
+
+    .action {
+        text-align: right;
+    }
+}
+
+@media (max-width: 768px) {
+    .controlsContainer {
+        padding: 12px;
+    }
+
+    .control {
+        margin-bottom: 6px;
+        padding: 4px;
+    }
+
+    .key {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+        min-width: 40px;
+    }
+
+    .action {
+        font-size: 0.8rem;
+    }
+}

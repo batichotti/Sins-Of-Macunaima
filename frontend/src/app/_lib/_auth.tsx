@@ -2,6 +2,29 @@ import styles from '@/styles/MainMenu.module.css';
 import { useRef, useState } from 'react';
 import { useAuth } from '../_context/_authContext';
 
+interface PasswordRequirementsProps {
+  password: string;
+}
+
+export function PasswordRequirements({ password }: PasswordRequirementsProps) {
+  const requirements = [
+    { label: 'Ao menos 8 caracteres', valid: password.length >= 8 },
+    { label: 'Ao menos 1 letra maiúscula', valid: /[A-Z]/.test(password) },
+    { label: 'Ao menos 1 letra minúscula', valid: /[a-z]/.test(password) },
+    { label: 'Ao menos 1 número', valid: /\d/.test(password) },
+  ];
+
+  return (
+    <ul className={styles.requirements}>
+      {requirements.map((req) => (
+        <li key={req.label} className={req.valid ? styles.valid : styles.invalid}>
+          {req.valid ? '✔' : '✖'} {req.label}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 interface signinDTO {
     email: string,
     password: string
@@ -18,7 +41,7 @@ export function AuthModal() {
 
     const [signupDTO, setSignupDTO] = useState<signupDTO>({name: '', email: '', password: ''});
     const [signinDTO, setSigninDTO] = useState<signinDTO>({email: '', password: ''});
-    
+
     async function handleSignin() {
         if (!formRef.current) return;
 
@@ -50,7 +73,7 @@ export function AuthModal() {
                     default:
                         alert('Erro no servidor. Tente novamente.');
                 }
-            } 
+            }
         } catch (error) {
             alert('Erro ao buscar usuário ' + error);
         }
@@ -73,7 +96,7 @@ export function AuthModal() {
                 login(data.user);
             } else {
                 const errorData = await response.json();
-                
+
                 switch (response.status) {
                     case 400:
                         alert(errorData.message || 'Erro nos dados fornecidos');
@@ -96,10 +119,10 @@ export function AuthModal() {
     return (
         <div className={styles.AuthModalContainer}>
             <div className={styles.AuthModalButtons}>
-                <button onClick={() => setActiveForm(activeForm === 'signin' ? null : 'signin')}>
+                <button onClick={() => {setActiveForm(activeForm === 'signin' ? null : 'signin'), setSigninDTO({email: '', password: ''})}}>
                     Entrar
                 </button>
-                <button onClick={() => setActiveForm(activeForm === 'signup' ? null : 'signup')}>
+                <button onClick={() => {setActiveForm(activeForm === 'signup' ? null : 'signup'), setSignupDTO({email: '', password: '', name: ''})}}>
                     Registrar
                 </button>
             </div>
@@ -112,14 +135,17 @@ export function AuthModal() {
                         <button type="submit">Entrar</button>
                     </form>
                 )}
-                
+
                 {activeForm === 'signup' && (
-                    <form ref={formRef} onSubmit={e => {e.preventDefault(), handleSignup(), setActiveForm(null)}}>
-                        <input name="username" type="text" placeholder="Nome de usuário" defaultValue="" onChange={e => setSignupDTO({...signupDTO, name: e.target.value})} required />
-                        <input name="email" type="email" placeholder="E-mail" defaultValue="" onChange={e => setSignupDTO({...signupDTO, email: e.target.value})} required />
-                        <input name="password" type="password" placeholder="Senha" defaultValue="" onChange={e => setSignupDTO({...signupDTO, password: e.target.value})} required />
-                        <button type="submit">Registrar</button>
-                    </form>
+                    <div>
+                        <form ref={formRef} onSubmit={e => {e.preventDefault(), handleSignup(), setActiveForm(null)}}>
+                            <input name="username" type="text" placeholder="Nome de usuário" defaultValue="" onChange={e => setSignupDTO({...signupDTO, name: e.target.value})} minLength={3} required />
+                            <input name="email" type="email" placeholder="E-mail" defaultValue="" onChange={e => setSignupDTO({...signupDTO, email: e.target.value})} required />
+                            <input name="password" type="password" placeholder="Senha" defaultValue="" onChange={e => setSignupDTO({...signupDTO, password: e.target.value})} minLength={8} required />
+                            <PasswordRequirements password={signupDTO.password} />
+                            <button type="submit">Registrar</button>
+                        </form>
+                    </div>
                 )}
             </div>
         </div>

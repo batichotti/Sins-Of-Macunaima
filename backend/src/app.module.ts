@@ -9,7 +9,6 @@ import { UserController } from './modules/user/user.controller';
 import { PrismaService } from './modules/prisma/prisma.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { SharedModule } from './modules/shared/shared.module';
-import { GuardsModule } from './modules/guards/guards.module';
 
 @Module({
   imports: [
@@ -26,12 +25,11 @@ import { GuardsModule } from './modules/guards/guards.module';
         autoLoadEntities: true,
         synchronize: true,
         logging: false,
-        migrations: [__dirname + '/database/migrations/*.entity{.js,.ts}'], 
+        migrations: [__dirname + '/database/migrations/*.entity{.js,.ts}'],
         entities: [__dirname + '/**/*.entity{.js,.ts}']
       }),
     }),
     SharedModule,
-    GuardsModule,
     UserModule,
     AuthModule
   ],

@@ -7,6 +7,7 @@ import styles from '@/styles/Game.module.css';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../_context/_authContext';
 import { AuthModal } from '../_lib/_auth';
+import GameKeybinds from '../_lib/_gameKeybinds';
 
 const PhaserGame = dynamic(() => import('../../game/PhaserGame').then(mod => mod.PhaserGame), { ssr: false });
 
@@ -104,7 +105,12 @@ export default function Game() {
             ) : (
                 <div>
                     {!gameLoaded && (<div className={styles.GamePlaceholder} />)}
-                    {matchDTO && (<PhaserGame ref={phaserRef} backendTransfer={(data: Partial<IMatchStats>) => handleBackendTransfer(data)} mainMenu={() => handleMainMenu()} matchDTO={matchDTO} onLoad={() => setGameLoaded(true)} />)}
+                    {matchDTO && (
+                        <div className={styles.Game}>
+                            <PhaserGame ref={phaserRef} backendTransfer={(data: Partial<IMatchStats>) => handleBackendTransfer(data)} mainMenu={() => handleMainMenu()} matchDTO={matchDTO} onLoad={() => setGameLoaded(true)} />
+                            <GameKeybinds />
+                        </div>
+                    )}
                 </div>
             )
         }
