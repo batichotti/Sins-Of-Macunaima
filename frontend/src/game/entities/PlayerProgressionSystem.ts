@@ -1,5 +1,6 @@
 import { BaseScene } from "../core/BaseScene";
-import { IMatchStats, IPlayerProgressionSystem } from "../types";
+import { EventManager } from "../core/EventBus";
+import { GameEvents, IMatchStats, IPlayerProgressionSystem } from "../types";
 import { Player } from "./Player";
 
 export default class PlayerProgressionSystem implements IPlayerProgressionSystem {
@@ -8,6 +9,7 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
     pointsGained: number = 0;
     xpLevelUpNeeded: number = 20;
     scene: BaseScene;
+    private pointsThreshold: number = 150;
 
     constructor(scene: BaseScene, player: Player) {
       this.scene = scene;
@@ -27,6 +29,9 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
 
     public increasePoints(points: number) {
       this.pointsGained += points;
+      if(this.pointsGained % this.pointsThreshold == 0 && this.pointsGained >= 1) {
+          EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS, null);
+      }
     }
 
     public levelUp() {

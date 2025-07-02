@@ -64,11 +64,7 @@ export default class AttackManager {
         const damage = weaponDamage * this.scene.player.level.damageIncrease;
 
         if (enemy.takeDamage(damage)) {
-          this.kills += 1;
-
-          if(this.kills % bossThreshold == 0) {
-            EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS, null);
-          }
+            this.kills += 1;
 
           this.playerProgressionSystem.increasePoints(enemy.pointGain);
           this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.25);

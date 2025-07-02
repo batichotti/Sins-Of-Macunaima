@@ -33,7 +33,9 @@ export default class CollectableManager implements ICollectableManager {
     for (let i = this.children.length - 1; i >= 0; i--) {
       const child = this.children[i];
       if (!child.isAlive && child.destroyable) {
-        child.destroy();
+        if (child.scene && !child.scene.sys.isActive()) {
+          child.destroy();
+        }
         this.children.splice(i, 1);
       }
     }
@@ -154,7 +156,10 @@ export default class CollectableManager implements ICollectableManager {
     if (index > -1) {
       this.children.splice(index, 1);
     }
-    collectable.destroy();
+
+    if (collectable.active && collectable.scene) {
+      collectable.destroy();
+    }
   }
 
   private setupCollectablePoints() {
@@ -176,10 +181,13 @@ export default class CollectableManager implements ICollectableManager {
 
   destroy() {
     EventManager.Instance.off(GameEvents.BOSS_DEFEATED, this.spawnEspecialCollectable, this);
-    EventManager.Instance.off(GameEvents.WEAPON_DROPPED, this.spawnWeaponCollectable ,this);
+    EventManager.Instance.off(GameEvents.WEAPON_DROPPED, this.spawnWeaponCollectable, this);
 
-    this.children.forEach(collectable => {
-      collectable.destroy();
+    const childrenCopy = [...this.children];
+    childrenCopy.forEach(collectable => {
+      if (collectable.scene) {
+        collectable.destroy();
+      }
     });
     this.children = [];
   }
@@ -193,6 +201,7 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
   destroyable: boolean = true;
   collected: boolean = false;
   typee: RegularCollectableEnum | SpecialCollectableEnum | MeleeEnum | ProjectileEnum;
+  private overlapCollider?: Phaser.Physics.Arcade.Collider;
 
   constructor(scene: BaseScene, x: number, y: number, config: ICollectable) {
     super(scene, x, y, config.spriteKey);
@@ -202,18 +211,34 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
     this.setDepth(98);
     scene.gameCameras.ui.ignore(this);
     scene.physics.add.existing(this);
-    this.scene.physics.add.overlap(this, this.scene.player.character, () => { this.collect() });
+
+    this.overlapCollider = this.scene.physics.add.overlap(
+      this,
+      this.scene.player.character,
+      () => { this.collect() }
+    );
+
     this.scene.time.delayedCall(2500, () => this.isAlive = false);
   }
 
   private collect(): void {
-    if (!this.active || this.collected) return;
+    if (!this.active || this.collected || !this.body) return;
     this.collected = true;
     this.playCollectEffect();
   }
 
   override destroy(): void {
+    if (this.body) {
+      this.body.enable = false;
+    }
+
+    if (this.overlapCollider) {
+      this.overlapCollider.destroy();
+      this.overlapCollider = undefined;
+    }
+
     this.setActive(false);
+
     const effect = this.scene.add.circle(this.x, this.y, 10, 0xFF0000, 0.8);
     this.scene.gameCameras.ui.ignore(effect);
     this.scene.tweens.add({
@@ -225,7 +250,10 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
       onComplete: () => {
         this.setVisible(false);
         effect.destroy();
-        super.destroy();
+
+        if (this.scene) {
+          super.destroy();
+        }
       }
     });
   }
@@ -241,6 +269,12 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
   }
 
   protected playCollectEffect() {
+    if (!this.active || !this.scene) return;
+
+    if (this.body) {
+      this.body.enable = false;
+    }
+
     const effect = this.scene.add.circle(this.x, this.y, 10, 0xFFFF00, 0.8);
     this.scene.gameCameras.ui.ignore(effect);
     this.scene.tweens.add({
@@ -251,8 +285,11 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
       duration: 200,
       onComplete: () => {
         this.setActive(false).setVisible(false);
-        this.onCollect();
-        this.scene.collectableManager.removeCollectable(this);
+        if (this.scene) {
+          this.onCollect();
+          this.scene.collectableManager.removeCollectable(this);
+        }
+
         effect.destroy();
       }
     });
