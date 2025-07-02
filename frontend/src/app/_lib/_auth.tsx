@@ -119,17 +119,17 @@ export function AuthModal() {
     return (
         <div className={styles.AuthModalContainer}>
             <div className={styles.AuthModalButtons}>
-                <button onClick={() => {setActiveForm(activeForm === 'signin' ? null : 'signin'), setSigninDTO({email: '', password: ''})}}>
+                <button onClick={() => { setActiveForm(activeForm === 'signin' ? null : 'signin'); setSigninDTO({email: '', password: ''})}}>
                     Entrar
                 </button>
-                <button onClick={() => {setActiveForm(activeForm === 'signup' ? null : 'signup'), setSignupDTO({email: '', password: '', name: ''})}}>
+                <button onClick={() => { setActiveForm(activeForm === 'signup' ? null : 'signup'); setSignupDTO({email: '', password: '', name: ''})}}>
                     Registrar
                 </button>
             </div>
 
             <div className={styles.AuthModalContent}>
                 {activeForm === 'signin' && (
-                    <form ref={formRef} onSubmit={e => {e.preventDefault(), handleSignin(), setActiveForm(null)}}>
+                    <form ref={formRef} onSubmit={e => { e.preventDefault(); handleSignin(); setActiveForm(null)}}>
                         <input name="email" type="email" placeholder="E-mail" defaultValue="" onChange={e => setSigninDTO({...signinDTO, email: e.target.value})} required />
                         <input name="password" type="password" placeholder="Senha" defaultValue="" onChange={e => setSigninDTO({...signinDTO, password: e.target.value})} required />
                         <button type="submit">Entrar</button>
@@ -138,7 +138,7 @@ export function AuthModal() {
 
                 {activeForm === 'signup' && (
                     <div>
-                        <form ref={formRef} onSubmit={e => {e.preventDefault(), handleSignup(), setActiveForm(null)}}>
+                        <form ref={formRef} onSubmit={e => { e.preventDefault(); handleSignup(); setActiveForm(null)}}>
                             <input name="username" type="text" placeholder="Nome de usuário" defaultValue="" onChange={e => setSignupDTO({...signupDTO, name: e.target.value})} minLength={3} required />
                             <input name="email" type="email" placeholder="E-mail" defaultValue="" onChange={e => setSignupDTO({...signupDTO, email: e.target.value})} required />
                             <input name="password" type="password" placeholder="Senha" defaultValue="" onChange={e => setSignupDTO({...signupDTO, password: e.target.value})} minLength={8} required />

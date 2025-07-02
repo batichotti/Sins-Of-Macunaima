@@ -24,7 +24,8 @@ export class Boot extends Scene {
 
     preload () {
         // Especifica caminho dos assets
-        this.load.setPath('assets');
+        const path = 'assets/';
+        this.load.setPath(path);
 
         //  Jogador
         Object.values(CharacterTypes).forEach(
@@ -69,7 +70,7 @@ export class Boot extends Scene {
               this.load.spritesheet(it.spriteKey, `Attacks/Projectiles/${it.spriteKey}.png`, { frameWidth: 16, frameHeight: 16 });
             }
           }
-        );       
+        );
 
         // Coletáveis
         Object.values(RegularCollectableTypes).forEach(

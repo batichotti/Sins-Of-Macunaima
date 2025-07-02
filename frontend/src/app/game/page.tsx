@@ -6,7 +6,6 @@ import { CharacterEnum, CharacterTypes, ILevel, IMatchStats, MeleeEnum, MeleeTyp
 import styles from '@/styles/Game.module.css';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../_context/_authContext';
-import { AuthModal } from '../_lib/_auth';
 import GameKeybinds from '../_lib/_gameKeybinds';
 
 const PhaserGame = dynamic(() => import('../../game/PhaserGame').then(mod => mod.PhaserGame), { ssr: false });

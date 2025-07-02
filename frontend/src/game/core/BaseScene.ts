@@ -36,6 +36,7 @@ export class BaseScene extends Scene implements IBaseScene {
   attackManager: AttackManager;
   playerProgressionSystem: PlayerProgressionSystem;
   playerStartingPosition: Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 0);
+  private sceneKey: string;
 
   constructor(config: Phaser.Types.Scenes.SettingsConfig) {
     super(config);
@@ -61,6 +62,7 @@ export class BaseScene extends Scene implements IBaseScene {
 
   protected create(): void {
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, this.shutdown, this);
+    this.sceneKey = this.sys.settings.key;
     this.setupLayers();
     this.setupAnimatedTiles();
     this.setupPlayer();
@@ -91,7 +93,7 @@ export class BaseScene extends Scene implements IBaseScene {
 
   // Usados em create()
   setupLayers(): void {
-    this.map = this.make.tilemap({ key: this.constructor.name });
+    this.map = this.make.tilemap({ key: this.sceneKey });
 
     this.map.tilesets.forEach((tileset) => {
       const addedTileset = this.map.addTilesetImage(tileset.name, tileset.name, 16, 16, 1, 2);
@@ -252,19 +254,19 @@ export class BaseScene extends Scene implements IBaseScene {
   runGameWin = () => {
     EventManager.Instance.emit(GameEvents.UNFREEZE_GAME, null);
     const matchData: MatchData = {
-      scene: this.constructor.name,
+      scene: this.sceneKey,
       data: this.playerProgressionSystem.export()
     };
-    this.scene.pause(this.constructor.name);
+    this.scene.pause(this.sceneKey);
     this.scene.launch('GameWin', matchData);
   }
 
   runGameOver = () => {
     const matchData: MatchData = {
-      scene: this.constructor.name,
+      scene: this.sceneKey,
       data: this.playerProgressionSystem.export()
     };
-    this.scene.pause(this.constructor.name);
+    this.scene.pause(this.sceneKey);
     this.scene.launch('GameOver', matchData);
   }
 
@@ -275,7 +277,7 @@ export class BaseScene extends Scene implements IBaseScene {
         if (Phaser.Geom.Rectangle.Overlaps(playerBounds, transitionRect)) {
           const sceneData: SceneData = {
             targetScene: this.transitionPoints?.[0].properties?.find((prop: Phaser.Types.Tilemaps.TiledObject) => prop.name === 'destination')?.value ?? 'MainMenu',
-            previousScene: this.constructor.name,
+            previousScene: this.sceneKey,
             player: this.player.export(),
             weaponSet: this.player.weaponSet,
             level: this.player.level.export(),

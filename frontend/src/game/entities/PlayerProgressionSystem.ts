@@ -10,44 +10,54 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
     xpLevelUpNeeded: number = 20;
     scene: BaseScene;
     private pointsThreshold: number = 150;
+    private lastBossSpawnThreshold: number = 0;
 
     constructor(scene: BaseScene, player: Player) {
-      this.scene = scene;
-      this.player = player;
-      this.xpLevelUpNeeded += this.player.level.level * 2;
+        this.scene = scene;
+        this.player = player;
+        this.xpLevelUpNeeded += this.player.level.level * 2;
     }
 
     public increaseXP(xp: number) {
-      this.xpGained += xp;
-      const needed = this.xpLevelUpNeeded;
-      if (this.xpGained >= needed) {
-        this.xpGained -= needed;
-        this.xpLevelUpNeeded = this.player.level.level + 20;
-        this.levelUp();
-      }
+        this.xpGained += xp;
+        const needed = this.xpLevelUpNeeded;
+        if (this.xpGained >= needed) {
+            this.xpGained -= needed;
+            this.xpLevelUpNeeded = this.player.level.level + 20;
+            this.levelUp();
+        }
     }
+
 
     public increasePoints(points: number) {
-      this.pointsGained += points;
-      if(this.pointsGained % this.pointsThreshold == 0 && this.pointsGained >= 1) {
-          EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS, null);
-      }
+        const previousPoints = this.pointsGained;
+        this.pointsGained += points;
+
+        const nextThreshold = this.lastBossSpawnThreshold + this.pointsThreshold;
+
+        if (previousPoints < nextThreshold && this.pointsGained >= nextThreshold) {
+            this.lastBossSpawnThreshold = nextThreshold;
+            EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS, null);
+            console.log(`Boss spawned at ${this.pointsGained} points (threshold: ${nextThreshold})`);
+        }
     }
 
+
+
     public levelUp() {
-      this.player.levelUp();
+        this.player.levelUp();
     }
 
     /**
     * Método para exportar informações.
     */
     public export(): IMatchStats {
-      return {
-        player: this.player.export(),
-        xpGained: this.xpGained,
-        pointsGained: this.pointsGained,
-        timeElapsed: this.scene.gameUI.timeLabel.time,
-        kills: this.scene.attackManager.getKills
-      }
+        return {
+            player: this.player.export(),
+            xpGained: this.xpGained,
+            pointsGained: this.pointsGained,
+            timeElapsed: this.scene.gameUI.timeLabel.time,
+            kills: this.scene.attackManager.getKills
+        }
     }
 }

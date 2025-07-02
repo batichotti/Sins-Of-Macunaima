@@ -1,4 +1,3 @@
-import { Scene } from 'phaser';
 import { Text } from '@/game/components/Properties';
 import { AttackMode, ICharacter, ICollectable, ITextBox, IWeapon } from '../types';
 import { IGameUI, GameUIPlaceholders, IGameUIHandlers, ICooldownBar, ITimeCounter }from '../types/GameUI';
