@@ -229,7 +229,7 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
 
   override destroy(): void {
     if (this.body) {
-      this.body.enable = false;
+        this.setVisible(false).setActive(false);
     }
 
     if (this.overlapCollider) {
