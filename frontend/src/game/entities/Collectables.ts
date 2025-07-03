@@ -239,6 +239,10 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
 
     this.setActive(false);
 
+    if(this.scene) {
+        super.destroy();
+    }
+    /* deixar assim por enquanto
     const effect = this.scene.add.circle(this.x, this.y, 10, 0xFF0000, 0.8);
     this.scene.gameCameras.ui.ignore(effect);
     this.scene.tweens.add({
@@ -256,6 +260,7 @@ export abstract class Collectable extends Phaser.Physics.Arcade.Sprite implement
         }
       }
     });
+    */
   }
 
   protected abstract onCollect(): void;

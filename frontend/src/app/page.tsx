@@ -10,8 +10,8 @@ const MainMenu       = dynamic(() => import('./mainMenu/page'),       { ssr: fal
 export default function Page() {
   return (
     <main className={inter.className}>
-      <ScreenRotation />
-      <MainMenu />
+        <ScreenRotation />
+        <MainMenu />
     </main>
   );
 }
