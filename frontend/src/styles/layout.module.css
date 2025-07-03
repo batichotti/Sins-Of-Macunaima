@@ -66,18 +66,41 @@
 }
 
 .headerAuth .AuthModalButtons button {
-    background: #8aadf4;
-    color: #24273a;
     border: none;
     border-radius: 4px;
     padding: 0.5em 1em;
     font-weight: bold;
     cursor: pointer;
     font-size: 0.9rem;
+    transition: all 0.2s ease;
 }
 
-.headerAuth .AuthModalButtons button:hover {
+.headerAuth .AuthModalButtons button:first-child {
+    background: #8aadf4;
+    color: #24273a;
+}
+
+.headerAuth .AuthModalButtons button:first-child:hover {
     background: #91d7e3;
+}
+
+.headerAuth .AuthModalButtons button:last-child {
+    background: #cad3f5;
+    color: #24273a;
+}
+
+.headerAuth .AuthModalButtons button:last-child:hover {
+    background: #dde3f7;
+}
+
+.headerAuth .AuthModalButtons button:disabled {
+    background: #5b6078;
+    color: #8087a2;
+    cursor: not-allowed;
+}
+
+.headerAuth .AuthModalButtons button:disabled:hover {
+    background: #5b6078;
 }
 
 .headerAuth .AuthModalContent {
@@ -172,7 +195,11 @@
 }
 
 .link:hover {
-    color: #91d7e3;
+    color: #24273a;
+    background: #8aadf4;
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    transition: all 0.2s ease;
 }
 
 .main {

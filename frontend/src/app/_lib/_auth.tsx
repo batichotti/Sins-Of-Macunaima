@@ -84,7 +84,14 @@ export function AuthModal({ isHeader = false }: { isHeader?: boolean }) {
     }, [isHeader, activeForm, mounted]);
 
     if (!mounted) {
-        return <div>Carregando...</div>;
+        return (
+            <div className={containerClass}>
+                <div className={buttonsClass}>
+                    <button disabled>Entrar</button>
+                    <button disabled>Registrar</button>
+                </div>
+            </div>
+        );
     }
 
     async function handleSignin(e: React.FormEvent) {
