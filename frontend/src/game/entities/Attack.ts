@@ -1,4 +1,4 @@
-import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet, IMelee, AttackMode, IProjectile } from "../types";
+import { WeaponType, IWeapon, BaseProjectileStats, WeaponSet, IMelee, AttackMode, IProjectile, bossThreshold } from "../types";
 import { BaseScene } from "../core/BaseScene";
 import Enemy from "./Enemy";
 import PlayerProgressionSystem from "./PlayerProgressionSystem";
@@ -69,6 +69,9 @@ export default class AttackManager {
           this.playerProgressionSystem.increasePoints(enemy.pointGain);
           this.playerProgressionSystem.increaseXP(enemy.pointGain * 0.25);
           EventManager.Instance.emit(GameEvents.ENEMY_DIED, { points: this.playerProgressionSystem.pointsGained, kills: this.kills });
+          if(this.kills % bossThreshold && this.kills > 0) {
+              EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS, null);
+          }
         }
 
         if (attacker instanceof Projectile) {

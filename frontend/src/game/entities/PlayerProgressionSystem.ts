@@ -1,6 +1,5 @@
 import { BaseScene } from "../core/BaseScene";
-import { EventManager } from "../core/EventBus";
-import { GameEvents, IMatchStats, IPlayerProgressionSystem } from "../types";
+import { IMatchStats, IPlayerProgressionSystem } from "../types";
 import { Player } from "./Player";
 
 export default class PlayerProgressionSystem implements IPlayerProgressionSystem {
@@ -30,16 +29,8 @@ export default class PlayerProgressionSystem implements IPlayerProgressionSystem
 
 
     public increasePoints(points: number) {
-        const previousPoints = this.pointsGained;
         this.pointsGained += points;
 
-        const nextThreshold = this.lastBossSpawnThreshold + this.pointsThreshold;
-
-        if (previousPoints < nextThreshold && this.pointsGained >= nextThreshold) {
-            this.lastBossSpawnThreshold = nextThreshold;
-            EventManager.Instance.emit(GameEvents.SHOULD_SPAWN_BOSS, null);
-            console.log(`Boss spawned at ${this.pointsGained} points (threshold: ${nextThreshold})`);
-        }
     }
 
 
