@@ -24,7 +24,8 @@
 }
 
 .ProfileContainer * {
-    font-size: medium;        
+    font-size: medium;
+    font-family: 'PixelifySans', monospace, sans-serif;
 }
 
 .ProfileContainer h2 {
@@ -52,6 +53,7 @@
     border-radius: 4px;
     padding: 0.5em 1.5em;
     font-weight: bold;
+    font-family: 'PixelifySans', monospace, sans-serif;
     cursor: pointer;
     width: 100%;
     margin-bottom: 1em;

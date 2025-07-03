@@ -4,7 +4,7 @@
     min-height: 100vh;
     background-color: #24273a;
     color: #cad3f5;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'PixelifySans', monospace, sans-serif;
 }
 
 .header {
@@ -129,6 +129,7 @@
     background: #1e2030;
     color: #cad3f5;
     font-size: 0.9rem;
+    font-family: 'PixelifySans', monospace, sans-serif;
 }
 
 .headerAuth .AuthModalContent button[type="submit"] {
@@ -136,6 +137,7 @@
     background: #8aadf4;
     color: #24273a;
     font-weight: bold;
+    font-family: 'PixelifySans', monospace, sans-serif;
     border: none;
     border-radius: 4px;
     cursor: pointer;

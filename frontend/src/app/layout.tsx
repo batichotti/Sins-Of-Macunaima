@@ -1,6 +1,7 @@
 import styles from '@/styles/layout.module.css';
 import { AuthProvider } from './_context/_authContext';
 import Header from './_components/Header';
+import '@/styles/globals.css';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

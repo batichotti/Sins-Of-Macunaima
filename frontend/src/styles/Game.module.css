@@ -17,6 +17,7 @@
     color: #cad3f5;
     text-align: center;
     margin: 0;
+    font-family: 'PixelifySans', monospace, sans-serif;
 }
 
 .Buttons button {
@@ -26,6 +27,7 @@
     border: none;
     border-radius: 8px;
     font-weight: bold;
+    font-family: 'PixelifySans', monospace, sans-serif;
     cursor: pointer;
     transition: all 0.3s ease;
 }

@@ -15,7 +15,7 @@ export const Text = {
     get height(): number { return WindowResolution.height * 0.45 }
   },
   Title1: {
-    fontFamily: 'Arial Black',
+    fontFamily: 'PixelifySans',
     fontSize: WindowResolution.height * 0.05,
     color: '#ffffff',
     stroke: '#000000',
@@ -23,7 +23,7 @@ export const Text = {
     align: 'center'
   },
   Title2: {
-    fontFamily: 'Arial Black',
+    fontFamily: 'PixelifySans',
     fontSize: WindowResolution.height * 0.1,
     color: '#ffffff',
     stroke: '#000000',
@@ -31,7 +31,7 @@ export const Text = {
     align: 'center'
   },
   Content: {
-    fontFamily: 'Arial',
+    fontFamily: 'PixelifySans',
     fontSize: WindowResolution.height * 0.05,
     color: '#ffffff',
     stroke: '#000000',
@@ -39,7 +39,7 @@ export const Text = {
     align: 'center'
   },
   Dialog1: {
-    font: '16px Arial',
+    font: '16px PixelifySans',
     color: '#FFFFFF',
     wordWrap: { width: 960 }
   }

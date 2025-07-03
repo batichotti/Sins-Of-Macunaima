@@ -10,6 +10,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     border: 1px solid #494d64;
     flex-shrink: 0;
+    font-family: 'PixelifySans', monospace, sans-serif;
 }
 
 .title {
@@ -45,7 +46,7 @@
     color: #24273a;
     padding: 4px 8px;
     border-radius: 4px;
-    font-family: 'Courier New', monospace;
+    font-family: 'PixelifySans', monospace, sans-serif;
     font-weight: bold;
     font-size: 0.8rem;
     min-width: 45px;
