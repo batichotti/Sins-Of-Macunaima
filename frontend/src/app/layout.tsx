@@ -5,7 +5,7 @@ import '@/styles/globals.css';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Sins of Macunaíma',
+    title: 'Sins Of Macunaíma',
     description: 'Um roguelike puramente brasileiro',
     icons: {
         icon: '/favicon.png',
