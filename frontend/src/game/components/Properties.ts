@@ -24,7 +24,7 @@ export const Text = {
   },
   Title2: {
     fontFamily: 'PixelifySans',
-    fontSize: WindowResolution.height * 0.1,
+    fontSize: WindowResolution.height * 0.05,
     color: '#ffffff',
     stroke: '#000000',
     strokeThickness: WindowResolution.height * 0.01,
