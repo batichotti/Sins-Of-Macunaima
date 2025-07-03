@@ -302,7 +302,7 @@ export default class EnemyManager implements IEnemyManager {
               boss.enableBody(true, spawn.position.x, spawn.position.y, true, true);
 
               this.scene.gameCameras.ui.ignore(boss);
-              boss.setScale(1.25);
+              boss.setSize(32, 64);
               boss.isBoss = true;
               this.bossCurrentlyAlive = true;
               this.bossSpawned = false;
