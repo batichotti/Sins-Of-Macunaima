@@ -1,12 +1,14 @@
 import styles from '@/styles/MainMenu.module.css';
-import { useRef, useState } from 'react';
+import layoutStyles from '@/styles/layout.module.css';
+import { useRef, useState, useEffect } from 'react';
 import { useAuth } from '../_context/_authContext';
 
 interface PasswordRequirementsProps {
   password: string;
+  isHeader?: boolean;
 }
 
-export function PasswordRequirements({ password }: PasswordRequirementsProps) {
+export function PasswordRequirements({ password, isHeader = false }: PasswordRequirementsProps) {
   const requirements = [
     { label: 'Ao menos 8 caracteres', valid: password.length >= 8 },
     { label: 'Ao menos 1 letra maiúscula', valid: /[A-Z]/.test(password) },
@@ -14,10 +16,14 @@ export function PasswordRequirements({ password }: PasswordRequirementsProps) {
     { label: 'Ao menos 1 número', valid: /\d/.test(password) },
   ];
 
+  const requirementsClass = isHeader ? layoutStyles.requirements : styles.requirements;
+  const validClass = isHeader ? layoutStyles.valid : styles.valid;
+  const invalidClass = isHeader ? layoutStyles.invalid : styles.invalid;
+
   return (
-    <ul className={styles.requirements}>
+    <ul className={requirementsClass}>
       {requirements.map((req) => (
-        <li key={req.label} className={req.valid ? styles.valid : styles.invalid}>
+        <li key={req.label} className={req.valid ? validClass : invalidClass}>
           {req.valid ? '✔' : '✖'} {req.label}
         </li>
       ))}
@@ -34,15 +40,55 @@ interface signupDTO extends signinDTO {
     name: string
 }
 
-export function AuthModal() {
+export function AuthModal({ isHeader = false }: { isHeader?: boolean }) {
     const [activeForm, setActiveForm] = useState<'signin' | 'signup' | null>(null);
     const formRef = useRef<HTMLFormElement>(null);
     const { login } = useAuth();
 
     const [signupDTO, setSignupDTO] = useState<signupDTO>({name: '', email: '', password: ''});
     const [signinDTO, setSigninDTO] = useState<signinDTO>({email: '', password: ''});
+    const [mounted, setMounted] = useState(false);
 
-    async function handleSignin() {
+    const containerClass = isHeader ? layoutStyles.AuthModalContainer : styles.AuthModalContainer;
+    const buttonsClass = isHeader ? layoutStyles.AuthModalButtons : styles.AuthModalButtons;
+    const contentClass = isHeader ? layoutStyles.AuthModalContent : styles.AuthModalContent;
+
+    // Ensure component is mounted
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
+
+    // Reset form when switching between forms
+    useEffect(() => {
+        if (activeForm === 'signin') {
+            setSigninDTO({email: '', password: ''});
+        } else if (activeForm === 'signup') {
+            setSignupDTO({name: '', email: '', password: ''});
+        }
+    }, [activeForm]);
+
+    // Close form when clicking outside (only for header)
+    useEffect(() => {
+        if (!isHeader || !activeForm || !mounted) return;
+
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Element;
+            if (!target.closest('[data-auth-modal]')) {
+                setActiveForm(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [isHeader, activeForm, mounted]);
+
+    if (!mounted) {
+        return <div>Carregando...</div>;
+    }
+
+    async function handleSignin(e: React.FormEvent) {
+        e.preventDefault();
         if (!formRef.current) return;
 
         try {
@@ -58,6 +104,7 @@ export function AuthModal() {
                 const data = await response.json();
                 localStorage.setItem('token', data.access_token);
                 login(data.user);
+                setActiveForm(null);
             } else {
                 const errorData = await response.json();
                 switch (response.status) {
@@ -79,8 +126,10 @@ export function AuthModal() {
         }
     }
 
-    async function handleSignup() {
+    async function handleSignup(e: React.FormEvent) {
+        e.preventDefault();
         if (!formRef.current) return;
+        
         try {
             const response = await fetch(
                 'http://localhost:3001/auth/signup',
@@ -94,6 +143,7 @@ export function AuthModal() {
                 const data = await response.json();
                 localStorage.setItem('token', data.access_token);
                 login(data.user);
+                setActiveForm(null);
             } else {
                 const errorData = await response.json();
 
@@ -117,37 +167,80 @@ export function AuthModal() {
     }
 
     return (
-        <div className={styles.AuthModalContainer}>
-            <div className={styles.AuthModalButtons}>
-                <button onClick={() => { setActiveForm(activeForm === 'signin' ? null : 'signin'); setSigninDTO({email: '', password: ''})}}>
+        <div className={containerClass} data-auth-modal>
+            <div className={buttonsClass}>
+                <button onClick={() => { 
+                    setActiveForm(activeForm === 'signin' ? null : 'signin');
+                }}>
                     Entrar
                 </button>
-                <button onClick={() => { setActiveForm(activeForm === 'signup' ? null : 'signup'); setSignupDTO({email: '', password: '', name: ''})}}>
+                <button onClick={() => { 
+                    setActiveForm(activeForm === 'signup' ? null : 'signup');
+                }}>
                     Registrar
                 </button>
             </div>
 
-            <div className={styles.AuthModalContent}>
-                {activeForm === 'signin' && (
-                    <form ref={formRef} onSubmit={e => { e.preventDefault(); handleSignin(); setActiveForm(null)}}>
-                        <input name="email" type="email" placeholder="E-mail" defaultValue="" onChange={e => setSigninDTO({...signinDTO, email: e.target.value})} required />
-                        <input name="password" type="password" placeholder="Senha" defaultValue="" onChange={e => setSigninDTO({...signinDTO, password: e.target.value})} required />
-                        <button type="submit">Entrar</button>
-                    </form>
-                )}
-
-                {activeForm === 'signup' && (
-                    <div>
-                        <form ref={formRef} onSubmit={e => { e.preventDefault(); handleSignup(); setActiveForm(null)}}>
-                            <input name="username" type="text" placeholder="Nome de usuário" defaultValue="" onChange={e => setSignupDTO({...signupDTO, name: e.target.value})} minLength={3} required />
-                            <input name="email" type="email" placeholder="E-mail" defaultValue="" onChange={e => setSignupDTO({...signupDTO, email: e.target.value})} required />
-                            <input name="password" type="password" placeholder="Senha" defaultValue="" onChange={e => setSignupDTO({...signupDTO, password: e.target.value})} minLength={8} required />
-                            <PasswordRequirements password={signupDTO.password} />
-                            <button type="submit">Registrar</button>
+            {activeForm && (
+                <div className={contentClass}>
+                    {activeForm === 'signin' && (
+                        <form ref={formRef} onSubmit={handleSignin}>
+                            <input 
+                                name="email" 
+                                type="email" 
+                                placeholder="E-mail" 
+                                value={signinDTO.email}
+                                onChange={e => setSigninDTO({...signinDTO, email: e.target.value})} 
+                                required 
+                            />
+                            <input 
+                                name="password" 
+                                type="password" 
+                                placeholder="Senha" 
+                                value={signinDTO.password}
+                                onChange={e => setSigninDTO({...signinDTO, password: e.target.value})} 
+                                required 
+                            />
+                            <button type="submit">Entrar</button>
                         </form>
-                    </div>
-                )}
-            </div>
+                    )}
+
+                    {activeForm === 'signup' && (
+                        <div>
+                            <form ref={formRef} onSubmit={handleSignup}>
+                                <input 
+                                    name="username" 
+                                    type="text" 
+                                    placeholder="Nome de usuário" 
+                                    value={signupDTO.name}
+                                    onChange={e => setSignupDTO({...signupDTO, name: e.target.value})} 
+                                    minLength={3} 
+                                    required 
+                                />
+                                <input 
+                                    name="email" 
+                                    type="email" 
+                                    placeholder="E-mail" 
+                                    value={signupDTO.email}
+                                    onChange={e => setSignupDTO({...signupDTO, email: e.target.value})} 
+                                    required 
+                                />
+                                <input 
+                                    name="password" 
+                                    type="password" 
+                                    placeholder="Senha" 
+                                    value={signupDTO.password}
+                                    onChange={e => setSignupDTO({...signupDTO, password: e.target.value})} 
+                                    minLength={8} 
+                                    required 
+                                />
+                                <PasswordRequirements password={signupDTO.password} isHeader={isHeader} />
+                                <button type="submit">Registrar</button>
+                            </form>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

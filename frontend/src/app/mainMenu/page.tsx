@@ -2,12 +2,9 @@
 import styles from '@/styles/MainMenu.module.css';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { AuthModal } from '../_lib/_auth';
-import { useAuth } from '../_context/_authContext';
 
 export default function MainMenu() {
     const router = useRouter();
-    const { user, isAuthenticated, logout } = useAuth();
 
     return (
         <div className={styles.MainMenuContainer}>
@@ -20,17 +17,6 @@ export default function MainMenu() {
                 </p>
             </div>
             <div className={styles.OptionsContainer}>
-                {!isAuthenticated ? (
-                    <div className={styles.AuthModal}>
-                        <AuthModal />
-                    </div>
-                ) : (
-                    <div className={styles.UserInfo}>
-                        <p>Olá, {user?.name}!</p>
-                        <button onClick={logout}>Sair</button>
-                    </div>
-                )}
-                
                 <div className={styles.Buttons}>
                     <button onClick={() => router.push('/game')}>Jogar</button>
                     <br />

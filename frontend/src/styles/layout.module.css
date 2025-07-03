@@ -19,6 +19,16 @@
     margin: 1vh;
 }
 
+.leftSection {
+    z-index: 10;
+}
+
+.rightSection {
+    z-index: 10;
+    margin-left: auto;
+    position: relative;
+}
+
 .titleContainer {
     position: absolute;
     left: 0;
@@ -39,9 +49,130 @@
     pointer-events: auto;
 }
 
-.buttonContainer {
-    margin-left: auto;
-    z-index: 10;
+.headerAuth {
+    display: flex;
+    gap: 0.5em;
+}
+
+.headerAuth .AuthModalContainer {
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+}
+
+.headerAuth .AuthModalButtons {
+    display: flex;
+    gap: 0.5em;
+}
+
+.headerAuth .AuthModalButtons button {
+    background: #8aadf4;
+    color: #24273a;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5em 1em;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.headerAuth .AuthModalButtons button:hover {
+    background: #91d7e3;
+}
+
+.headerAuth .AuthModalContent {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #494d64;
+    border-radius: 8px;
+    padding: 1em;
+    margin-top: 0.5em;
+    min-width: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.headerAuth .AuthModalContent form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.headerAuth .AuthModalContent input {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #5b6078;
+    background: #1e2030;
+    color: #cad3f5;
+    font-size: 0.9rem;
+}
+
+.headerAuth .AuthModalContent button[type="submit"] {
+    padding: 8px;
+    background: #8aadf4;
+    color: #24273a;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.headerAuth .requirements {
+    list-style: none;
+    padding: 0;
+    margin: 0.5em 0;
+    font-size: 0.8rem;
+}
+
+.headerAuth .requirements li {
+    margin: 0.2em 0;
+}
+
+.headerAuth .valid {
+    color: #a6da95;
+}
+
+.headerAuth .invalid {
+    color: #ed8796;
+}
+
+.headerUserInfo {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.headerUserInfo span {
+    font-size: 1rem;
+    color: #cad3f5;
+}
+
+.logoutButton {
+    background: #ed8796;
+    color: #24273a;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5em 1em;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.logoutButton:hover {
+    background: #f5a97f;
+}
+
+.link {
+    color: #8aadf4;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.link:hover {
+    color: #91d7e3;
 }
 
 .main {
