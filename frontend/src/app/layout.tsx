@@ -1,6 +1,15 @@
 import styles from '@/styles/layout.module.css';
 import { AuthProvider } from './_context/_authContext';
 import Header from './_components/Header';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Sins of Macunaíma',
+    description: 'Um roguelike puramente brasileiro',
+    icons: {
+        icon: '/favicon.png',
+    },
+};
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
