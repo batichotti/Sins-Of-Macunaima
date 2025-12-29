@@ -14,6 +14,7 @@ import PlayerProgressionSystem from '../entities/PlayerProgressionSystem';
 import AnimationManager from '../entities/AnimationManager';
 import { GameEvents } from '../types';
 import CollectableManager from '../entities/Collectables';
+import { PhaserNavMesh } from '../components/phaser-navmesh';
 
 /**
  * Cena básica de jogo.
@@ -30,6 +31,7 @@ export class BaseScene extends Scene implements IBaseScene {
   animationManager: AnimationManager;
   gameUI: GameUI;
   map: Phaser.Tilemaps.Tilemap;
+  navMesh: PhaserNavMesh;
   sceneData: SceneData;
   transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
   transitionRects: Phaser.Geom.Rectangle[];
@@ -149,7 +151,7 @@ export class BaseScene extends Scene implements IBaseScene {
     const collisionLayer = this.map.getLayer('colisao')?.tilemapLayer;
     if (collisionLayer) {
       collisionLayer.setCollisionByProperty({ collides: true });
-
+      this.navMesh = this.navMeshPlugin.buildMeshFromTilemap('colisao', this.map, [collisionLayer]);
       this.physics.add.collider(this.player.character, collisionLayer);
     } else {
       console.error("Camada 'colisao' não encontrada no mapa.");

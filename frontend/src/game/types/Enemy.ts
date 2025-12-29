@@ -1,5 +1,3 @@
-import { Grid, Pathfinding } from "../components/phaser-pathfinding";
-import PathCache from "../core/PathCache";
 import IBaseScene from "./BaseScene";
 import { IMelee, IProjectile, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes } from "./Weapon";
 
@@ -16,24 +14,16 @@ export interface IEnemyManager {
   gameFrozen: boolean;
   enemyPool: Phaser.Physics.Arcade.Group;
   scene: IBaseScene;
-  pathFinder: Pathfinding;
-  pathCache: PathCache;
-  waypointGraph: Map<string, Phaser.Math.Vector2[]>;
   maxEnemyDistance: number;
   canPath: boolean;
   canSpawn: boolean;
-  grid: Grid;
   playerPos: Phaser.Math.Vector2
   updateIndex: number;
-  waypoints: Phaser.Math.Vector2[];
   maxDirectDistance: number;
   cooldownAttack: boolean;
   bossSpawned: boolean;
   bossCurrentlyAlive: boolean;
   bossDefeated: boolean;
-  getTargetPosition(enemyPos: Phaser.Math.Vector2, playerPos: Phaser.Math.Vector2): Phaser.Math.Vector2;
-  findPathViaWaypoints(start: Phaser.Math.Vector2, end: Phaser.Math.Vector2): Phaser.Math.Vector2[];
-  findNearestWaypoint(position: Phaser.Math.Vector2): Phaser.Math.Vector2 | null;
   spawnEnemy(): void;
   findNearestEnemy(): Phaser.Math.Vector2 | null;
   updatePathing(): void;

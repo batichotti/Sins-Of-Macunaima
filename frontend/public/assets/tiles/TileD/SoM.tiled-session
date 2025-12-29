@@ -5,6 +5,7 @@
     },
     "activeFile": "cenarios/mapa.tmx",
     "expandedProjectPaths": [
+        "cenariosJson",
         "cenarios",
         "."
     ],
@@ -824,11 +825,15 @@
     "map.tileWidth": 16,
     "map.width": 60,
     "openFiles": [
-        "cenarios/mapa.tmx"
+        "cenarios/mapa.tmx",
+        "cenarios/easterEggDino.tmx",
+        "cenariosJson/Mapa.json"
     ],
     "project": "SoM.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "cenariosJson/Mapa.json",
+        "cenarios/easterEggDino.tmx",
         "cenarios/mapa.tmx",
         "cenarios/PlanicieSuperior.tmx",
         "cenarios/PlanicieInferior.tmx",
@@ -838,9 +843,7 @@
         "cenarios/praia.tmx",
         "cenarios/planicieInferior.tmx",
         "cenarios/planicieSuperior.tmx",
-        "cenarios/planicie.tmx",
-        "cenariosJson/praia.json",
-        "cenarios/inicio.tmx"
+        "cenarios/planicie.tmx"
     ],
     "tileset.embedInMap": true,
     "tileset.tileSize": {

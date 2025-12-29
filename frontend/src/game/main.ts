@@ -5,7 +5,7 @@ import { Mapa } from '@/game/scenes/World/Mapa';
 import GameOver from './core/GameOver';
 import GameWin from './core/GameWin';
 import { IMatchStats } from './types';
-import 'phaser-navmesh';
+import PhaserNavMeshPlugin from './components/phaser-navmesh';
 
 const StartGame = (parent: string, matchDTO: IMatchStats) => {
     try {
@@ -30,9 +30,9 @@ const StartGame = (parent: string, matchDTO: IMatchStats) => {
             plugins: {
                 scene: [
                     {
-                    key: 'NavMeshPlugin',
-                    plugin: Phaser.Plugins.NavMeshPlugin,
-                    mapping: 'navMesh'
+                        key: 'PhaserNavMeshPlugin',
+                        plugin: PhaserNavMeshPlugin,
+                        mapping: 'navMeshPlugin'
                     }
                 ]
             },
