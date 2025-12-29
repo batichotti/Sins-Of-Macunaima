@@ -83,7 +83,6 @@ export class BaseScene extends Scene implements IBaseScene {
 
   update(time: number, delta: number): void {
     this.enemyManager.spawnEnemy();
-
     this.handleInput();
     this.handleAnimatedTiles(delta);
     this.changeScenario();

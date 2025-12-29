@@ -8,10 +8,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('Sins Of Macunaíma: Swagger')
+    .setDescription('The Sins Of Macunaíma API')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('SOM')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory);
