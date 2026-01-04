@@ -1,15 +1,8 @@
 import IBaseScene from "./BaseScene";
+import { IDisposable } from "./common";
 import { IMelee, IProjectile, MeleeEnum, MeleeTypes, ProjectileEnum, ProjectileTypes } from "./Weapon";
 
-export interface WaypointNode {
-  point: Phaser.Math.Vector2;
-  g: number;
-  h: number;
-  f: number;
-  parent: WaypointNode | null;
-}
-
-export interface IEnemyManager {
+export interface IEnemyManager extends IDisposable {
   enemySpawner: IEnemySpawner;
   gameFrozen: boolean;
   enemyPool: Phaser.Physics.Arcade.Group;
@@ -28,7 +21,6 @@ export interface IEnemyManager {
   findNearestEnemy(): Phaser.Math.Vector2 | null;
   updatePathing(): void;
   updateMovement(): void;
-  destroy(): void;
 }
 
 export interface IEnemySpawner {

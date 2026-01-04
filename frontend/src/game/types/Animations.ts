@@ -1,4 +1,5 @@
 import IBaseScene from "./BaseScene";
+import { IDisposable } from "./common";
 
 /**
  * Indica a direção do corpo.
@@ -10,18 +11,17 @@ export enum Directions {
     RIGHT = 'right'
 }
 
-export interface IAnimationManager {
+export interface IAnimationManager extends IDisposable {
   scene: IBaseScene;
   animations: Map<string, Phaser.Animations.Animation>;
   createStandardWalkAnimation(key: string, config: CharacterAnimationTemplate): void;
   createStandardAttackAnimation(key: string, config: WeaponAnimationTemplate): void;
-  destroy(): void;
 }
 
 /**
  * Usar para definir frames de cada direção.
  */
- export type CharacterAnimationTemplate = {
+ export interface CharacterAnimationTemplate {
    framerate: number;
    repeat: number;
    up: { start: number; end: number };

@@ -177,62 +177,64 @@ export default class GameUI implements IGameUI {
   private isDestroyed: boolean = false;
 
   constructor(scene: BaseScene) {
-    this.scene = scene;
+      this.scene = scene;
 
-    this.characterLabel = new TextBox(scene, { x: 220, y : 50 } as Phaser.Math.Vector2, { x: 10, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.CHARACTER);
-    this.levelLabel = new TextBox(scene, { x: 80, y: 50 } as Phaser.Math.Vector2, { x: 240, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.LEVEL);
-    this.healthLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 330, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.HEALTH);
-    this.weaponSetLabel = new TextBox(scene, { x: 180, y: 50 } as Phaser.Math.Vector2, { x: 440, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
-    this.pointsLabel = new TextBox(scene, { x: 170, y: 50 } as Phaser.Math.Vector2, { x: 630, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.POINTS);
+      this.characterLabel = new TextBox(scene, { x: 220, y : 50 } as Phaser.Math.Vector2, { x: 10, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.CHARACTER);
+      this.levelLabel = new TextBox(scene, { x: 80, y: 50 } as Phaser.Math.Vector2, { x: 240, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.LEVEL);
+      this.healthLabel = new TextBox(scene, { x: 100, y: 50 } as Phaser.Math.Vector2, { x: 330, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.HEALTH);
+      this.weaponSetLabel = new TextBox(scene, { x: 180, y: 50 } as Phaser.Math.Vector2, { x: 440, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.WEAPONSET);
+      this.pointsLabel = new TextBox(scene, { x: 170, y: 50 } as Phaser.Math.Vector2, { x: 630, y: 10 } as Phaser.Math.Vector2, GameUIPlaceholders.POINTS);
 
-    this.playerLabel = new TextBox(scene, { x: 300, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 140 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
-    this.attackModeLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.ATTACK_MODE);
-    this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 220, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
-    this.notificationsLabel = new NotificationPopUp(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 640, y: 70 } as Phaser.Math.Vector2);
+      this.playerLabel = new TextBox(scene, { x: 300, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 140 } as Phaser.Math.Vector2, GameUIPlaceholders.PLAYER);
+      this.attackModeLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 10, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.ATTACK_MODE);
+      this.killsLabel = new TextBox(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 220, y: 70 } as Phaser.Math.Vector2, GameUIPlaceholders.KILLS);
+      this.notificationsLabel = new NotificationPopUp(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 640, y: 70 } as Phaser.Math.Vector2);
 
-    this.weaponCooldownBar = new CooldownBar(this.scene, 460, 45, 140, 5);
-    this.scene.gameCameras.main.ignore([ this.killsLabel, this.attackModeLabel, this.weaponCooldownBar, this.weaponSetLabel, this.healthLabel, this.levelLabel, this.playerLabel, this.characterLabel ]);
+      this.weaponCooldownBar = new CooldownBar(this.scene, 460, 45, 140, 5);
+      this.scene.gameCameras.main.ignore([ this.killsLabel, this.attackModeLabel, this.weaponCooldownBar, this.weaponSetLabel, this.healthLabel, this.levelLabel, this.playerLabel, this.characterLabel ]);
 
-    this.timeLabel = new TimeCounter(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 430, y: 70 } as Phaser.Math.Vector2);
+      this.timeLabel = new TimeCounter(scene, { x: 200, y: 50 } as Phaser.Math.Vector2, { x: 430, y: 70 } as Phaser.Math.Vector2);
 
-    this.handlers = {
-        onHealthChange: (health: number) => {
-          if (!this.isDestroyed) this.healthLabel.setText(health.toString());
-        },
-        onWeaponChange: (weapon: IWeapon) => {
-          if (!this.isDestroyed) this.weaponSetLabel.setText(weapon.name);
-        },
-        onEnemyDied: (info: { points: number, kills: number }) => {
-          if (!this.isDestroyed) {
-            this.pointsLabel.setText(info.points.toString());
-            this.killsLabel.setText(info.kills.toString());
+      this.handlers = {
+          onHealthChange: (health: number) => {
+              if (!this.isDestroyed) this.healthLabel.setText(health.toString());
+          },
+          onWeaponChange: (weapon: IWeapon) => {
+              if (!this.isDestroyed) this.weaponSetLabel.setText(weapon.name);
+          },
+          onEnemyDied: (info: { points: number, kills: number }) => {
+              if (!this.isDestroyed) {
+                  this.pointsLabel.setText(info.points.toString());
+                  this.killsLabel.setText(info.kills.toString());
+              }
+          },
+          onLevelUp: (level: number) => {
+              if (!this.isDestroyed) this.levelLabel.setText(level.toString());
+          },
+          onAttackModeChange: (mode: AttackMode) => {
+              if (!this.isDestroyed) this.attackModeLabel.setText(mode === AttackMode.AUTO ? "Auto" : "Manual");
+          },
+          onWeaponCooldown: (cooldown: number) => {
+              if (!this.isDestroyed && this.weaponCooldownBar) this.weaponCooldownBar.startCooldown(cooldown);
+          },
+          onCharacterChange: (character: ICharacter) => {
+              if (!this.isDestroyed) this.characterLabel.setText(character.name);
           }
-        },
-        onLevelUp: (level: number) => {
-          if (!this.isDestroyed) this.levelLabel.setText(level.toString());
-        },
-        onAttackModeChange: (mode: AttackMode) => {
-          if (!this.isDestroyed) this.attackModeLabel.setText(mode === AttackMode.AUTO ? "Auto" : "Manual");
-        },
-        onWeaponCooldown: (cooldown: number) => {
-          if (!this.isDestroyed && this.weaponCooldownBar) this.weaponCooldownBar.startCooldown(cooldown);
-        },
-        onCharacterChange: (character: ICharacter) => {
-          if (!this.isDestroyed) this.characterLabel.setText(character.name);
-        }
-    };
+      };
 
-    const eventManager = EventManager.Instance;
-    eventManager.on(GameEvents.HEALTH_CHANGE, this.handlers.onHealthChange, this);
-    eventManager.on(GameEvents.TOGGLE_WEAPON_SUCCESS, this.handlers.onWeaponChange, this);
-    eventManager.on(GameEvents.ENEMY_DIED, this.handlers.onEnemyDied, this);
-    eventManager.on(GameEvents.LEVEL_UP, this.handlers.onLevelUp, this);
-    eventManager.on(GameEvents.WEAPON_COOLDOWN, this.handlers.onWeaponCooldown, this);
-    eventManager.on(GameEvents.TOGGLE_ATTACK_MODE_SUCCESS, this.handlers.onAttackModeChange, this);
-    eventManager.on(GameEvents.TOGGLE_CHARACTER_SUCCESS, this.handlers.onCharacterChange, this);
+      const eventManager = EventManager.Instance;
+      eventManager.on(GameEvents.HEALTH_CHANGE, this.handlers.onHealthChange, this);
+      eventManager.on(GameEvents.TOGGLE_WEAPON_SUCCESS, this.handlers.onWeaponChange, this);
+      eventManager.on(GameEvents.ENEMY_DIED, this.handlers.onEnemyDied, this);
+      eventManager.on(GameEvents.LEVEL_UP, this.handlers.onLevelUp, this);
+      eventManager.on(GameEvents.WEAPON_COOLDOWN, this.handlers.onWeaponCooldown, this);
+      eventManager.on(GameEvents.TOGGLE_ATTACK_MODE_SUCCESS, this.handlers.onAttackModeChange, this);
+      eventManager.on(GameEvents.TOGGLE_CHARACTER_SUCCESS, this.handlers.onCharacterChange, this);
+
+      this.populateInitialValues();
   }
 
-  populateInitialValues(): void {
+  private populateInitialValues(): void {
       this.playerLabel.setText(this.scene.player.name);
       this.characterLabel.setText(this.scene.player.character.name);
       this.levelLabel.setText(this.scene.player.level.level.toString());
@@ -245,40 +247,39 @@ export default class GameUI implements IGameUI {
   }
 
   public destroy(): void {
-    if (this.isDestroyed) return;
-    this.isDestroyed = true;
+      if (this.isDestroyed) return;
+      this.isDestroyed = true;
 
-    const eventManager = EventManager.Instance;
-    eventManager.off(GameEvents.HEALTH_CHANGE, this.handlers.onHealthChange, this);
-    eventManager.off(GameEvents.TOGGLE_WEAPON_SUCCESS, this.handlers.onWeaponChange, this);
-    eventManager.off(GameEvents.ENEMY_DIED, this.handlers.onEnemyDied, this);
-    eventManager.off(GameEvents.LEVEL_UP, this.handlers.onLevelUp, this);
-    eventManager.off(GameEvents.WEAPON_COOLDOWN, this.handlers.onWeaponCooldown, this);
-    eventManager.off(GameEvents.TOGGLE_ATTACK_MODE_SUCCESS, this.handlers.onAttackModeChange, this);
-    eventManager.off(GameEvents.TOGGLE_CHARACTER_SUCCESS, this.handlers.onCharacterChange, this);
-
-    [
-      this.playerLabel,
-      this.characterLabel,
-      this.levelLabel,
-      this.healthLabel,
-      this.weaponSetLabel,
-      this.weaponCooldownBar,
-      this.pointsLabel,
-      this.killsLabel,
-      this.attackModeLabel,
-      this.timeLabel,
-      this.notificationsLabel
-    ].forEach(component => {
-      if (component && typeof component.destroy === 'function') {
-        try {
-          component.destroy();
-        } catch (error) {
-          console.warn('Erro ao destruir componente:', error);
-        }
-      }
-    });
-  }
+      const eventManager = EventManager.Instance;
+      eventManager.off(GameEvents.HEALTH_CHANGE, this.handlers.onHealthChange, this);
+      eventManager.off(GameEvents.TOGGLE_WEAPON_SUCCESS, this.handlers.onWeaponChange, this);
+      eventManager.off(GameEvents.ENEMY_DIED, this.handlers.onEnemyDied, this);
+      eventManager.off(GameEvents.LEVEL_UP, this.handlers.onLevelUp, this);
+      eventManager.off(GameEvents.WEAPON_COOLDOWN, this.handlers.onWeaponCooldown, this);
+      eventManager.off(GameEvents.TOGGLE_ATTACK_MODE_SUCCESS, this.handlers.onAttackModeChange, this);
+      eventManager.off(GameEvents.TOGGLE_CHARACTER_SUCCESS, this.handlers.onCharacterChange, this);
+      [
+          this.playerLabel,
+          this.characterLabel,
+          this.levelLabel,
+          this.healthLabel,
+          this.weaponSetLabel,
+          this.weaponCooldownBar,
+          this.pointsLabel,
+          this.killsLabel,
+          this.attackModeLabel,
+          this.timeLabel,
+          this.notificationsLabel
+      ].forEach(component => {
+            if (component && typeof component.destroy === 'function') {
+                try {
+                component.destroy();
+                } catch (error) {
+                console.warn('Erro ao destruir componente:', error);
+                }
+            }
+        });
+    }
 }
 
 export class TimeCounter extends TextBox implements ITimeCounter {
@@ -319,84 +320,84 @@ export class TimeCounter extends TextBox implements ITimeCounter {
 }
 
 export class NotificationPopUp extends TextBox {
-  private onSpawnedHandler: (payload: ICollectable) => void;
-  private onCollectedHandler: (payload: ICollectable) => void;
-  private showTween?: Phaser.Tweens.Tween;
-  private hideTween?: Phaser.Tweens.Tween;
-  private padding = 10;
+    private onSpawnedHandler: (payload: ICollectable) => void;
+    private onCollectedHandler: (payload: ICollectable) => void;
+    private showTween?: Phaser.Tweens.Tween;
+    private hideTween?: Phaser.Tweens.Tween;
+    private padding = 10;
 
-  constructor(scene: BaseScene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
-    super(scene, size, position, '');
-    super.setAlpha(0);
-    super.hide();
-
-    const display = (msg: string) => {
-      this.setText(msg);
-      this.resizeBackground();
-      this.showWithFade();
-    };
-
-    this.onSpawnedHandler = (payload) => {
-      display(`Um(a) ${payload.name} foi dropado(a).`);
-    };
-    this.onCollectedHandler = (payload) => {
-      display(`Um(a) ${payload.name} foi coletado(a).`);
-    };
-
-    EventManager.Instance.on(GameEvents.COLLECTABLE_SPAWNED, this.onSpawnedHandler, this);
-    EventManager.Instance.on(GameEvents.COLLECTABLE_COLLECTED, this.onCollectedHandler, this);
-  }
-
-  private resizeBackground() {
-    const maxWidth = 300;
-    const textWidth = Math.min(this.text.width, maxWidth);
-    const textHeight = this.text.height;
-
-    this.text.setOrigin(0);
-    this.background.clear();
-    this.background.fillStyle(0x000000, 0.8);
-    this.background.lineStyle(2, 0xffff00, 1);
-    this.background.fillRoundedRect(0, 0, textWidth + this.padding * 2, textHeight + this.padding * 2);
-    this.text.setPosition(this.padding, this.padding);
-    this.text.setWordWrapWidth(textWidth);
-  }
-
-  private showWithFade() {
-    this.hideTween?.stop();
-    this.showTween?.stop();
-
-    this.show();
-    this.showTween = this.scene.tweens.add({
-      targets: this,
-      alpha: 1,
-      ease: 'Linear',
-      duration: 300,
-      onComplete: () => {
-        this.scene.time.delayedCall(1000, () => this.hideWithFade());
-      }
-    });
-  }
-
-  private hideWithFade() {
-    this.showTween?.stop();
-    this.hideTween?.stop();
-
-    this.hideTween = this.scene.tweens.add({
-      targets: this,
-      alpha: 0,
-      ease: 'Linear',
-      duration: 300,
-      onComplete: () => {
+    constructor(scene: BaseScene, size: Phaser.Math.Vector2, position: Phaser.Math.Vector2) {
+        super(scene, size, position, '');
+        super.setAlpha(0);
         super.hide();
-      }
-    });
-  }
 
-  override destroy(): void {
-    this.showTween?.stop();
-    this.hideTween?.stop();
-    EventManager.Instance.off(GameEvents.COLLECTABLE_SPAWNED, this.onSpawnedHandler, this);
-    EventManager.Instance.off(GameEvents.COLLECTABLE_COLLECTED, this.onCollectedHandler, this);
-    super.destroy();
-  }
+        const display = (msg: string) => {
+        this.setText(msg);
+        this.resizeBackground();
+        this.showWithFade();
+        };
+
+        this.onSpawnedHandler = (payload) => {
+        display(`Um(a) ${payload.name} foi dropado(a).`);
+        };
+        this.onCollectedHandler = (payload) => {
+        display(`Um(a) ${payload.name} foi coletado(a).`);
+        };
+
+        EventManager.Instance.on(GameEvents.COLLECTABLE_SPAWNED, this.onSpawnedHandler, this);
+        EventManager.Instance.on(GameEvents.COLLECTABLE_COLLECTED, this.onCollectedHandler, this);
+    }
+
+    private resizeBackground() {
+        const maxWidth = 300;
+        const textWidth = Math.min(this.text.width, maxWidth);
+        const textHeight = this.text.height;
+
+        this.text.setOrigin(0);
+        this.background.clear();
+        this.background.fillStyle(0x000000, 0.8);
+        this.background.lineStyle(2, 0xffff00, 1);
+        this.background.fillRoundedRect(0, 0, textWidth + this.padding * 2, textHeight + this.padding * 2);
+        this.text.setPosition(this.padding, this.padding);
+        this.text.setWordWrapWidth(textWidth);
+    }
+
+    private showWithFade() {
+        this.hideTween?.stop();
+        this.showTween?.stop();
+
+        this.show();
+        this.showTween = this.scene.tweens.add({
+        targets: this,
+        alpha: 1,
+        ease: 'Linear',
+        duration: 300,
+        onComplete: () => {
+            this.scene.time.delayedCall(1000, () => this.hideWithFade());
+        }
+        });
+    }
+
+    private hideWithFade() {
+        this.showTween?.stop();
+        this.hideTween?.stop();
+
+        this.hideTween = this.scene.tweens.add({
+        targets: this,
+        alpha: 0,
+        ease: 'Linear',
+        duration: 300,
+        onComplete: () => {
+            super.hide();
+        }
+        });
+    }
+
+    override destroy(): void {
+        this.showTween?.stop();
+        this.hideTween?.stop();
+        EventManager.Instance.off(GameEvents.COLLECTABLE_SPAWNED, this.onSpawnedHandler, this);
+        EventManager.Instance.off(GameEvents.COLLECTABLE_COLLECTED, this.onCollectedHandler, this);
+        super.destroy();
+    }
 }

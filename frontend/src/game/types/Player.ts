@@ -1,10 +1,11 @@
 import { ICollectable } from "./Collectables";
+import { IDisposable } from "./common";
 import { WeaponSet } from "./Weapon";
 
 /**
  * Jogador que joga o jogo.
  */
-export interface IPlayer {
+export interface IPlayer extends IDisposable {
     /**
      * Nome de usuário do jogador.
      */
@@ -43,8 +44,6 @@ export interface IPlayer {
     collectableHandler(payload: ICollectable): void;
 
     export(): IPlayerExport;
-
-    destroy(): void;
 }
 
 export interface IPlayerExport {
