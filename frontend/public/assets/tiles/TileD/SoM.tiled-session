@@ -5,6 +5,7 @@
     },
     "activeFile": "cenarios/mapa.tmx",
     "expandedProjectPaths": [
+        "cenariosJson",
         "cenarios",
         "."
     ],
@@ -327,8 +328,8 @@
             "scale": 1.2466,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 95.45965024867644,
-                "y": 202.95202952029518
+                "x": 95.86074121610778,
+                "y": 202.95202952029524
             }
         },
         "cenarios/easterEggDino.tmx#10_dirt": {
@@ -466,8 +467,8 @@
         },
         "cenarios/mapa.tmx": {
             "expandedGroupLayers": [
-                17,
-                18
+                18,
+                17
             ],
             "expandedObjectLayers": [
                 13
@@ -475,8 +476,8 @@
             "scale": 0.5,
             "selectedLayer": 21,
             "viewCenter": {
-                "x": 1652,
-                "y": 978
+                "x": 871,
+                "y": 922
             }
         },
         "cenarios/mapa.tmx#10_dirt": {
@@ -719,6 +720,53 @@
         "cenarios/praia.tmx#9_beach": {
             "scaleInDock": 1
         },
+        "cenariosJson/Mapa.json": {
+            "scale": 0.5116,
+            "selectedLayer": 21,
+            "viewCenter": {
+                "x": 571.7357310398747,
+                "y": 789.6794370602031
+            }
+        },
+        "cenariosJson/Mapa.json#10_dirt": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#11_roofs": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#12_extra1": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#13_extra2": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#1_terrain": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#2_indoors": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#3_plants": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#4_buildings": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#5_waterfall": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#6_floors": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#7_grass_cliff": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#8_cave": {
+            "scaleInDock": 1
+        },
+        "cenariosJson/Mapa.json#9_beach": {
+            "scaleInDock": 1
+        },
         "cenariosJson/praia.json": {
             "scale": 0.9302083333333333,
             "selectedLayer": 3,
@@ -777,11 +825,15 @@
     "map.tileWidth": 16,
     "map.width": 60,
     "openFiles": [
-        "cenarios/mapa.tmx"
+        "cenarios/mapa.tmx",
+        "cenarios/easterEggDino.tmx",
+        "cenariosJson/Mapa.json"
     ],
     "project": "SoM.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "cenariosJson/Mapa.json",
+        "cenarios/easterEggDino.tmx",
         "cenarios/mapa.tmx",
         "cenarios/PlanicieSuperior.tmx",
         "cenarios/PlanicieInferior.tmx",
@@ -791,9 +843,7 @@
         "cenarios/praia.tmx",
         "cenarios/planicieInferior.tmx",
         "cenarios/planicieSuperior.tmx",
-        "cenarios/planicie.tmx",
-        "cenariosJson/praia.json",
-        "cenarios/inicio.tmx"
+        "cenarios/planicie.tmx"
     ],
     "tileset.embedInMap": true,
     "tileset.tileSize": {

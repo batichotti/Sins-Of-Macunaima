@@ -1,4 +1,3 @@
-import { DistanceMethod, Pathfinding } from "../components/phaser-pathfinding";
 import { BaseScene } from "../core/BaseScene";
 import { EventManager } from "../core/EventBus";
 import { IMelee, IEnemy, Directions, MeleeCollectableTypes, ProjectileCollectableTypes, IProjectile,  } from "../types";
@@ -25,25 +24,19 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     orbitRadius: number;
     currentAngle: number = 0;
     private shooter: Shooter | null;
-    // Sistema de pathfinding
-    pathFinder!: Pathfinding;
     private path: Phaser.Math.Vector2[] = [];
     private nextNode = 0;
     private tts: number = 5000;
     canSpawn: boolean = true;
-    private currentWaypointPath: Phaser.Math.Vector2[] = [];
 
     // Controle de estado
     private timeStuck: number = 0;
     private lastPos = new Phaser.Math.Vector2(0, 0);
     private lastTileTarget = new Phaser.Math.Vector2(0, 0);
-    private randomPivot: number = 0;
 
     constructor(scene: BaseScene, position: Phaser.Math.Vector2, spriteKey: string) {
         super(scene, position.x, position.y, spriteKey);
 
-        // Configuração inicial
-        this.randomPivot = Phaser.Utils.Array.GetRandom([ -3, -4, -5, -6, -7, -8, 3, 4, 5, 6, 7, 8 ]);
         this.spriteKey = spriteKey;
 
         // Adiciona à cena e física
@@ -58,14 +51,9 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
             .setDepth(100);
     }
 
-    public setPathFinder(pf: Pathfinding): void {
-        this.pathFinder = pf;
-    }
-
     configureEnemy(config: IEnemy): void {
       // Configura propriedades do inimigo
       this.path = [];
-      this.currentWaypointPath = [];
       this.nextNode = 0;
       this.timeStuck = 0;
       this.lastPos.set(this.x, this.y);
@@ -175,15 +163,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     updatePathing(targetPx: Phaser.Math.Vector2): void {
-        if (!this.body || !this.pathFinder) return;
+        if (!this.body) return;
 
         if (this.shouldRecalculatePath(targetPx)) {
-            const targetPos = this.scene.enemyManager.getTargetPosition(
-                new Phaser.Math.Vector2(this.x, this.y),
-                targetPx
-            );
-
-            this.calculatePath(targetPos);
+            this.calculatePath(targetPx);
             this.lastTileTarget = targetPx.clone();
         }
     }
@@ -193,62 +176,12 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     }
 
     private calculatePath(target: Phaser.Math.Vector2): void {
-        const directDistance = Phaser.Math.Distance.Between(this.x, this.y, target.x, target.y);
-
-        if (directDistance > this.scene.enemyManager.maxDirectDistance) {
-            const waypointPath = this.scene.enemyManager.findPathViaWaypoints(
-                new Phaser.Math.Vector2(this.x, this.y),
-                target
-            );
-
-            this.path = this.convertWaypointPath(waypointPath);
-            this.nextNode = 0;
-            this.currentWaypointPath = waypointPath;
-            return;
-        }
-
-        const startTile = this.scene.map.worldToTileXY(this.x, this.y);
-        const targetTile = this.scene.map.worldToTileXY(target.x, target.y);
-        const cacheKey = this.getCacheKey(targetTile!);
-        const cachedPath = this.scene.enemyManager.pathCache.get(cacheKey) ?? [];
-
-        if (this.scene.enemyManager.pathCache.isValid(cacheKey) && cachedPath.length > 0) {
-            this.path = cachedPath;
-            this.nextNode = 0;
-            this.lastTileTarget = targetTile!.clone();
-            return;
-        }
-
-        const raw = this.pathFinder.findPathBetweenTl(startTile!, targetTile!, {
-            distanceMethod: DistanceMethod.Octile,
-            diagonal: true,
-            simplify: true
-        });
-
-        this.path = raw.map(n => this.scene.map.tileToWorldXY(n.tileX, n.tileY)!.add(new Phaser.Math.Vector2(this.scene.map.tileWidth/2, this.scene.map.tileHeight/2)));
-
-        this.scene.enemyManager.pathCache.set(cacheKey, this.path);
-        this.nextNode = 0;
-        this.lastTileTarget = targetTile!.clone();
-    }
-
-    private convertWaypointPath(waypoints: Phaser.Math.Vector2[]): Phaser.Math.Vector2[] {
-        return waypoints.flatMap((wp, i) => {
-            if (i === waypoints.length - 1) return [wp];
-
-            const next = waypoints[i + 1];
-            const steps = Math.ceil(Phaser.Math.Distance.Between(wp.x, wp.y, next.x, next.y) / 32);
-            const points: Phaser.Math.Vector2[] = [];
-
-            for (let j = 0; j <= steps; j++) {
-                const t = j / steps;
-                points.push(new Phaser.Math.Vector2(
-                    Phaser.Math.Linear(wp.x, next.x, t),
-                    Phaser.Math.Linear(wp.y, next.y, t)
-                ));
-            }
-            return points;
-        });
+      const path = this.scene.navMesh.findPath({ x: this.x, y: this.y }, { x: target.x, y: target.y });
+      if(path) {
+          this.path = path.map(p => new Phaser.Math.Vector2(p.x, p.y));
+          this.nextNode = 0;
+          return;
+      }
     }
 
     updateMovement(): void {
@@ -310,11 +243,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
                 this.play(`${this.spriteKey}_${Directions.UP}`, true);
             }
         }
-    }
-
-    private getCacheKey(targetTile: Phaser.Math.Vector2): string {
-      const startTile = this.scene.map.worldToTileXY(this.x, this.y)!;
-      return this.scene.enemyManager.pathCache.generateKey(startTile, targetTile, 3);
     }
 
     takeDamage(damage: number): boolean {
@@ -380,7 +308,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
       this.canSpawn = false;
       this.path = [];
       this.nextNode = 0
-      this.currentWaypointPath = [];
       const effect = this.scene.add.circle(this.x, this.y, 10, 0xFF0000, 0.8);
       this.scene.gameCameras.ui.ignore(effect);
       this.scene.tweens.add({
@@ -405,7 +332,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite implements IEnem
     override destroy(): void {
       this.path = [];
       this.nextNode = 0;
-      this.currentWaypointPath = [];
       this.tweenSweep?.stop();
 
       super.destroy();

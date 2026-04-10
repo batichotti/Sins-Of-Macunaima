@@ -42,7 +42,7 @@ export interface ITimeCounter {
 }
 
 export interface INotificationPopUp {
-  destroy(): void;
+    destroy(): void;
 }
 
 /**

@@ -14,6 +14,7 @@ import PlayerProgressionSystem from '../entities/PlayerProgressionSystem';
 import AnimationManager from '../entities/AnimationManager';
 import { GameEvents } from '../types';
 import CollectableManager from '../entities/Collectables';
+import { PhaserNavMesh, PhaserNavMeshPlugin } from '../components/phaser-navmesh';
 
 /**
  * Cena básica de jogo.
@@ -22,6 +23,7 @@ export class BaseScene extends Scene implements IBaseScene {
   gameCameras: GameCameras;
   collectableManager: CollectableManager;
   player: Player;
+  navMeshPlugin: PhaserNavMeshPlugin;
   tilesets: Phaser.Tilemaps.Tileset[];
   layers: Phaser.Tilemaps.TilemapLayer[];
   animatedTiles: AnimatedTileData[];
@@ -30,6 +32,7 @@ export class BaseScene extends Scene implements IBaseScene {
   animationManager: AnimationManager;
   gameUI: GameUI;
   map: Phaser.Tilemaps.Tilemap;
+  navMesh: PhaserNavMesh;
   sceneData: SceneData;
   transitionPoints: Phaser.Types.Tilemaps.TiledObject[];
   transitionRects: Phaser.Geom.Rectangle[];
@@ -77,13 +80,11 @@ export class BaseScene extends Scene implements IBaseScene {
     this.collectableManager = new CollectableManager(this);
     this.attackManager = new AttackManager(this, this.playerProgressionSystem, this.player.weaponSet);
     this.gameUI = new GameUI(this);
-    this.gameUI.populateInitialValues();
     EventBus.emit('current-scene-ready', this);
   }
 
   update(time: number, delta: number): void {
     this.enemyManager.spawnEnemy();
-
     this.handleInput();
     this.handleAnimatedTiles(delta);
     this.changeScenario();
@@ -150,7 +151,7 @@ export class BaseScene extends Scene implements IBaseScene {
     const collisionLayer = this.map.getLayer('colisao')?.tilemapLayer;
     if (collisionLayer) {
       collisionLayer.setCollisionByProperty({ collides: true });
-
+      this.navMesh = this.navMeshPlugin.buildMeshFromTilemap('colisao', this.map, [collisionLayer]);
       this.physics.add.collider(this.player.character, collisionLayer);
     } else {
       console.error("Camada 'colisao' não encontrada no mapa.");

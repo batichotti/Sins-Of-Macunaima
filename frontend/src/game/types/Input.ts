@@ -1,7 +1,9 @@
+import { IDisposable } from "./common";
+
 /**
  * Interface com informações da entrada do usuário.
  */
-export interface IInput {
+export interface IInput extends IDisposable {
     /**
      * O teclado.
      */
@@ -74,9 +76,4 @@ export interface IInput {
      * @returns Vetor com a posição do mouse ou null se o mouse não estiver disponível
      */
     getMouseWorldPosition(): Phaser.Math.Vector2 | null;
-
-    /**
-     * Método de limpeza para remover event listeners e liberar recursos.
-     */
-    destroy(): void;
 }
